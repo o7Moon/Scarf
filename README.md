@@ -9,12 +9,8 @@ If you can't run the application, you probably need to install [.net 4.6](https:
 ## Mac/Linux
 You will need the [mono framework](http://www.mono-project.com/download/stable/) installed in order to run LRTran.
 
-# Features
-* Fast
-* Backwards compatible physics
-* Cross platform
-
-There's lots and lots of new features, but I intend to list those in the wiki, eventually.
+# LRTran Features
+* Discord activity support (Aka little stats when you click your user)
 
 # Issues
 Be sure to post an issue you've found in the issue tracker https://github.com/Tran-Foxxo/LRTran/issues
