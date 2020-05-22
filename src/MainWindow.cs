@@ -239,17 +239,18 @@ namespace linerider
                     state = state + "  |  Track name: \"" + Track.Name + "\"";
 
                     String largeKey = "lrl";
-                    String largeText = "LRTran version " + linerider.Program.Version + " | Source code: https://github.com/Tran-Foxxo/LRTran";
+                    String largeText = "LRTran version " + linerider.Program.Version + " ==================== Source code: https://github.com/Tran-Foxxo/LRTran";
 
                     String smallKey = tool;
                     String smallText = "Currently using the " + tool + " tool.";
-                    
+
+
                     updateDiscordActivity(state, details, largeKey, largeText, smallKey, smallText, startTime, 0);
 
                     discord.RunCallbacks();
                 }
             }
-            catch (Exception discordException) { Console.WriteLine("Fuck\n\n"+ discordException);  }
+            catch (Exception discordException) { Console.WriteLine("Dang something with discord\n\n"+ discordException);  }
             finally { }
 
 
