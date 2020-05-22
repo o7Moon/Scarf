@@ -47,6 +47,13 @@ namespace linerider
 {
     public class MainWindow : OpenTK.GameWindow
     {
+        public Discord.Discord discord = new Discord.Discord(506953593945980933, (UInt64)Discord.CreateFlags.Default); //Create discord for game sdk activity
+        public Discord.ActivityManager activityManager = null; //Set it up like how it is in the example I guess :p
+        public int startTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;  //Probably a easier way to do this but whatever
+        public int lastUpdateTime = 0; //Last time the activity was updated
+        public bool firstGameUpdate = true; //Run this only on the first update (probably a better way to do this, this is probably bad)
+        
+
         public Dictionary<string, MouseCursor> Cursors = new Dictionary<string, MouseCursor>();
         public MsaaFbo MSAABuffer;
         public GameCanvas Canvas;
@@ -199,7 +206,54 @@ namespace linerider
         }
         public void GameUpdate()
         {
-            GameUpdateHandleInput();
+            //On frame
+            if (firstGameUpdate)
+            {
+                firstGameUpdate = false;
+                
+                discord.SetLogHook(Discord.LogLevel.Debug, (level, message) =>
+                {
+                    Console.WriteLine("Log[{0}] {1}", level, message);
+                });
+                activityManager = discord.GetActivityManager();
+            }
+
+            try
+            {
+                int currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+                if (((currentTime % 5 == 0) && (currentTime != lastUpdateTime)))
+                {
+                    lastUpdateTime = currentTime;
+
+
+                    //TODO: Make these toggleable via some settings
+                    //Line amt
+                    String details = "Amount of Lines: " + Track.LineCount;
+                    //Unsaved changes
+                    details = details + "  |  Unsaved changes: " + Track.TrackChanges;
+
+                    //Current tool
+                    String tool = (linerider.Tools.CurrentTools.SelectedTool.ToString().Substring(16)); tool = tool.Substring(0, tool.Length - 4).ToLower();
+                    String state = "Using tool: " + (linerider.Tools.CurrentTools.SelectedTool.ToString().Substring(16)); state = state.Substring(0, state.Length - 4) + " Tool";
+                    //Track name
+                    state = state + "  |  Track name: \"" + Track.Name + "\"";
+
+                    String largeKey = "lrl";
+                    String largeText = "LRTran version " + linerider.Program.Version + " | Source code: https://github.com/Tran-Foxxo/LRTran";
+
+                    String smallKey = tool;
+                    String smallText = "Currently using the " + tool + " tool.";
+                    
+                    updateDiscordActivity(state, details, largeKey, largeText, smallKey, smallText, startTime, 0);
+
+                    discord.RunCallbacks();
+                }
+            }
+            catch (Exception discordException) { Console.WriteLine("Fuck\n\n"+ discordException);  }
+            finally { }
+
+
+                GameUpdateHandleInput();
             var updates = Track.Scheduler.UnqueueUpdates();
             if (updates > 0)
             {
@@ -240,6 +294,36 @@ namespace linerider
                 Canvas.ShowOutOfDate();
             }
         }
+
+        private void updateDiscordActivity(String state, String details, String largeImageKey, String largeImageText, String smallImageKey, String smallImageText, int start, int end)
+        {
+            var activity = new Discord.Activity
+            {
+                Type = 0,
+                State = state,
+                Details = details,
+                Timestamps =
+                    {
+                        Start = start,
+                        End = end,
+                    },
+                Assets =
+                    {
+                        LargeImage = largeImageKey,
+                        LargeText = largeImageText,
+                        SmallImage = smallImageKey,
+                        SmallText = smallImageText,
+                },
+                Instance = true,
+            };
+            activityManager.UpdateActivity(activity, result =>
+            {
+                Console.WriteLine("Update Activity {0}", result);
+            });
+            //activityManager.RegisterCommand("my-awesome-game://run --full-screen");
+            return;
+        }
+
         public void Invalidate()
         {
             _invalidated = true;

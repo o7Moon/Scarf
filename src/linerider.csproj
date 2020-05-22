@@ -40,6 +40,13 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DiscordGameSDK\ActivityManager.cs" />
+    <Compile Include="DiscordGameSDK\Constants.cs" />
+    <Compile Include="DiscordGameSDK\Core.cs" />
+    <Compile Include="DiscordGameSDK\ImageManager.cs" />
+    <Compile Include="DiscordGameSDK\LobbyManager.cs" />
+    <Compile Include="DiscordGameSDK\StorageManager.cs" />
+    <Compile Include="DiscordGameSDK\StoreManager.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="GameCanvas.cs" />
     <Compile Include="Editor.cs" />
@@ -101,7 +108,7 @@
     <Compile Include="Game\Camera\ClampCamera.cs" />
     <Compile Include="Game\Camera\CameraBoundingBox.cs" />
     <Compile Include="Game\Camera\CameraEntry.cs" />
-    </ItemGroup>
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="Game\EditorCell.cs" />
     <Compile Include="Game\EditorGrid.cs" />
@@ -320,15 +327,15 @@
     <None Include="Properties\app.manifest" />
     <None Include="Properties\OpenTK.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <Link>OpenTK.dll.config</Link>
+      <Link>OpenTK.dll.config</Link>
     </None>
     <None Include="..\lib\gwen-lra\Gwen\bin\Gwen.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <Link>Gwen.pdb</Link>
+      <Link>Gwen.pdb</Link>
     </None>
     <None Include="..\lib\gwen-lra\Gwen.Renderer.OpenTK\bin\Gwen.Renderer.OpenTK.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <Link>Gwen.Renderer.OpenTK.pdb</Link>
+      <Link>Gwen.Renderer.OpenTK.pdb</Link>
     </None>
     <None Include="openal32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
