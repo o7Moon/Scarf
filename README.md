@@ -28,6 +28,7 @@ This project uses binaries, sources, or modified sources from the following libr
 * NVorbis https://github.com/ioctlLR/NVorbis
 * gwen-dotnet https://code.google.com/archive/p/gwen-dotnet/
 * OpenTK https://github.com/opentk/opentk
+* Discord Game SDK https://discord.com/
 
 You can find their license info in LICENSES.txt
 
