@@ -45,7 +45,7 @@ namespace linerider
         private bool _renderriderinvalid = true;
         private RiderFrame _renderrider = null;
         private ResourceSync _tracksync = new ResourceSync();
-        private SimulationRenderer _renderer = new SimulationRenderer();
+        public SimulationRenderer _renderer = new SimulationRenderer();
         private bool _refreshtrack = false;
         private Vector2d _savedcamera;
         private float _savedzoom;

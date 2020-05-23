@@ -18,7 +18,7 @@ namespace linerider.Rendering
     public class SimulationRenderer : GameService
     {
         private TrackRenderer _trackrenderer;
-        private RiderRenderer _riderrenderer;
+        public RiderRenderer _riderrenderer;
 
         public bool RequiresUpdate
         {

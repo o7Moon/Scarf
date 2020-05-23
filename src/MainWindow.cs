@@ -216,12 +216,27 @@ namespace linerider
                     Console.WriteLine("Log[{0}] {1}", level, message);
                 });
                 activityManager = discord.GetActivityManager();
+
+                //Add custom scarf here
+                //Default example
+                addScarfColor(0xD10101, 255); //2
+                addScarfColor(0xff6464, 255); //1
+                
+                //Rainbow Scarf
+                //addScarfColor(0x750787, 255); //6
+                //addScarfColor(0xE40303, 255); //1
+                //addScarfColor(0xFF8C00, 255); //2
+                //addScarfColor(0xFFED00, 255); //3
+                //addScarfColor(0x008026, 255); //4
+                //addScarfColor(0x004DFF, 255); //5
+
+
             }
 
             try
             {
                 int currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-                if (((currentTime % 5 == 0) && (currentTime != lastUpdateTime)))
+                if (((currentTime % 30 == 0) && (currentTime != lastUpdateTime)))
                 {
                     lastUpdateTime = currentTime;
 
@@ -253,8 +268,21 @@ namespace linerider
             catch (Exception discordException) { Console.WriteLine("Dang something with discord\n\n"+ discordException);  }
             finally { }
 
+            if (false)
+            {
+                //Random scarf
+                var rand = new Random();
+                for (int i = 0; i < Track._renderer._riderrenderer.scarfColors.Count; i++)
+                {
+                    setScarfColor(i, (int)(rand.NextDouble() * 16777215), (byte)(rand.NextDouble() * 255));
+                }
+            }
 
-                GameUpdateHandleInput();
+
+
+
+
+            GameUpdateHandleInput();
             var updates = Track.Scheduler.UnqueueUpdates();
             if (updates > 0)
             {
@@ -1194,6 +1222,21 @@ namespace linerider
             },
             null,
             repeat: false);
+        }
+        public void setScarfColor(int index, int color, byte opacity)
+        {
+            Track._renderer._riderrenderer.scarfColors[index] = color;
+            Track._renderer._riderrenderer.scarfOpacity[index] = opacity;
+        }
+        public void addScarfColor(int color, byte opacity)
+        {
+            Track._renderer._riderrenderer.scarfColors.Add(color);
+            Track._renderer._riderrenderer.scarfOpacity.Add(opacity);
+        }
+        public void removeScarfColor(int index)
+        {
+            Track._renderer._riderrenderer.scarfColors.RemoveAt(index);
+            Track._renderer._riderrenderer.scarfOpacity.RemoveAt(index);
         }
     }
 }
