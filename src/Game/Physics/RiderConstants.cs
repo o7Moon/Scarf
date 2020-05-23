@@ -23,7 +23,21 @@ namespace linerider.Game
                 new Vector2d(-5.5,-0.5),
                 new Vector2d(-7,-0.5),
                 new Vector2d(-9,-0.5),
-                new Vector2d(-11.5,-0.5),
+                new Vector2d(-11.5,-0.5), //typical scarf ends here
+                /*new Vector2d(-13.5,-0.5), //Shoutouts to Arglin for the extra help with this
+                new Vector2d(-15,-0.5),
+                new Vector2d(-16.5,-0.5),
+                new Vector2d(-17.5,-0.5),
+                new Vector2d(-2-17,-0.5),
+                new Vector2d(-3.5-17,-0.5),
+                new Vector2d(-5.5-17,-0.5),
+                new Vector2d(-7-17,-0.5),
+                new Vector2d(-9-17,-0.5),
+                new Vector2d(-11.5-17,-0.5),
+                new Vector2d(-13.5-17,-0.5),
+                new Vector2d(-15-17,-0.5),
+                new Vector2d(-16.5-17,-0.5),
+                new Vector2d(-17.5-17,-0.5)*/
         };
         public const double EnduranceFactor = 0.0285;
         public const double StartingMomentum = 0.4;
@@ -76,7 +90,21 @@ namespace linerider.Game
             AddScarfBone(bonelist, 3);
             AddScarfBone(bonelist, 4);
             AddScarfBone(bonelist, 5);
-            AddScarfBone(bonelist, 6);
+            AddScarfBone(bonelist, 6); // typical scarf ends here
+            /*AddScarfBone(bonelist, 7); //Shoutouts to Arglin for giving me these extra bones
+            AddScarfBone(bonelist, 8);
+            AddScarfBone(bonelist, 9);
+            AddScarfBone(bonelist, 10);
+            AddScarfBone(bonelist, 11);
+            AddScarfBone(bonelist, 12);
+            AddScarfBone(bonelist, 13);
+            AddScarfBone(bonelist, 14);
+            AddScarfBone(bonelist, 15);
+            AddScarfBone(bonelist, 16);
+            AddScarfBone(bonelist, 17);
+            AddScarfBone(bonelist, 18);
+            AddScarfBone(bonelist, 19);
+            AddScarfBone(bonelist, 20);*/
             ScarfBones = bonelist.ToArray();
         }
         private static void AddScarfBone(List<Bone> bones, int index)
