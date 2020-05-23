@@ -431,7 +431,7 @@ namespace linerider.Rendering
             List<Vector2> altvectors = new List<Vector2>();
             for (int i = 0; i < lines.Length; i += 2)
             {
-                scarfPart = (i % scarfColors.Count);
+                scarfPart = (((i % scarfColors.Count)+(scarfColors.Count - 1)) % scarfColors.Count);
                 c = Utility.ColorToRGBA_LE(scarfColors[scarfPart], (byte)(scarfOpacity[scarfPart] * opacity));
 
                 var verts = DrawLine(lines[i].Position, lines[i].Position2, c, 2);
@@ -446,7 +446,7 @@ namespace linerider.Rendering
             }
             for (int i = 0; i < altvectors.Count - 4; i += 4)
             {
-                scarfPart = ((i/2 % scarfColors.Count)+1) %scarfColors.Count;
+                scarfPart = (i/2 % scarfColors.Count);
                 alt = Utility.ColorToRGBA_LE(scarfColors[scarfPart], (byte)(scarfOpacity[scarfPart] * opacity));
                 var verts = new RiderVertex[] {
                     RiderVertex.NoTexture(altvectors[i + 0],alt),
