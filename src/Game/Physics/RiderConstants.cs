@@ -5,40 +5,43 @@ namespace linerider.Game
 {
     public class RiderConstants
     {
-        public static readonly Vector2d[] DefaultRider = new[] {
-                new Vector2d(0, 0),
-                new Vector2d(0, 5),
-                new Vector2d(15, 5),
-                new Vector2d(17.5, 0),
-                new Vector2d(5, 0),
-                new Vector2d(5, -5.5),
-                new Vector2d(11.5, -5),
-                new Vector2d(11.5, -5),
-                new Vector2d(10, 5),
-                new Vector2d(10, 5)
-            };
-        public static readonly Vector2d[] DefaultScarf = new[] {
-                new Vector2d(-2,-0.5),
-                new Vector2d(-3.5,-0.5),
-                new Vector2d(-5.5,-0.5),
-                new Vector2d(-7,-0.5),
-                new Vector2d(-9,-0.5),
-                new Vector2d(-11.5,-0.5), //typical scarf ends here
-                /*new Vector2d(-13.5,-0.5), //Shoutouts to Arglin for the extra help with this
-                new Vector2d(-15,-0.5),
-                new Vector2d(-16.5,-0.5),
-                new Vector2d(-17.5,-0.5),
-                new Vector2d(-2-17,-0.5),
-                new Vector2d(-3.5-17,-0.5),
-                new Vector2d(-5.5-17,-0.5),
-                new Vector2d(-7-17,-0.5),
-                new Vector2d(-9-17,-0.5),
-                new Vector2d(-11.5-17,-0.5),
-                new Vector2d(-13.5-17,-0.5),
-                new Vector2d(-15-17,-0.5),
-                new Vector2d(-16.5-17,-0.5),
-                new Vector2d(-17.5-17,-0.5)*/
-        };
+        public static Vector2d[] DefaultRider = createDefaultRider();
+        public static Vector2d[] createDefaultRider()
+        {
+            List<Vector2d> defaultRiderVectorList = new List<Vector2d>();
+            
+            defaultRiderVectorList.Add((new Vector2d(0, 0)));
+            defaultRiderVectorList.Add(new Vector2d(0, 5));
+            defaultRiderVectorList.Add(new Vector2d(15, 5));
+            defaultRiderVectorList.Add(new Vector2d(17.5, 0));
+            defaultRiderVectorList.Add(new Vector2d(5, 0));
+            defaultRiderVectorList.Add(new Vector2d(5, -5.5));
+            defaultRiderVectorList.Add(new Vector2d(11.5, -5));
+            defaultRiderVectorList.Add(new Vector2d(11.5, -5));
+            defaultRiderVectorList.Add(new Vector2d(10, 5));
+            defaultRiderVectorList.Add(new Vector2d(10, 5));
+
+            return defaultRiderVectorList.ToArray();
+        }
+        public static Vector2d[] DefaultScarf = createDefaultScarf();
+        public static Vector2d[] createDefaultScarf()
+        {
+            List<Vector2d> scarfVectors = new List<Vector2d>();
+            double scarfPos = 0;
+            for (int i=0; i<Settings.ScarfSegments; i++)
+            {
+                if (i % 2 == 0) {
+                    scarfPos = scarfPos - 2;
+                    scarfVectors.Add(new Vector2d(scarfPos, 0.5)); 
+                }
+                else {
+                    scarfPos = scarfPos - 1.5;
+                    scarfVectors.Add(new Vector2d(scarfPos, 0.5)); 
+                }
+                
+            }
+            return scarfVectors.ToArray();
+        }
         public const double EnduranceFactor = 0.0285;
         public const double StartingMomentum = 0.4;
         public static Vector2d Gravity = new Vector2d(0, 0.175);
@@ -53,7 +56,7 @@ namespace linerider.Game
         public const int BodyFootLeft = 8;
         public const int BodyFootRight = 9;
         public static readonly Bone[] Bones;
-        public static readonly Bone[] ScarfBones;
+        public static Bone[] ScarfBones;
         static RiderConstants()
         {
             var bonelist = new List<Bone>();
@@ -85,26 +88,11 @@ namespace linerider.Game
             bonelist.Add(CreateBone(BodyShoulder, BodyFootRight, repel: true));
             Bones = bonelist.ToArray();
             bonelist = new List<Bone>();
-            AddScarfBone(bonelist, 1);
-            AddScarfBone(bonelist, 2);
-            AddScarfBone(bonelist, 3);
-            AddScarfBone(bonelist, 4);
-            AddScarfBone(bonelist, 5);
-            AddScarfBone(bonelist, 6); // typical scarf ends here
-            /*AddScarfBone(bonelist, 7); //Shoutouts to Arglin for giving me these extra bones
-            AddScarfBone(bonelist, 8);
-            AddScarfBone(bonelist, 9);
-            AddScarfBone(bonelist, 10);
-            AddScarfBone(bonelist, 11);
-            AddScarfBone(bonelist, 12);
-            AddScarfBone(bonelist, 13);
-            AddScarfBone(bonelist, 14);
-            AddScarfBone(bonelist, 15);
-            AddScarfBone(bonelist, 16);
-            AddScarfBone(bonelist, 17);
-            AddScarfBone(bonelist, 18);
-            AddScarfBone(bonelist, 19);
-            AddScarfBone(bonelist, 20);*/
+
+            for (int i=0; i<Settings.ScarfSegments; i++)
+            {
+                AddScarfBone(bonelist, i+1);
+            }
             ScarfBones = bonelist.ToArray();
         }
         private static void AddScarfBone(List<Bone> bones, int index)
