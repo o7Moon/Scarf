@@ -212,7 +212,7 @@ namespace linerider
                 {
                     try
                     {
-                        OpenUrl(@"https://github.com/jealouscloud/linerider-advanced/releases/latest");
+                        OpenUrl(@"https://github.com/tran-foxxo/LRTran/releases/latest");
                     }
                     catch
                     {
