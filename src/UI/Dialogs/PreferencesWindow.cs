@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Windows.Forms.VisualStyles;
 using Gwen;
 using Gwen.Controls;
+using linerider.Game;
 using linerider.Tools;
 using linerider.Utils;
+using OpenTK;
 
 namespace linerider.UI
 {
@@ -400,6 +404,35 @@ namespace linerider.UI
                    Settings.Save();
                });
         }
+        private void PopulateScarfSettings(ControlBase parent)
+        {
+            var scarf = GwenHelper.CreateHeaderPanel(parent, "Scarf Settings");
+            ComboBox scarfCombobox = GwenHelper.CreateLabeledCombobox(scarf, "Selected Scarf:");
+            scarfCombobox.AddItem("Default", "default", "default");
+            scarfCombobox.AddItem("Rainbow", "rainbow", "rainbow");
+            scarfCombobox.AddItem("Random", "random", "random");
+            scarfCombobox.SelectByName(Settings.SelectedScarf.ToString(CultureInfo.InvariantCulture));
+            scarfCombobox.ItemSelected += (o, e) =>
+            {
+                Settings.SelectedScarf = (String)e.SelectedItem.UserData; ;
+                Debug.WriteLine("Selected Scarf: \""+Settings.SelectedScarf+"\"");
+                Settings.Save();
+            };
+
+            
+            var scarfSegments = new Spinner(parent)
+            {
+                Min = 1,
+                Max = int.MaxValue,
+                Value = Settings.ScarfSegments,
+            };
+            scarfSegments.ValueChanged += (o, e) =>
+            {
+                Settings.ScarfSegments = (int)((Spinner)o).Value;
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(parent, "Scarf Segments (Needs Restart)", scarfSegments);
+        }
         private void Setup()
         {
             var cat = _prefcontainer.Add("Settings");
@@ -420,6 +453,9 @@ namespace linerider.UI
             PopulateKeybinds(page);
             page = AddPage(cat, "Other");
             PopulateOther(page);
+            cat = _prefcontainer.Add("LRTran");
+            page = AddPage(cat, "Scarf Settings");
+            PopulateScarfSettings(page);
             if (Settings.SettingsPane >= _tabscount && _focus == null)
             {
                 Settings.SettingsPane = 0;
