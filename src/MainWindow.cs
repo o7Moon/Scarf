@@ -229,8 +229,6 @@ namespace linerider
                 //addScarfColor(0xFFED00, 255); //3
                 //addScarfColor(0x008026, 255); //4
                 //addScarfColor(0x004DFF, 255); //5
-
-
             }
 
             try
