@@ -217,18 +217,18 @@ namespace linerider
                 });
                 activityManager = discord.GetActivityManager();
 
-                //Add custom scarf here
+                //Add custom scarf here, last color needs to go first
                 //Default example
-                addScarfColor(0xD10101, 255); //2
-                addScarfColor(0xff6464, 255); //1
-                
+                addScarfColor(0xD10101, 255); //Color 2
+                addScarfColor(0xff6464, 255); //Color 1
+
                 //Rainbow Scarf
-                //addScarfColor(0x750787, 255); //6
-                //addScarfColor(0xE40303, 255); //1
-                //addScarfColor(0xFF8C00, 255); //2
-                //addScarfColor(0xFFED00, 255); //3
-                //addScarfColor(0x008026, 255); //4
-                //addScarfColor(0x004DFF, 255); //5
+                //addScarfColor(0x750787, 255); //Color 6
+                //addScarfColor(0xE40303, 255); //Color 1
+                //addScarfColor(0xFF8C00, 255); //Color 2
+                //addScarfColor(0xFFED00, 255); //Color 3
+                //addScarfColor(0x008026, 255); //Color 4
+                //addScarfColor(0x004DFF, 255); //Color 5
             }
 
             try
