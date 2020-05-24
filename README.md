@@ -18,6 +18,7 @@ Be sure to post an issue you've found in the issue tracker https://github.com/Tr
 # Build
 Run nuget restore in src (Visual Studio (not VS Code) will do this for you)
 Build src/linerider.sln with msbuild or Visual Studio
+Download Discord's Game SDK at https://dl-game-sdk.discordapp.net/latest/discord_game_sdk.zip and copy /lib/x86/discord_game_sdk.dll to the build directory. (If that doesn't work for some reason try x86_64)
 
 This project requires .net 4.6 and C# 7 support.
 
