@@ -53,8 +53,7 @@ namespace linerider
     public class MainWindow : OpenTK.GameWindow
     {
         public Discord.Discord discord = new Discord.Discord(506953593945980933, (UInt64)Discord.CreateFlags.Default); //Create discord for game sdk activity
-        public Discord.ActivityManager activityManager = null; //Set it up like how it is in the example I guess :p
-        public int startTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;  //Probably a easier way to do this but whatever
+        public static int startTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;  //Probably a easier way to do this but whatever
         public int lastUpdateTime = 0; //Last time the activity was updated
         public bool firstGameUpdate = true; //Run this only on the first update (probably a better way to do this, this is probably bad)
         public String curentScarf = null; //What the current scarf it to compare it to the settings
@@ -62,6 +61,7 @@ namespace linerider
         public String currentBoshSkin = null; //What the current rider skin is to to compare it to the settings
         public bool editBoshPng = Settings.customScarfOnPng; //Local copy of customScarfOnPng to check back
         public String LRAFolderLocation = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)+"/LRA/"; // ~/Documents/LRA/
+        public bool forceDiscordUpdate = true;
 
         public Dictionary<string, MouseCursor> Cursors = new Dictionary<string, MouseCursor>();
         public MsaaFbo MSAABuffer;
@@ -223,9 +223,9 @@ namespace linerider
                 {
                     Console.WriteLine("Log[{0}] {1}", level, message);
                 });
-                activityManager = discord.GetActivityManager();
                 removeAllScarfColors(); //Remove default white scarf
                 reloadRiderModel();
+                forceDiscordUpdate = true;
             }
             
             //Code to run each frame
@@ -233,62 +233,40 @@ namespace linerider
 
             //Update bosh skin if needed
             if (currentBoshSkin!=Settings.SelectedBoshSkin) { 
-                reloadRiderModel(); 
+                reloadRiderModel();
+                removeAllScarfColors();
+                updateScarf();
                 currentBoshSkin = Settings.SelectedBoshSkin;
                 editBoshPng = Settings.customScarfOnPng;
             }
             //Update scarf if needed
-            if (scarfNeedsUpdate || (curentScarf != Settings.SelectedScarf))
+            if ((scarfNeedsUpdate || (curentScarf != Settings.SelectedScarf))||((Settings.customScarfOnPng==false)&&(editBoshPng)))
             {
                 curentScarf = Settings.SelectedScarf;
                 removeAllScarfColors();
                 updateScarf();
                 scarfNeedsUpdate = false;
-
+                editBoshPng = Settings.customScarfOnPng;
                 if (Settings.customScarfOnPng) { reloadRiderModel(); }
-
             }
+            //If edits to the png is toggled update the rider
             if (editBoshPng != Settings.customScarfOnPng)
             {
                 reloadRiderModel();
                 editBoshPng = Settings.customScarfOnPng;
             }
-
-
-
-            try
+            //If the discord activity should be updated
+            if ((((currentTime % 10 == 0) && (currentTime != lastUpdateTime)) && Settings.discordActivityEnabled) || forceDiscordUpdate)
             {
-                if (((currentTime % 10 == 0) && (currentTime != lastUpdateTime)))
-                {
-                    lastUpdateTime = currentTime;
-
-
-                    //TODO: Make these toggleable via some settings
-                    //Line amt
-                    String details = "Amount of Lines: " + Track.LineCount;
-                    //Unsaved changes
-                    details = details + "  |  Unsaved changes: " + Track.TrackChanges;
-
-                    //Current tool
-                    String tool = (linerider.Tools.CurrentTools.SelectedTool.ToString().Substring(16)); tool = tool.Substring(0, tool.Length - 4).ToLower();
-                    String state = "Using tool: " + (linerider.Tools.CurrentTools.SelectedTool.ToString().Substring(16)); state = state.Substring(0, state.Length - 4) + " Tool";
-                    //Track name
-                    state = state + "  |  Track name: \"" + Track.Name + "\"";
-
-                    String largeKey = "lrl";
-                    String largeText = "LRTran version " + linerider.Program.Version + " ==================== Source code: https://github.com/Tran-Foxxo/LRTran";
-
-                    String smallKey = tool;
-                    String smallText = "Currently using the " + tool + " tool.";
-
-
-                    updateDiscordActivity(state, details, largeKey, largeText, smallKey, smallText, startTime, 0);
-
-                    discord.RunCallbacks();
-                }
+                lastUpdateTime = currentTime;
+                UpdateActivity(discord);
+                forceDiscordUpdate = false;
             }
-            catch (Exception discordException) { Console.WriteLine("Dang something with discord\n\n"+ discordException);  }
+            //Update each frame
+            try { discord.RunCallbacks(); }
+            catch (Exception e) { Debug.WriteLine(e); }
 
+            //Regular code starts here
             GameUpdateHandleInput();
             var updates = Track.Scheduler.UnqueueUpdates();
             if (updates > 0)
@@ -351,24 +329,6 @@ namespace linerider
                     {
                         Color colorToChange = palettePNG.GetPixel(i, 0);
                         colorToChange = Color.FromArgb(255, colorToChange.R, colorToChange.G, colorToChange.B);
-                        //switch (i)
-                        //{
-                        //    case 0:
-                        //        colorToChange = Color.FromArgb(255, 0, 0);
-                        //        break;
-                        //    case 1:
-                        //        colorToChange = Color.FromArgb(255, 128, 0);
-                        //        break;
-                        //    case 2:
-                        //        colorToChange = Color.FromArgb(255, 255, 0);
-                        //        break;
-                        //    case 3:
-                        //        colorToChange = Color.FromArgb(0, 255, 0);
-                        //        break;
-                        //    case 4:
-                        //        colorToChange = Color.FromArgb(0, 0, 255);
-                        //        break;
-                        //}
 
                         Color newScarfColor = Color.FromArgb(scarfColorList[i % scarfColorList.Count]);
                         newScarfColor = Color.FromArgb(255, newScarfColor); //Add 255 alpha
@@ -390,7 +350,7 @@ namespace linerider
                             }//for y
                         }//for x
                     }//for each (i)
-                   shiftScarfColors((scarfColorList.Count*5)-5);
+                   shiftScarfColors((scarfColorList.Count * palettePNG.Width) - palettePNG.Width);
                 }//if
             }
             catch (Exception e) { Debug.WriteLine(e); Models.LoadModels(); }
@@ -420,7 +380,7 @@ namespace linerider
                     string[] lines = File.ReadAllLines(scarfLocation);
                     for (int i = 1; i < lines.Length; i++)
                     {
-                        Debug.WriteLine(lines[i]);
+                        //Debug.WriteLine(lines[i]);
                         int color = Convert.ToInt32(lines[i].Substring(0, lines[i].IndexOf(",")), 16);
                         byte opacity = Convert.ToByte(lines[i].Substring(lines[i].IndexOf(" ") + 1), 16);
                         //Debug.WriteLine("Color: " + color);
@@ -432,34 +392,83 @@ namespace linerider
             }
             catch { addScarfColor(0xff6464, 0xff); /*Default Color 1*/ addScarfColor(0xD10101, 0xff); /*Default Color 2*/}
         }
-
-        private void updateDiscordActivity(String state, String details, String largeImageKey, String largeImageText, String smallImageKey, String smallImageText, int start, int end)
+        //Used to be static
+        public void UpdateActivity(Discord.Discord discord)
         {
+            String toolName = (linerider.Tools.CurrentTools.SelectedTool.ToString().Substring(16)); toolName = toolName.Substring(0, toolName.Length - 4).ToLower();
+
+            String versionText = "LRTran version " + linerider.Program.Version;
+
+            String largeKey = "lrl";
+            String largeText = versionText + " ==================== Source code: https://github.com/Tran-Foxxo/LRTran";
+            String smallKey = toolName;
+            String smallText = "Currently using the " + toolName + " tool";
+
+            String setting1 = discordSettingToString(Settings.discordActivity1);
+            String setting2 = discordSettingToString(Settings.discordActivity2);
+            String setting3 = discordSettingToString(Settings.discordActivity3);
+            String setting4 = discordSettingToString(Settings.discordActivity4);
+
+            String detailsText = setting1;
+            if (setting2.Length > 0) { detailsText = detailsText + " | " + setting2; }
+            String stateText = setting3;
+            if (setting4.Length > 0) { stateText = stateText + " | " + setting4; }
+
+            var activityManager = discord.GetActivityManager();
+            var lobbyManager = discord.GetLobbyManager();
+
             var activity = new Discord.Activity
             {
                 Type = 0,
-                State = state,
-                Details = details,
+                Details = detailsText,
+                State = stateText,
                 Timestamps =
-                    {
-                        Start = start,
-                        End = end,
-                    },
-                Assets =
-                    {
-                        LargeImage = largeImageKey,
-                        LargeText = largeImageText,
-                        SmallImage = smallImageKey,
-                        SmallText = smallImageText,
+                {
+                    Start = startTime,
+                    End = 0,
                 },
+                Assets =
+            {
+                LargeImage = largeKey,
+                LargeText = largeText,
+                SmallImage = smallKey,
+                SmallText = smallText,
+            },
                 Instance = true,
             };
+
             activityManager.UpdateActivity(activity, result =>
             {
                 Console.WriteLine("Update Activity {0}", result);
             });
-            //activityManager.RegisterCommand("my-awesome-game://run --full-screen");
-            return;
+        }
+
+        public String discordSettingToString(String setting)
+        {
+            String toolName = (linerider.Tools.CurrentTools.SelectedTool.ToString().Substring(16)); toolName = toolName.Substring(0, toolName.Length - 4).ToLower();
+            String lineText = "Amount of Lines: " + Track.LineCount;
+            String unsavedChangesText = "Unsaved changes: " + Track.TrackChanges;
+            String toolText = "Currently using the " + toolName + " tool";
+            String trackText = "Track name: \"" + Track.Name + "\"";
+            String versionText = "LRTran version " + linerider.Program.Version;
+
+            switch (setting)
+            {
+                case "none":
+                    return "";
+                case "lineText":
+                    return lineText;
+                case "unsavedChangesText":
+                    return unsavedChangesText;
+                case "toolText":
+                    return toolText;
+                case "trackText":
+                    return trackText;
+                case "versionText":
+                    return versionText;
+                default:
+                    return "";
+            }
         }
 
         public void Invalidate()

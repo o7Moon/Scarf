@@ -458,9 +458,6 @@ namespace linerider.UI
                 Settings.customScarfOnPng = ((Checkbox)o).IsChecked;
                 Settings.Save();
             });
-
-
-
             ComboBox boshSkinCombobox = GwenHelper.CreateLabeledCombobox(riderSettingPanel, "Selected Rider:");
             boshSkinCombobox.AddItem("Default", null, null);
 
@@ -493,7 +490,55 @@ namespace linerider.UI
 
         private void PopulateDiscordSettings(ControlBase parent)
         {
+            var discordHeader = GwenHelper.CreateHeaderPanel(parent, "Discord Activity Settings");
 
+            var showid = GwenHelper.AddCheckbox(discordHeader, "Enable Discord Activity (Needs Restart)", Settings.discordActivityEnabled, (o, e) =>
+            {
+                Settings.discordActivityEnabled = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
+
+            var activityLine = GwenHelper.CreateHeaderPanel(discordHeader, "Discord Activity Text");
+
+            ComboBox activity1 = GwenHelper.CreateLabeledCombobox(activityLine, "Line 1 Text 1:");
+            ComboBox activity2 = GwenHelper.CreateLabeledCombobox(activityLine, "Line 1 Text 2:");
+            ComboBox activity3 = GwenHelper.CreateLabeledCombobox(activityLine, "Line 2 Text 1:");
+            ComboBox activity4 = GwenHelper.CreateLabeledCombobox(activityLine, "Line 2 Text 2:");
+            ComboBox[] boxArr = { activity1, activity2, activity3, activity4 };
+            for (int i=0; i<4; i++)
+            {
+                boxArr[i].AddItem("None", "none", "none");
+                boxArr[i].AddItem("Selected Tool", "toolText", "toolText");
+                boxArr[i].AddItem("Number of Unsaved Changes", "unsavedChangesText", "unsavedChangesText");
+                boxArr[i].AddItem("Track Name", "trackText", "trackText");
+                boxArr[i].AddItem("Amount of Lines", "lineText", "lineText");
+                boxArr[i].AddItem("Version", "versionText", "versionText");
+            }
+            activity1.SelectByName(Settings.discordActivity1.ToString(CultureInfo.InvariantCulture));
+            activity2.SelectByName(Settings.discordActivity2.ToString(CultureInfo.InvariantCulture));
+            activity3.SelectByName(Settings.discordActivity3.ToString(CultureInfo.InvariantCulture));
+            activity4.SelectByName(Settings.discordActivity4.ToString(CultureInfo.InvariantCulture));
+
+            activity1.ItemSelected += (o, e) =>
+            {
+                Settings.discordActivity1 = (String)e.SelectedItem.UserData; ;
+                Settings.Save();
+            };
+            activity2.ItemSelected += (o, e) =>
+            {
+                Settings.discordActivity2 = (String)e.SelectedItem.UserData; ;
+                Settings.Save();
+            };
+            activity3.ItemSelected += (o, e) =>
+            {
+                Settings.discordActivity3 = (String)e.SelectedItem.UserData; ;
+                Settings.Save();
+            };
+            activity4.ItemSelected += (o, e) =>
+            {
+                Settings.discordActivity4 = (String)e.SelectedItem.UserData; ;
+                Settings.Save();
+            };
         }
 
             private void Setup()
@@ -517,9 +562,9 @@ namespace linerider.UI
             page = AddPage(cat, "Other");
             PopulateOther(page);
             cat = _prefcontainer.Add("LRTran");
-            page = AddPage(cat, "Rider Settings");
+            page = AddPage(cat, "Rider");
             PopulateRiderSettings(page);
-            page = AddPage(cat, "Discord Settings");
+            page = AddPage(cat, "Discord");
             PopulateDiscordSettings(page);
             if (Settings.SettingsPane >= _tabscount && _focus == null)
             {

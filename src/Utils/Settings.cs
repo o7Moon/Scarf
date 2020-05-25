@@ -93,6 +93,11 @@ namespace linerider
         public static int ScarfSegments; //How many scarf segments on restart
         public static String SelectedBoshSkin; //What bosh skin is selected
         public static bool customScarfOnPng; //To replace colors in the png for a custom scarf
+        public static bool discordActivityEnabled; //If the discord activity should be run, dll is still needed
+        public static String discordActivity1; //what activities are displayed
+        public static String discordActivity2; //what activities are displayed
+        public static String discordActivity3; //what activities are displayed
+        public static String discordActivity4; //what activities are displayed
         public static bool ColorPlayback;
         public static bool OnionSkinning;
         public static string LastSelectedTrack = "";
@@ -181,6 +186,11 @@ namespace linerider
             SelectedScarf = "default";
             SelectedBoshSkin = "default";
             customScarfOnPng = false;
+            discordActivityEnabled = false;
+            discordActivity1 = "none";
+            discordActivity2 = "none";
+            discordActivity3 = "none";
+            discordActivity4 = "none";
         }
         public static void ResetKeybindings()
         {
@@ -409,6 +419,11 @@ namespace linerider
             LoadInt(GetSetting(lines, nameof(ScarfSegments)), ref ScarfSegments);
             SelectedBoshSkin = GetSetting(lines, nameof(SelectedBoshSkin));
             LoadBool(GetSetting(lines, nameof(customScarfOnPng)), ref customScarfOnPng);
+            LoadBool(GetSetting(lines, nameof(discordActivityEnabled)), ref discordActivityEnabled);
+            discordActivity1 = GetSetting(lines, nameof(discordActivity1));
+            discordActivity2 = GetSetting(lines, nameof(discordActivity2));
+            discordActivity3 = GetSetting(lines, nameof(discordActivity3));
+            discordActivity4 = GetSetting(lines, nameof(discordActivity4));
 
             if (ScarfSegments == 0) { ScarfSegments++; }
 
@@ -468,6 +483,11 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(ScarfSegments), ScarfSegments.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(SelectedBoshSkin), SelectedBoshSkin);
             config += "\r\n" + MakeSetting(nameof(customScarfOnPng), customScarfOnPng.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(discordActivityEnabled), discordActivityEnabled.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(discordActivity1), discordActivity1);
+            config += "\r\n" + MakeSetting(nameof(discordActivity2), discordActivity2);
+            config += "\r\n" + MakeSetting(nameof(discordActivity3), discordActivity3);
+            config += "\r\n" + MakeSetting(nameof(discordActivity4), discordActivity4);
 
             foreach (var binds in Keybinds)
             {
