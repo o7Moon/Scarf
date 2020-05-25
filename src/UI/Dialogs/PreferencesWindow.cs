@@ -425,13 +425,12 @@ namespace linerider.UI
             }
             catch { }
 
-
-            //scarfCombobox.AddItem("Rainbow", "rainbow", "rainbow");
-            //scarfCombobox.AddItem("Random", "random", "random");
-
-            try { scarfCombobox.SelectByName(Settings.SelectedScarf.ToString(CultureInfo.InvariantCulture)); }
-            catch { scarfCombobox.SelectByUserData(null); }
- 
+            if (Settings.SelectedScarf != null)
+            {
+                try { scarfCombobox.SelectByName(Settings.SelectedScarf.ToString(CultureInfo.InvariantCulture)); }
+                catch { scarfCombobox.SelectByUserData(null); }
+            }
+            else { scarfCombobox.SelectByUserData(null); }
 
             scarfCombobox.ItemSelected += (o, e) =>
             {
@@ -473,7 +472,14 @@ namespace linerider.UI
                     String riderNames = Path.GetFileName(riderPaths[i]);
                     boshSkinCombobox.AddItem(riderNames, riderNames, riderNames);
                 }
-                boshSkinCombobox.SelectByName(Settings.SelectedBoshSkin.ToString(CultureInfo.InvariantCulture));
+
+                if (Settings.SelectedBoshSkin != null)
+                {
+                    try { boshSkinCombobox.SelectByName(Settings.SelectedBoshSkin.ToString(CultureInfo.InvariantCulture)); }
+                    catch { boshSkinCombobox.SelectByUserData(null); }
+                }
+                else { boshSkinCombobox.SelectByUserData(null); }
+
             }
             
             catch { boshSkinCombobox.SelectByUserData(null);  }
@@ -484,7 +490,13 @@ namespace linerider.UI
                 Settings.Save();
             };
         }
-        private void Setup()
+
+        private void PopulateDiscordSettings(ControlBase parent)
+        {
+
+        }
+
+            private void Setup()
         {
             var cat = _prefcontainer.Add("Settings");
             var page = AddPage(cat, "Editor");
@@ -507,6 +519,8 @@ namespace linerider.UI
             cat = _prefcontainer.Add("LRTran");
             page = AddPage(cat, "Rider Settings");
             PopulateRiderSettings(page);
+            page = AddPage(cat, "Discord Settings");
+            PopulateDiscordSettings(page);
             if (Settings.SettingsPane >= _tabscount && _focus == null)
             {
                 Settings.SettingsPane = 0;

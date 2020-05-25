@@ -288,7 +288,6 @@ namespace linerider
                 }
             }
             catch (Exception discordException) { Console.WriteLine("Dang something with discord\n\n"+ discordException);  }
-            finally { }
 
             GameUpdateHandleInput();
             var updates = Track.Scheduler.UnqueueUpdates();
@@ -334,59 +333,60 @@ namespace linerider
 
         public void reloadRiderModel()
         {
-            Bitmap bodyPNG = new Bitmap(GameResources.body_img);
-            Bitmap bodyDeadPNG = new Bitmap(GameResources.bodydead_img);
+            if (Settings.SelectedBoshSkin == null) { Models.LoadModels(); return; }
+
+            Bitmap bodyPNG = null;
+            Bitmap bodyDeadPNG = null;
+
             try
             {
-                bodyPNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/body.png");
-                bodyDeadPNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/bodydead.png");
-            }
-            catch (Exception e) { Debug.WriteLine(e); Models.LoadModels(); return; }
-            try
-            {   
                 if (Settings.customScarfOnPng)
                 {
+                    bodyPNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/body.png");
+                    bodyDeadPNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/bodydead.png");
+                    Bitmap palettePNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/palette.png");
                     var scarfColorList = getScarfColorList();
-                    Color colorToChange = Color.FromArgb(255, 255, 255);
-                    for (int i = 0; i < 5; i++)
+                    if (scarfColorList.Count == 0) { Models.LoadModels(); return; }
+                    for (int i = 0; i < palettePNG.Width; i++)
                     {
-                        switch (i)
-                        {
-                            case 0:
-                                colorToChange = Color.FromArgb(255, 0, 0);
-                                break;
-                            case 1:
-                                colorToChange = Color.FromArgb(255, 128, 0);
-                                break;
-                            case 2:
-                                colorToChange = Color.FromArgb(255, 255, 0);
-                                break;
-                            case 3:
-                                colorToChange = Color.FromArgb(0, 255, 0);
-                                break;
-                            case 4:
-                                colorToChange = Color.FromArgb(0, 0, 255);
-                                break;
-                        }
+                        Color colorToChange = palettePNG.GetPixel(i, 0);
+                        colorToChange = Color.FromArgb(255, colorToChange.R, colorToChange.G, colorToChange.B);
+                        //switch (i)
+                        //{
+                        //    case 0:
+                        //        colorToChange = Color.FromArgb(255, 0, 0);
+                        //        break;
+                        //    case 1:
+                        //        colorToChange = Color.FromArgb(255, 128, 0);
+                        //        break;
+                        //    case 2:
+                        //        colorToChange = Color.FromArgb(255, 255, 0);
+                        //        break;
+                        //    case 3:
+                        //        colorToChange = Color.FromArgb(0, 255, 0);
+                        //        break;
+                        //    case 4:
+                        //        colorToChange = Color.FromArgb(0, 0, 255);
+                        //        break;
+                        //}
 
                         Color newScarfColor = Color.FromArgb(scarfColorList[i % scarfColorList.Count]);
-                        newScarfColor = Color.FromArgb(255, newScarfColor);
+                        newScarfColor = Color.FromArgb(255, newScarfColor); //Add 255 alpha
 
                         for (int x = 0; x < bodyPNG.Width; x++)
                         {
                             for (int y = 0; y < bodyPNG.Height; y++)
                             {
                                 Color aliveColor = bodyPNG.GetPixel(x, y);
-                                if (aliveColor == colorToChange)
+                                if (aliveColor.Equals(colorToChange))
                                 {
                                     bodyPNG.SetPixel(x, y, newScarfColor);
                                 }
                                 Color deadColor = bodyDeadPNG.GetPixel(x, y);
-                                if (deadColor == colorToChange)
+                                if (deadColor.Equals(colorToChange))
                                 {
                                     bodyDeadPNG.SetPixel(x, y, newScarfColor);
                                 }
-
                             }//for y
                         }//for x
                     }//for each (i)
@@ -396,6 +396,9 @@ namespace linerider
             catch (Exception e) { Debug.WriteLine(e); Models.LoadModels(); }
             try
             {
+                if (bodyPNG == null) { bodyPNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/body.png"); }
+                if (bodyDeadPNG == null) { bodyDeadPNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/bodydead.png"); }
+
                 Models.LoadModels(
                     bodyPNG,
                     bodyDeadPNG,
@@ -412,7 +415,7 @@ namespace linerider
             string scarfLocation = LRAFolderLocation + "/Scarves/" + Settings.SelectedScarf;
             try
             {
-                if (File.ReadLines(scarfLocation).First() == "#LRTran Scarf File")
+                if ((Settings.SelectedScarf != null) && (File.ReadLines(scarfLocation).First() == "#LRTran Scarf File"))
                 {
                     string[] lines = File.ReadAllLines(scarfLocation);
                     for (int i = 1; i < lines.Length; i++)
