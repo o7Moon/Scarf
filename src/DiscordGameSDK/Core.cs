@@ -1048,17 +1048,11 @@ namespace Discord
 
         public void RunCallbacks()
         {
-
-            try
+            var res = Methods.RunCallbacks(MethodsPtr);
+            if (res != Result.Ok)
             {
-                var res = Methods.RunCallbacks(MethodsPtr);
-                if (res != Result.Ok)
-                {
-                    throw new ResultException(res);
-                }
+                throw new ResultException(res);
             }
-            catch (Exception E) { }
-            finally { }
         }
 
         [MonoPInvokeCallback]
