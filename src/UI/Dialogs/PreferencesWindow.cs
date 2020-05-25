@@ -4,6 +4,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms.VisualStyles;
 using Gwen;
 using Gwen.Controls;
@@ -404,26 +407,43 @@ namespace linerider.UI
                    Settings.Save();
                });
         }
-        private void PopulateScarfSettings(ControlBase parent)
+        private void PopulateRiderSettings(ControlBase parent)
         {
-            var scarf = GwenHelper.CreateHeaderPanel(parent, "Scarf Settings");
-            ComboBox scarfCombobox = GwenHelper.CreateLabeledCombobox(scarf, "Selected Scarf:");
-            scarfCombobox.AddItem("Default", "default", "default");
-            scarfCombobox.AddItem("Rainbow", "rainbow", "rainbow");
-            scarfCombobox.AddItem("Random", "random", "random");
-            scarfCombobox.SelectByName(Settings.SelectedScarf.ToString(CultureInfo.InvariantCulture));
+            var scarfSettingPanel = GwenHelper.CreateHeaderPanel(parent, "Scarf Settings");
+            var riderSettingPanel = GwenHelper.CreateHeaderPanel(parent, "Rider Settings");
+
+            ComboBox scarfCombobox = GwenHelper.CreateLabeledCombobox(scarfSettingPanel, "Selected Scarf:");
+            scarfCombobox.AddItem("Default", null, null);
+            try
+            {
+                string[] scarfPaths = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\LRA\\Scarves");
+                for (int i = 0; i < scarfPaths.Length; i++)
+                {
+                    string scarfNames = Path.GetFileName(scarfPaths[i]);
+                    scarfCombobox.AddItem(scarfNames, scarfNames, scarfNames);
+                }
+            }
+            catch { }
+
+
+            //scarfCombobox.AddItem("Rainbow", "rainbow", "rainbow");
+            //scarfCombobox.AddItem("Random", "random", "random");
+
+            try { scarfCombobox.SelectByName(Settings.SelectedScarf.ToString(CultureInfo.InvariantCulture)); }
+            catch { scarfCombobox.SelectByUserData(null); }
+ 
+
             scarfCombobox.ItemSelected += (o, e) =>
             {
                 Settings.SelectedScarf = (String)e.SelectedItem.UserData; ;
-                Debug.WriteLine("Selected Scarf: \""+Settings.SelectedScarf+"\"");
+                Debug.WriteLine("Selected Scarf: \"" + Settings.SelectedScarf + "\"");
                 Settings.Save();
             };
 
-            
             var scarfSegments = new Spinner(parent)
             {
                 Min = 1,
-                Max = int.MaxValue,
+                Max = int.MaxValue - 1,
                 Value = Settings.ScarfSegments,
             };
             scarfSegments.ValueChanged += (o, e) =>
@@ -431,7 +451,38 @@ namespace linerider.UI
                 Settings.ScarfSegments = (int)((Spinner)o).Value;
                 Settings.Save();
             };
-            GwenHelper.CreateLabeledControl(parent, "Scarf Segments (Needs Restart)", scarfSegments);
+            GwenHelper.CreateLabeledControl(scarfSettingPanel, "Scarf Segments (Needs Restart)", scarfSegments);
+
+
+            var showid = GwenHelper.AddCheckbox(scarfSettingPanel, "Apply Custom Scarf to Rider png", Settings.customScarfOnPng, (o, e) =>
+            {
+                Settings.customScarfOnPng = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
+
+
+
+            ComboBox boshSkinCombobox = GwenHelper.CreateLabeledCombobox(riderSettingPanel, "Selected Rider:");
+            boshSkinCombobox.AddItem("Default", null, null);
+
+            try
+            {
+                string[] riderPaths = Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/LRA/Riders");
+                for (int i = 0; i < riderPaths.Length; i++)
+                {
+                    String riderNames = Path.GetFileName(riderPaths[i]);
+                    boshSkinCombobox.AddItem(riderNames, riderNames, riderNames);
+                }
+                boshSkinCombobox.SelectByName(Settings.SelectedBoshSkin.ToString(CultureInfo.InvariantCulture));
+            }
+            
+            catch { boshSkinCombobox.SelectByUserData(null);  }
+            boshSkinCombobox.ItemSelected += (o, e) =>
+            {
+                Settings.SelectedBoshSkin = (String)e.SelectedItem.UserData; ;
+                Debug.WriteLine("Selected rider Skin: \"" + Settings.SelectedBoshSkin + "\"");
+                Settings.Save();
+            };
         }
         private void Setup()
         {
@@ -454,8 +505,8 @@ namespace linerider.UI
             page = AddPage(cat, "Other");
             PopulateOther(page);
             cat = _prefcontainer.Add("LRTran");
-            page = AddPage(cat, "Scarf Settings");
-            PopulateScarfSettings(page);
+            page = AddPage(cat, "Rider Settings");
+            PopulateRiderSettings(page);
             if (Settings.SettingsPane >= _tabscount && _focus == null)
             {
                 Settings.SettingsPane = 0;

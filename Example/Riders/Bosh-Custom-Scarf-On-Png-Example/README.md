@@ -1,0 +1,2 @@
+# Custom scarves on a rider png
+This is a template / working example of a rider png that can have a custom scarf applied to it.  In the program it swaps out the colors used on the scarf with the ones that'll be used with a custom scarf.

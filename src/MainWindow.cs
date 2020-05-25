@@ -44,6 +44,9 @@ using PixelFormat = System.Drawing.Imaging.PixelFormat;
 using MessageBox = Gwen.Controls.MessageBox;
 using linerider.Game;
 using System.Windows.Forms.VisualStyles;
+using System.IO;
+using System.Linq;
+using System.Configuration;
 
 namespace linerider
 {
@@ -54,9 +57,11 @@ namespace linerider
         public int startTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;  //Probably a easier way to do this but whatever
         public int lastUpdateTime = 0; //Last time the activity was updated
         public bool firstGameUpdate = true; //Run this only on the first update (probably a better way to do this, this is probably bad)
-        public String curentScarf = null;
-        public bool scarfNeedsUpdate = true;
-        public int lastScarfUpdate = 0;
+        public String curentScarf = null; //What the current scarf it to compare it to the settings
+        public bool scarfNeedsUpdate = true; //If the scarf needs a update 
+        public String currentBoshSkin = null; //What the current rider skin is to to compare it to the settings
+        public bool editBoshPng = Settings.customScarfOnPng; //Local copy of customScarfOnPng to check back
+        public String LRAFolderLocation = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)+"/LRA/"; // ~/Documents/LRA/
 
         public Dictionary<string, MouseCursor> Cursors = new Dictionary<string, MouseCursor>();
         public MsaaFbo MSAABuffer;
@@ -214,58 +219,41 @@ namespace linerider
             if (firstGameUpdate)
             {
                 firstGameUpdate = false;
-                
                 discord.SetLogHook(Discord.LogLevel.Debug, (level, message) =>
                 {
                     Console.WriteLine("Log[{0}] {1}", level, message);
                 });
                 activityManager = discord.GetActivityManager();
-
                 removeAllScarfColors(); //Remove default white scarf
+                reloadRiderModel();
             }
+            
+            //Code to run each frame
             int currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds; //Get current time for discord activity
 
-            //Add custom scarf here
-            if (scarfNeedsUpdate || curentScarf != Settings.SelectedScarf)
+            //Update bosh skin if needed
+            if (currentBoshSkin!=Settings.SelectedBoshSkin) { 
+                reloadRiderModel(); 
+                currentBoshSkin = Settings.SelectedBoshSkin;
+                editBoshPng = Settings.customScarfOnPng;
+            }
+            //Update scarf if needed
+            if (scarfNeedsUpdate || (curentScarf != Settings.SelectedScarf))
             {
                 curentScarf = Settings.SelectedScarf;
                 removeAllScarfColors();
-                switch (Settings.SelectedScarf)
-                {
-                    case "rainbow":
-                        addScarfColor(0xE40303, 255); //Color 1
-                        addScarfColor(0xFF8C00, 255); //Color 2
-                        addScarfColor(0xFFED00, 255); //Color 3
-                        addScarfColor(0x008026, 255); //Color 4
-                        addScarfColor(0x004DFF, 255); //Color 5
-                        addScarfColor(0x750787, 255); //Color 6
-                        break;
-                    
-                    case "random":
-                        var rand = new Random();
-                        for (int i = 0; i < RiderConstants.ScarfBones.Length; i++)
-                        {
-                            addScarfColor((int)(rand.NextDouble() * 16777215), (byte)(rand.NextDouble() * 255)); //Randomize scarf
-                        }
-                        break;
-                    
-                    case "default":
-                        addScarfColor(0xff6464, 0xff); //Color 1
-                        addScarfColor(0xD10101, 0xff); //Color 2
-                        break;
-                    
-                    default: //If no scarf is found revert to the default scarf
-                        addScarfColor(0xff6464, 0xff); //Color 1
-                        addScarfColor(0xD10101, 0xff); //Color 2
-                        break;
-                }
+                updateScarf();
                 scarfNeedsUpdate = false;
+
+                if (Settings.customScarfOnPng) { reloadRiderModel(); }
+
             }
-            /*if (lastScarfUpdate != currentTime)
+            if (editBoshPng != Settings.customScarfOnPng)
             {
-                shiftScarfColors(1);
-                lastScarfUpdate = currentTime;
-            }*/
+                reloadRiderModel();
+                editBoshPng = Settings.customScarfOnPng;
+            }
+
 
 
             try
@@ -342,6 +330,104 @@ namespace linerider
             {
                 Canvas.ShowOutOfDate();
             }
+        }
+
+        public void reloadRiderModel()
+        {
+            Bitmap bodyPNG = new Bitmap(GameResources.body_img);
+            Bitmap bodyDeadPNG = new Bitmap(GameResources.bodydead_img);
+            try
+            {
+                bodyPNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/body.png");
+                bodyDeadPNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/bodydead.png");
+            }
+            catch (Exception e) { Debug.WriteLine(e); Models.LoadModels(); return; }
+            try
+            {   
+                if (Settings.customScarfOnPng)
+                {
+                    var scarfColorList = getScarfColorList();
+                    Color colorToChange = Color.FromArgb(255, 255, 255);
+                    for (int i = 0; i < 5; i++)
+                    {
+                        switch (i)
+                        {
+                            case 0:
+                                colorToChange = Color.FromArgb(255, 0, 0);
+                                break;
+                            case 1:
+                                colorToChange = Color.FromArgb(255, 128, 0);
+                                break;
+                            case 2:
+                                colorToChange = Color.FromArgb(255, 255, 0);
+                                break;
+                            case 3:
+                                colorToChange = Color.FromArgb(0, 255, 0);
+                                break;
+                            case 4:
+                                colorToChange = Color.FromArgb(0, 0, 255);
+                                break;
+                        }
+
+                        Color newScarfColor = Color.FromArgb(scarfColorList[i % scarfColorList.Count]);
+                        newScarfColor = Color.FromArgb(255, newScarfColor);
+
+                        for (int x = 0; x < bodyPNG.Width; x++)
+                        {
+                            for (int y = 0; y < bodyPNG.Height; y++)
+                            {
+                                Color aliveColor = bodyPNG.GetPixel(x, y);
+                                if (aliveColor == colorToChange)
+                                {
+                                    bodyPNG.SetPixel(x, y, newScarfColor);
+                                }
+                                Color deadColor = bodyDeadPNG.GetPixel(x, y);
+                                if (deadColor == colorToChange)
+                                {
+                                    bodyDeadPNG.SetPixel(x, y, newScarfColor);
+                                }
+
+                            }//for y
+                        }//for x
+                    }//for each (i)
+                   shiftScarfColors((scarfColorList.Count*5)-5);
+                }//if
+            }
+            catch (Exception e) { Debug.WriteLine(e); Models.LoadModels(); }
+            try
+            {
+                Models.LoadModels(
+                    bodyPNG,
+                    bodyDeadPNG,
+                    new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/sled.png"),
+                    new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/brokensled.png"),
+                    new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/arm.png"),
+                    new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/leg.png"));
+            }
+            catch (Exception e) { Debug.WriteLine(e); Models.LoadModels(); }
+        }
+
+        public void updateScarf()
+        {
+            string scarfLocation = LRAFolderLocation + "/Scarves/" + Settings.SelectedScarf;
+            try
+            {
+                if (File.ReadLines(scarfLocation).First() == "#LRTran Scarf File")
+                {
+                    string[] lines = File.ReadAllLines(scarfLocation);
+                    for (int i = 1; i < lines.Length; i++)
+                    {
+                        Debug.WriteLine(lines[i]);
+                        int color = Convert.ToInt32(lines[i].Substring(0, lines[i].IndexOf(",")), 16);
+                        byte opacity = Convert.ToByte(lines[i].Substring(lines[i].IndexOf(" ") + 1), 16);
+                        //Debug.WriteLine("Color: " + color);
+                        //Debug.WriteLine("Opacity: " + opacity);
+                        addScarfColor(color, opacity);
+                    }
+                }
+                else {addScarfColor(0xff6464, 0xff); /*Default Color 1*/ addScarfColor(0xD10101, 0xff); /*Default Color 2*/}
+            }
+            catch { addScarfColor(0xff6464, 0xff); /*Default Color 1*/ addScarfColor(0xD10101, 0xff); /*Default Color 2*/}
         }
 
         private void updateDiscordActivity(String state, String details, String largeImageKey, String largeImageText, String smallImageKey, String smallImageText, int start, int end)

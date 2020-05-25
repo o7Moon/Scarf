@@ -39,7 +39,7 @@ namespace linerider
                 _lookuptable = new Dictionary<string, object>();
             }
         }
-        private static Bitmap GetBitmap(string name)
+        public static Bitmap GetBitmap(string name)
         {
             object lookup;
             if (_lookuptable.TryGetValue(name, out lookup))

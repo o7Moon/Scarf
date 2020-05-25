@@ -11,9 +11,13 @@ You will need the [mono framework](http://www.mono-project.com/download/stable/)
 
 # LRTran Features
 * Discord activity support (Aka little stats when you click your user)
+* Custom scarves from a .txt file in /LRA/Scarves -> [/Examples/Scarves/README.md](https://github.com/Tran-Foxxo/LRTran/tree/master/Examples/Scarves/README.md)
+* Custom amount of scarf segments
+* Custom riders in /LRA/Riders -> [/Examples/Riders/README.md](https://github.com/Tran-Foxxo/LRTran/tree/master/Examples/Riders/README.md)
+* Custom scarves on a rider png -> [/Examples/Riders/Bosh-Custom-Scarf-On-Png-Example/README.md](https://github.com/Tran-Foxxo/LRTran/tree/master/Examples/Riders/Bosh-Custom-Scarf-On-Png-Example/README.md)
 
 # Issues
-Be sure to post an issue you've found in the issue tracker https://github.com/Tran-Foxxo/LRTran/issues
+Be sure to post an issue you've found in the issue tracker https://github.com/Tran-Foxxo/LRTran/issues and also dm me over discord [Tran Fox#4662] if ya want.
 
 # Build
 Run nuget restore in src (Visual Studio (not VS Code) will do this for you)

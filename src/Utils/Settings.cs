@@ -91,6 +91,8 @@ namespace linerider
         public static float DefaultPlayback;
         public static String SelectedScarf; //What custom scarf is selected
         public static int ScarfSegments; //How many scarf segments on restart
+        public static String SelectedBoshSkin; //What bosh skin is selected
+        public static bool customScarfOnPng; //To replace colors in the png for a custom scarf
         public static bool ColorPlayback;
         public static bool OnionSkinning;
         public static string LastSelectedTrack = "";
@@ -177,6 +179,8 @@ namespace linerider
             OnionSkinning = false;
             ScarfSegments = 5;
             SelectedScarf = "default";
+            SelectedBoshSkin = "default";
+            customScarfOnPng = false;
         }
         public static void ResetKeybindings()
         {
@@ -403,6 +407,8 @@ namespace linerider
             LoadBool(GetSetting(lines, nameof(Editor.ShowLineID)), ref Editor.ShowLineID);
             SelectedScarf = GetSetting(lines, nameof(SelectedScarf));
             LoadInt(GetSetting(lines, nameof(ScarfSegments)), ref ScarfSegments);
+            SelectedBoshSkin = GetSetting(lines, nameof(SelectedBoshSkin));
+            LoadBool(GetSetting(lines, nameof(customScarfOnPng)), ref customScarfOnPng);
 
             if (ScarfSegments == 0) { ScarfSegments++; }
 
@@ -460,6 +466,8 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(Editor.ShowLineID), Editor.ShowLineID.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(SelectedScarf), SelectedScarf);
             config += "\r\n" + MakeSetting(nameof(ScarfSegments), ScarfSegments.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(SelectedBoshSkin), SelectedBoshSkin);
+            config += "\r\n" + MakeSetting(nameof(customScarfOnPng), customScarfOnPng.ToString(Program.Culture));
 
             foreach (var binds in Keybinds)
             {
