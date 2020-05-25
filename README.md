@@ -20,9 +20,10 @@ You will need the [mono framework](http://www.mono-project.com/download/stable/)
 Be sure to post an issue you've found in the issue tracker https://github.com/Tran-Foxxo/LRTran/issues and also dm me over discord [Tran Fox#4662] if ya want.
 
 # Build
+First extract the source code and download [gwen-lra](https://github.com/jealouscloud/gwen-lra/tree/dbe3e84568b163f3e20cd876672fc1b3b0e40873)'s source code and extract it to the /lib/gwen-lra/ folder
 Run nuget restore in src (Visual Studio (not VS Code) will do this for you)
 Build src/linerider.sln with msbuild or Visual Studio
-Download Discord's Game SDK at https://dl-game-sdk.discordapp.net/latest/discord_game_sdk.zip and copy /lib/x86/discord_game_sdk.dll to the build directory. (If that doesn't work for some reason try x86_64)
+Download Discord's Game SDK at [https://dl-game-sdk.discordapp.net/latest/discord_game_sdk.zip](https://dl-game-sdk.discordapp.net/latest/discord_game_sdk.zip) and copy /lib/x86/discord_game_sdk.dll to the build directory. (If that doesn't work for some reason try x86_64)
 
 This project requires .net 4.6 and C# 7 support.
 
