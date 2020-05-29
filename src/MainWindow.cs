@@ -52,7 +52,7 @@ namespace linerider
 {
     public class MainWindow : OpenTK.GameWindow
     {
-        public Discord.Discord discord = new Discord.Discord(506953593945980933, (UInt64)Discord.CreateFlags.NoRequireDiscord); //Create discord for game sdk activity
+        public Discord.Discord discord = null; //Create discord for game sdk activity
         public static int startTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;  //Probably a easier way to do this but whatever
         public int lastUpdateTime = 0; //Last time the activity was updated
         public bool firstGameUpdate = true; //Run this only on the first update (probably a better way to do this, this is probably bad)
@@ -217,14 +217,17 @@ namespace linerider
             //TODO: Put these not in the main loop and put them in reasonable places
             if (firstGameUpdate)
             {
-                firstGameUpdate = false;
-                discord.SetLogHook(Discord.LogLevel.Debug, (level, message) =>
+                if (Program.NewVersion != null) //Move this up here to only run once and not every frame
                 {
-                    Console.WriteLine("Log[{0}] {1}", level, message);
-                });
+                    Canvas.ShowOutOfDate();
+                }
+
+                Canvas.ShowChangelog();
+                firstGameUpdate = false;
                 removeAllScarfColors(); //Remove default white scarf
                 reloadRiderModel();
                 forceDiscordUpdate = true;
+                Settings.discordActivityEnabled = false; //Dumb but I'm doing this in case it leads to the app not starting due to discord not being open
             }
             
             //Code to run each frame
@@ -255,8 +258,16 @@ namespace linerider
                 editBoshPng = Settings.customScarfOnPng;
             }
             //If the discord activity should be updated
-            if ((((currentTime % 10 == 0) && (currentTime != lastUpdateTime)) && Settings.discordActivityEnabled) || forceDiscordUpdate)
+            if ((((currentTime % 10 == 0) && (currentTime != lastUpdateTime)) || forceDiscordUpdate) && Settings.discordActivityEnabled)
             {
+                if (discord == null)
+                {
+                    discord = new Discord.Discord(506953593945980933, (UInt64)Discord.CreateFlags.Default);
+                    discord.SetLogHook(Discord.LogLevel.Debug, (level, message) =>
+                    {
+                        Console.WriteLine("Log[{0}] {1}", level, message);
+                    });
+                }
                 lastUpdateTime = currentTime;
                 UpdateActivity(discord);
                 forceDiscordUpdate = false;
@@ -305,10 +316,6 @@ namespace linerider
                 }
             }
             AudioService.EnsureSync();
-            if (Program.NewVersion != null)
-            {
-                Canvas.ShowOutOfDate();
-            }
         }
 
         public void reloadRiderModel()
@@ -404,7 +411,7 @@ namespace linerider
 
             String versionText = "LRTran version " + linerider.Program.Version;
 
-            String largeKey = "lrl";
+            String largeKey = Settings.largeImageKey;
             String largeText = versionText + " ==================== Source code: https://github.com/Tran-Foxxo/LRTran";
             String smallKey = toolName;
             String smallText = "Currently using the " + toolName + " tool";

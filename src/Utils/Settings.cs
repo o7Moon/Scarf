@@ -98,6 +98,8 @@ namespace linerider
         public static String discordActivity2; //what activities are displayed
         public static String discordActivity3; //what activities are displayed
         public static String discordActivity4; //what activities are displayed
+        public static String largeImageKey; //What image discord uses
+        public static bool showChangelog; //Show the changelog
         public static bool ColorPlayback;
         public static bool OnionSkinning;
         public static string LastSelectedTrack = "";
@@ -191,6 +193,8 @@ namespace linerider
             discordActivity2 = "none";
             discordActivity3 = "none";
             discordActivity4 = "none";
+            largeImageKey = "lrl";
+            showChangelog = true;
         }
         public static void ResetKeybindings()
         {
@@ -424,7 +428,9 @@ namespace linerider
             discordActivity2 = GetSetting(lines, nameof(discordActivity2));
             discordActivity3 = GetSetting(lines, nameof(discordActivity3));
             discordActivity4 = GetSetting(lines, nameof(discordActivity4));
-
+            largeImageKey = GetSetting(lines, nameof(largeImageKey));
+            LoadBool(GetSetting(lines, nameof(showChangelog)), ref showChangelog);
+            
             if (ScarfSegments == 0) { ScarfSegments++; }
 
             var lasttrack = GetSetting(lines, nameof(LastSelectedTrack));
@@ -488,7 +494,8 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(discordActivity2), discordActivity2);
             config += "\r\n" + MakeSetting(nameof(discordActivity3), discordActivity3);
             config += "\r\n" + MakeSetting(nameof(discordActivity4), discordActivity4);
-
+            config += "\r\n" + MakeSetting(nameof(largeImageKey), largeImageKey);
+            
             foreach (var binds in Keybinds)
             {
                 foreach (var bind in binds.Value)

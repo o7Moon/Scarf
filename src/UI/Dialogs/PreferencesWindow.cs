@@ -474,18 +474,16 @@ namespace linerider.UI
         {
             var discordHeader = GwenHelper.CreateHeaderPanel(parent, "Discord Activity Settings");
 
-            var showid = GwenHelper.AddCheckbox(discordHeader, "Enable Discord Activity (Needs Restart)", Settings.discordActivityEnabled, (o, e) =>
+            var showid = GwenHelper.AddCheckbox(discordHeader, "Enable Discord Activity (Needs Restart to Disable)", Settings.discordActivityEnabled, (o, e) =>
             {
                 Settings.discordActivityEnabled = ((Checkbox)o).IsChecked;
                 Settings.Save();
             });
 
-            var activityLine = GwenHelper.CreateHeaderPanel(discordHeader, "Discord Activity Text");
-
-            ComboBox activity1 = GwenHelper.CreateLabeledCombobox(activityLine, "Line 1 Text 1:");
-            ComboBox activity2 = GwenHelper.CreateLabeledCombobox(activityLine, "Line 1 Text 2:");
-            ComboBox activity3 = GwenHelper.CreateLabeledCombobox(activityLine, "Line 2 Text 1:");
-            ComboBox activity4 = GwenHelper.CreateLabeledCombobox(activityLine, "Line 2 Text 2:");
+            ComboBox activity1 = GwenHelper.CreateLabeledCombobox(discordHeader, "Line 1 Text 1:");
+            ComboBox activity2 = GwenHelper.CreateLabeledCombobox(discordHeader, "Line 1 Text 2:");
+            ComboBox activity3 = GwenHelper.CreateLabeledCombobox(discordHeader, "Line 2 Text 1:");
+            ComboBox activity4 = GwenHelper.CreateLabeledCombobox(discordHeader, "Line 2 Text 2:");
             ComboBox[] boxArr = { activity1, activity2, activity3, activity4 };
             for (int i=0; i<4; i++)
             {
@@ -519,6 +517,16 @@ namespace linerider.UI
             activity4.ItemSelected += (o, e) =>
             {
                 Settings.discordActivity4 = (String)e.SelectedItem.UserData; ;
+                Settings.Save();
+            };
+
+            ComboBox largeImageKey = GwenHelper.CreateLabeledCombobox(discordHeader, "Image:");
+            largeImageKey.AddItem("LRTran App Icon", "lrl", "lrl");
+            largeImageKey.AddItem(":boshbless:", "bosh_pray", "bosh_pray");
+            largeImageKey.SelectByUserData(Settings.largeImageKey.ToString(CultureInfo.InvariantCulture));
+            largeImageKey.ItemSelected += (o, e) =>
+            {
+                Settings.largeImageKey = (String)e.SelectedItem.UserData; ;
                 Settings.Save();
             };
         }
