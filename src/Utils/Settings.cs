@@ -372,11 +372,11 @@ namespace linerider
             string[] lines = null;
             try
             {
-                if (!File.Exists(Program.UserDirectory + "settings.conf"))
+                if (!File.Exists(Program.UserDirectory + "settings-LRT.conf"))
                 {
                     Save();
                 }
-                lines = File.ReadAllLines(Program.UserDirectory + "settings.conf");
+                lines = File.ReadAllLines(Program.UserDirectory + "settings-LRT.conf");
             }
             catch
             {
@@ -519,7 +519,7 @@ namespace linerider
             }
             try
             {
-                File.WriteAllText(Program.UserDirectory + "settings.conf", config);
+                File.WriteAllText(Program.UserDirectory + "settings-LRT.conf", config);
             }
             catch { }
         }
