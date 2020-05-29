@@ -200,6 +200,47 @@ namespace linerider
                 }
             }
         }
+        public void ShowChangelog()
+        {
+            if (Settings.showChangelog == false) 
+            { return; }
+
+            var changelogText = "" +
+                " * Added this cool changelog text!\n" +
+                " * Fixed errors with settings reading as \"\" and not null.\n" +
+                " * LRTran now has a custom setting.conf file (settings-LRT.conf).\n" +
+                " * Discord is no longer required to launch the program.\n" +
+                "\n" +
+                "NOTE: Discord is auto disabled on startup for now until I implement it in a more stable way.";
+
+            var window = MessageBox.Show(this, changelogText, "Changelog for " + Program.Version, MessageBox.ButtonType.YesNoCancel);
+            window.RenameButtonsYN("Previous Changelogs (Github)", "Continue and don\'t show again", "Continue");
+            window.Dismissed += (o, e) =>
+            {
+                if (window.Result == DialogResult.Yes) //Previous Changelogs (Github)
+                {
+                    try
+                    {
+                        OpenUrl(@"https://github.com/Tran-Foxxo/LRTran/tree/master/Changelogs");
+                    }
+                    catch
+                    {
+                        ShowError("Unable to open your browser.");
+                    }
+                }
+                if (window.Result == DialogResult.No) //Continue and don\'t show again
+                {
+                    Settings.showChangelog = false;
+                    Settings.Save();
+                }
+                if (window.Result == DialogResult.Cancel) //Continue
+                {
+
+                }
+            };
+            Program.NewVersion = null;
+        }
+
         public void ShowOutOfDate()
         {
             if (Program.NewVersion == null)
