@@ -413,24 +413,15 @@ namespace linerider.UI
             var riderSettingPanel = GwenHelper.CreateHeaderPanel(parent, "Rider Settings");
 
             ComboBox scarfCombobox = GwenHelper.CreateLabeledCombobox(scarfSettingPanel, "Selected Scarf:");
-            scarfCombobox.AddItem("Default", null, null);
-            try
+            scarfCombobox.AddItem("Default", "default", "default");
+            string[] scarfPaths = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\LRA\\Scarves");
+            for (int i = 0; i < scarfPaths.Length; i++)
             {
-                string[] scarfPaths = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\LRA\\Scarves");
-                for (int i = 0; i < scarfPaths.Length; i++)
-                {
-                    string scarfNames = Path.GetFileName(scarfPaths[i]);
-                    scarfCombobox.AddItem(scarfNames, scarfNames, scarfNames);
-                }
+                string scarfNames = Path.GetFileName(scarfPaths[i]);
+                scarfCombobox.AddItem(scarfNames, scarfNames, scarfNames);
             }
-            catch { }
-
-            if (Settings.SelectedScarf != null)
-            {
-                try { scarfCombobox.SelectByName(Settings.SelectedScarf.ToString(CultureInfo.InvariantCulture)); }
-                catch { scarfCombobox.SelectByUserData(null); }
-            }
-            else { scarfCombobox.SelectByUserData(null); }
+            
+            scarfCombobox.SelectByUserData(Settings.SelectedScarf.ToString(CultureInfo.InvariantCulture));
 
             scarfCombobox.ItemSelected += (o, e) =>
             {
@@ -459,27 +450,18 @@ namespace linerider.UI
                 Settings.Save();
             });
             ComboBox boshSkinCombobox = GwenHelper.CreateLabeledCombobox(riderSettingPanel, "Selected Rider:");
-            boshSkinCombobox.AddItem("Default", null, null);
+            boshSkinCombobox.AddItem("Default", "default", "default");
 
-            try
+
+            string[] riderPaths = Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/LRA/Riders");
+            for (int i = 0; i < riderPaths.Length; i++)
             {
-                string[] riderPaths = Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/LRA/Riders");
-                for (int i = 0; i < riderPaths.Length; i++)
-                {
-                    String riderNames = Path.GetFileName(riderPaths[i]);
-                    boshSkinCombobox.AddItem(riderNames, riderNames, riderNames);
-                }
-
-                if (Settings.SelectedBoshSkin != null)
-                {
-                    try { boshSkinCombobox.SelectByName(Settings.SelectedBoshSkin.ToString(CultureInfo.InvariantCulture)); }
-                    catch { boshSkinCombobox.SelectByUserData(null); }
-                }
-                else { boshSkinCombobox.SelectByUserData(null); }
-
+                String riderNames = Path.GetFileName(riderPaths[i]);
+                boshSkinCombobox.AddItem(riderNames, riderNames, riderNames);
             }
-            
-            catch { boshSkinCombobox.SelectByUserData(null);  }
+
+            boshSkinCombobox.SelectByUserData(Settings.SelectedBoshSkin.ToString(CultureInfo.InvariantCulture));
+
             boshSkinCombobox.ItemSelected += (o, e) =>
             {
                 Settings.SelectedBoshSkin = (String)e.SelectedItem.UserData; ;
@@ -514,10 +496,10 @@ namespace linerider.UI
                 boxArr[i].AddItem("Amount of Lines", "lineText", "lineText");
                 boxArr[i].AddItem("Version", "versionText", "versionText");
             }
-            activity1.SelectByName(Settings.discordActivity1.ToString(CultureInfo.InvariantCulture));
-            activity2.SelectByName(Settings.discordActivity2.ToString(CultureInfo.InvariantCulture));
-            activity3.SelectByName(Settings.discordActivity3.ToString(CultureInfo.InvariantCulture));
-            activity4.SelectByName(Settings.discordActivity4.ToString(CultureInfo.InvariantCulture));
+            activity1.SelectByUserData(Settings.discordActivity1.ToString(CultureInfo.InvariantCulture));
+            activity2.SelectByUserData(Settings.discordActivity2.ToString(CultureInfo.InvariantCulture));
+            activity3.SelectByUserData(Settings.discordActivity3.ToString(CultureInfo.InvariantCulture));
+            activity4.SelectByUserData(Settings.discordActivity4.ToString(CultureInfo.InvariantCulture));
 
             activity1.ItemSelected += (o, e) =>
             {

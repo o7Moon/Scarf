@@ -36,7 +36,7 @@ namespace linerider
 #endif
         public static string BinariesFolder = "bin";
         public readonly static CultureInfo Culture = new CultureInfo("en-US");
-        public static string Version = "1.05-EXPERIMENTAL";
+        public static string Version = "5/29/20 - Build 1"; //Abandon 1.05
         public static string TestVersion = "";
         public static string NewVersion = null;
         public static readonly string WindowTitle = "Line Rider: Advanced (Tran) " + Version + TestVersion;

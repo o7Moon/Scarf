@@ -52,7 +52,7 @@ namespace linerider
 {
     public class MainWindow : OpenTK.GameWindow
     {
-        public Discord.Discord discord = new Discord.Discord(506953593945980933, (UInt64)Discord.CreateFlags.Default); //Create discord for game sdk activity
+        public Discord.Discord discord = new Discord.Discord(506953593945980933, (UInt64)Discord.CreateFlags.NoRequireDiscord); //Create discord for game sdk activity
         public static int startTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;  //Probably a easier way to do this but whatever
         public int lastUpdateTime = 0; //Last time the activity was updated
         public bool firstGameUpdate = true; //Run this only on the first update (probably a better way to do this, this is probably bad)
@@ -60,7 +60,6 @@ namespace linerider
         public bool scarfNeedsUpdate = true; //If the scarf needs a update 
         public String currentBoshSkin = null; //What the current rider skin is to to compare it to the settings
         public bool editBoshPng = Settings.customScarfOnPng; //Local copy of customScarfOnPng to check back
-        public String LRAFolderLocation = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)+"/LRA/"; // ~/Documents/LRA/
         public bool forceDiscordUpdate = true;
 
         public Dictionary<string, MouseCursor> Cursors = new Dictionary<string, MouseCursor>();
@@ -215,7 +214,7 @@ namespace linerider
         }
         public void GameUpdate()
         {
-            //On frame
+            //TODO: Put these not in the main loop and put them in reasonable places
             if (firstGameUpdate)
             {
                 firstGameUpdate = false;
@@ -263,8 +262,11 @@ namespace linerider
                 forceDiscordUpdate = false;
             }
             //Update each frame
-            try { discord.RunCallbacks(); }
-            catch (Exception e) { Debug.WriteLine(e); }
+            if (Settings.discordActivityEnabled)
+            {
+                try { discord.RunCallbacks(); }
+                catch (Exception e) { Debug.WriteLine(e); }
+            }
 
             //Regular code starts here
             GameUpdateHandleInput();
@@ -320,9 +322,9 @@ namespace linerider
             {
                 if (Settings.customScarfOnPng)
                 {
-                    bodyPNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/body.png");
-                    bodyDeadPNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/bodydead.png");
-                    Bitmap palettePNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/palette.png");
+                    bodyPNG = new Bitmap(Program.UserDirectory + "/Riders/" + Settings.SelectedBoshSkin + "/body.png");
+                    bodyDeadPNG = new Bitmap(Program.UserDirectory + "/Riders/" + Settings.SelectedBoshSkin + "/bodydead.png");
+                    Bitmap palettePNG = new Bitmap(Program.UserDirectory + "/Riders/" + Settings.SelectedBoshSkin + "/palette.png");
                     var scarfColorList = getScarfColorList();
                     if (scarfColorList.Count == 0) { Models.LoadModels(); return; }
                     for (int i = 0; i < palettePNG.Width; i++)
@@ -354,28 +356,31 @@ namespace linerider
                 }//if
             }
             catch (Exception e) { Debug.WriteLine(e); Models.LoadModels(); }
+            
+            if (Settings.SelectedBoshSkin == "default") { Models.LoadModels(); return; }
+
             try
             {
-                if (bodyPNG == null) { bodyPNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/body.png"); }
-                if (bodyDeadPNG == null) { bodyDeadPNG = new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/bodydead.png"); }
+                if (bodyPNG == null) { bodyPNG = new Bitmap(Program.UserDirectory + "/Riders/" + Settings.SelectedBoshSkin + "/body.png"); }
+                if (bodyDeadPNG == null) { bodyDeadPNG = new Bitmap(Program.UserDirectory + "/Riders/" + Settings.SelectedBoshSkin + "/bodydead.png"); }
 
                 Models.LoadModels(
                     bodyPNG,
                     bodyDeadPNG,
-                    new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/sled.png"),
-                    new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/brokensled.png"),
-                    new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/arm.png"),
-                    new Bitmap(LRAFolderLocation + "/Riders/" + Settings.SelectedBoshSkin + "/leg.png"));
+                    new Bitmap(Program.UserDirectory + "/Riders/" + Settings.SelectedBoshSkin + "/sled.png"),
+                    new Bitmap(Program.UserDirectory + "/Riders/" + Settings.SelectedBoshSkin + "/brokensled.png"),
+                    new Bitmap(Program.UserDirectory + "/Riders/" + Settings.SelectedBoshSkin + "/arm.png"),
+                    new Bitmap(Program.UserDirectory + "/Riders/" + Settings.SelectedBoshSkin + "/leg.png"));
             }
             catch (Exception e) { Debug.WriteLine(e); Models.LoadModels(); }
         }
 
         public void updateScarf()
         {
-            string scarfLocation = LRAFolderLocation + "/Scarves/" + Settings.SelectedScarf;
+            string scarfLocation = Program.UserDirectory + "/Scarves/" + Settings.SelectedScarf;
             try
             {
-                if ((Settings.SelectedScarf != null) && (File.ReadLines(scarfLocation).First() == "#LRTran Scarf File"))
+                if ((Settings.SelectedScarf != "default") && (File.ReadLines(scarfLocation).First() == "#LRTran Scarf File"))
                 {
                     string[] lines = File.ReadAllLines(scarfLocation);
                     for (int i = 1; i < lines.Length; i++)
