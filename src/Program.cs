@@ -39,7 +39,7 @@ namespace linerider
         public static string Version = "5/29/20 - Build 1";
         public static string TestVersion = "";
         public static string NewVersion = null;
-        public static readonly string WindowTitle = "Line Rider: Advanced (Tran) " + Version + TestVersion;
+        public static readonly string WindowTitle = "Line Rider: Advanced (Tran\'s fork) " + Version + TestVersion;
         public static Random Random;
         private static bool _crashed;
         private static MainWindow glGame;
