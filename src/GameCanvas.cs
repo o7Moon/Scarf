@@ -211,7 +211,8 @@ namespace linerider
                 " * LRTran now has a custom setting.conf file (settings-LRT.conf).\n" +
                 " * Discord is no longer required to launch the program.\n" +
                 "\n" +
-                "NOTE: Discord is auto disabled on startup for now until I implement it in a more stable way.";
+                "NOTE: Discord is auto disabled on startup for now until I implement it in a more stable way.\n\n" +
+                "Build 2 - Hotfix for checking new versions";
 
             var window = MessageBox.Show(this, changelogText, "Changelog for " + Program.Version, MessageBox.ButtonType.YesNoCancel);
             window.RenameButtonsYN("Previous Changelogs (Github)", "Continue and don\'t show again", "Continue");

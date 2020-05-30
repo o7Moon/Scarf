@@ -217,11 +217,6 @@ namespace linerider
             //TODO: Put these not in the main loop and put them in reasonable places
             if (firstGameUpdate)
             {
-                if (Program.NewVersion != null) //Move this up here to only run once and not every frame
-                {
-                    Canvas.ShowOutOfDate();
-                }
-
                 Canvas.ShowChangelog();
                 firstGameUpdate = false;
                 removeAllScarfColors(); //Remove default white scarf
@@ -314,6 +309,10 @@ namespace linerider
                 {
                     Track.Update(updates);
                 }
+            }
+            if (Program.NewVersion != null) 
+            {
+                Canvas.ShowOutOfDate();
             }
             AudioService.EnsureSync();
         }
