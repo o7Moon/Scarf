@@ -2,7 +2,7 @@
 
 namespace linerider.Game
 {
-    public sealed class Bone
+    public sealed class Bone //Haha Boner Ray - Arglin
 	{
 		public Bone(int joint1, int joint2, double rest, bool breakable, bool onlyrepel)
 		{

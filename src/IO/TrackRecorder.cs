@@ -187,7 +187,7 @@ namespace linerider.IO
                         }
                         if (sw.ElapsedMilliseconds > 500)
                         {
-                            game.Title = string.Format("{0} [Recording {1:P}% | Hold ESC to cancel]", Program.WindowTitle, i / (double)framecount);
+                            game.Title = string.Format("{0} [Recording {1:P} | Hold ESC to cancel]", Program.WindowTitle, i / (double)framecount);
                             game.ProcessEvents();
                         }
                     }
@@ -262,7 +262,7 @@ namespace linerider.IO
                                             var parsedint = -1;
                                             if (int.TryParse(sub, out parsedint))
                                             {
-                                                game.Title = Program.WindowTitle + string.Format(" [Encoding Video | {0:P}% | Hold ESC to cancel]", parsedint / (double)framecount);
+                                                game.Title = Program.WindowTitle + string.Format(" [Encoding Video | {0:P} | Hold ESC to cancel]", parsedint / (double)framecount);
                                                 game.ProcessEvents();
                                                 if (Keyboard.GetState()[Key.Escape])
                                                 {

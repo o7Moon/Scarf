@@ -131,7 +131,7 @@ namespace linerider
             _infobar = new RightInfoBar(_topcontainer, game.Track);
             _trackinfobar = new TrackInfoBar(_topcontainer, game.Track);
         }
-        private string GetTitle()
+        private string GetTitle() //unused copy of get title?
         {
             string name = game.Track.Name;
             var changes = Math.Min(999, game.Track.TrackChanges);
@@ -202,44 +202,49 @@ namespace linerider
         }
         public void ShowChangelog()
         {
-            if (Settings.showChangelog == false) 
-            { return; }
-
-            var changelogText = "" +
-                " * Added this cool changelog text!\n" +
-                " * Fixed errors with settings reading as \"\" and not null.\n" +
-                " * LRTran now has a custom setting.conf file (settings-LRT.conf).\n" +
-                " * Discord is no longer required to launch the program.\n" +
-                "\n" +
-                "NOTE: Discord is auto disabled on startup for now until I implement it in a more stable way.\n\n" +
-                "Build 2 - Hotfix for checking new versions";
-
-            var window = MessageBox.Show(this, changelogText, "Changelog for " + Program.Version, MessageBox.ButtonType.YesNoCancel);
-            window.RenameButtonsYN("Previous Changelogs (Github)", "Continue and don\'t show again", "Continue");
-            window.Dismissed += (o, e) =>
+            if (Settings.showChangelog != true) { return; }
+            else
             {
-                if (window.Result == DialogResult.Yes) //Previous Changelogs (Github)
+                var changelogText = "" +
+                    " * Added Superdavo0001\'s remount mod into LRTran!\n" +
+                    " * Changelog toggle in the Preferences -> Other.\n" +
+                    " * Turning off the changelog actually works now.\n" +
+                    " * Autosaves now save to their own file (autosave_day.month.year_hours.minutes.trk).\n" +
+                    " * \"<untitled>\" will now be autosaved in the \"Unnamed Track\" folder.\n" +
+                    " * Autosaves can be configured in Preferences -> Other.\n" +
+                    " * Track changes will always be shown on screen.\n" +
+                    " * Added Multi-Scarf functionality in the Preferences -> Rider.\n" +
+                    " * When the game has enough changed where it will autosave, \"Autosave enabled!\" will appear in the top left corner.\n" +
+                    "\n" +
+                    "NOTE: Discord is auto disabled on startup for now until I implement it in a more stable way.";
+
+                var window = MessageBox.Show(this, changelogText, "Changelog for " + Program.Version, MessageBox.ButtonType.YesNoCancel);
+                window.RenameButtonsYN("Previous Changelogs (Github)", "Continue and don\'t show again", "Continue");
+                window.Dismissed += (o, e) =>
                 {
-                    try
-                    {
-                        OpenUrl(@"https://github.com/Tran-Foxxo/LRTran/tree/master/Changelogs");
-                    }
-                    catch
-                    {
-                        ShowError("Unable to open your browser.");
-                    }
-                }
-                if (window.Result == DialogResult.No) //Continue and don\'t show again
+                    if (window.Result == DialogResult.Yes) //Previous Changelogs (Github)
                 {
-                    Settings.showChangelog = false;
-                    Settings.Save();
-                }
-                if (window.Result == DialogResult.Cancel) //Continue
+                        try
+                        {
+                            OpenUrl(@"https://github.com/Tran-Foxxo/LRTran/tree/master/Changelogs");
+                        }
+                        catch
+                        {
+                            ShowError("Unable to open your browser.");
+                        }
+                    }
+                    if (window.Result == DialogResult.No) //Continue and don\'t show again
+                {
+                        Settings.showChangelog = false;
+                        Settings.Save();
+                        Debug.WriteLine("Changelog Disabled");
+                    }
+                    if (window.Result == DialogResult.Cancel) //Continue
                 {
 
-                }
-            };
-            Program.NewVersion = null;
+                    }
+                };
+            }
         }
 
         public void ShowOutOfDate()

@@ -63,7 +63,8 @@ namespace linerider.UI
                     if (u != _editor.LineCount)
                     {
                         _linecount.UserData = _editor.LineCount;
-                        return "Lines: " + _editor.LineCount.ToString();
+                        var lineCountText = "Lines: " + _editor.LineCount.ToString();
+                        return lineCountText;
                     }
                     return current;
                 },
@@ -82,26 +83,14 @@ namespace linerider.UI
         private string GetTitle()
         {
             string name = _editor.Name;
-            var changes = Math.Min(999, _editor.TrackChanges);
+            var changes = _editor.TrackChanges;
             if (changes > 0)
             {
                 name += " (*)";
-                if (changes > 50)
-                {
-                    int rounded = changes;
-                    if (changes < 999)
-                    {
-                        if (changes >= 200)
-                        {
-                            rounded = (changes / 100) * 100;
-                        }
-                        else
-                        {
-                            rounded = (changes / 50) * 50;
-                        }
-                    }
-                    name += "\n" + (rounded) + "+ changes";
-                }
+                name += "\n" + (changes) + " changes";
+            }
+            if (changes > Settings.autosaveChanges) {
+                name += "\nAutosave enabled!";
             }
             return name;
         }

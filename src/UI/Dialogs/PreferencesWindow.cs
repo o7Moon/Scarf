@@ -406,6 +406,39 @@ namespace linerider.UI
                    Settings.CheckForUpdates = ((Checkbox)o).IsChecked;
                    Settings.Save();
                });
+
+            var showChangelog = GwenHelper.AddCheckbox(updates, "Show LRTran Changelog", Settings.showChangelog, (o, e) =>
+            {
+                Settings.showChangelog = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
+
+            var autosaveSettings = GwenHelper.CreateHeaderPanel(parent, "Autosaves");
+            var autosaveMinutes = new Spinner(autosaveSettings)
+            {
+                Min = 1,
+                Max = int.MaxValue - 1,
+                Value = Settings.autosaveMinutes,
+            };
+            autosaveMinutes.ValueChanged += (o, e) =>
+            {
+                Settings.autosaveMinutes = (int)((Spinner)o).Value;
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(autosaveSettings, "Minutes between autosaves", autosaveMinutes);
+
+            var autosaveChanges = new Spinner(autosaveSettings)
+            {
+                Min = 1,
+                Max = int.MaxValue - 1,
+                Value = Settings.autosaveChanges,
+            };
+            autosaveChanges.ValueChanged += (o, e) =>
+            {
+                Settings.autosaveChanges = (int)((Spinner)o).Value;
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(autosaveSettings, "Min changes to start autosaving", autosaveChanges);
         }
         private void PopulateRiderSettings(ControlBase parent)
         {
@@ -443,6 +476,31 @@ namespace linerider.UI
             };
             GwenHelper.CreateLabeledControl(scarfSettingPanel, "Scarf Segments (Needs Restart)", scarfSegments);
 
+            var multiScarfAmount = new Spinner(parent)
+            {
+                Min = 1,
+                Max = int.MaxValue - 1,
+                Value = Settings.multiScarfAmount,
+            };
+            multiScarfAmount.ValueChanged += (o, e) =>
+            {
+                Settings.multiScarfAmount = (int)((Spinner)o).Value;
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(scarfSettingPanel, "Multi-Scarf Amount (Needs Restart)", multiScarfAmount);
+
+            var multiScarfSegments = new Spinner(parent)
+            {
+                Min = 1,
+                Max = int.MaxValue - 1,
+                Value = Settings.multiScarfSegments,
+            };
+            multiScarfSegments.ValueChanged += (o, e) =>
+            {
+                Settings.multiScarfSegments = (int)((Spinner)o).Value;
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(scarfSettingPanel, "Multi-Scarf Segments (Needs Restart)", multiScarfSegments);
 
             var showid = GwenHelper.AddCheckbox(scarfSettingPanel, "Apply Custom Scarf to Rider png", Settings.customScarfOnPng, (o, e) =>
             {

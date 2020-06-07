@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord;
 
-//TODO: Finish a better Game SDK implementation 
+//TODO: Finish a better Game SDK implementation  
 
 namespace linerider
 {

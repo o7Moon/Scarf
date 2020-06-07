@@ -215,7 +215,7 @@ namespace linerider.Game
         }
         public static void ProcessScarfBones(Bone[] bones, SimulationPoint[] scarf)
         {
-            for (int i = 0; i < bones.Length; i++)
+            for (int i = 0; i < scarf.Length-1; i++)
             {
                 var bone = bones[i];
                 int j1 = bone.joint1;
@@ -229,11 +229,9 @@ namespace linerider.Game
                 }
             }
         }
-
         public unsafe static bool TestSurvivable(Bone[] bones, SimulationPoint[] body, double enduranceMultiplier = 1.0) //Tests if a given Bosh state can survive with a given endurance multiplier
         {
             int bonelen = bones.Length;
-
             for (int i = 0; i < bonelen; i++)
             {
                 var bone = bones[i];
@@ -397,7 +395,6 @@ namespace linerider.Game
             bool sledbroken = SledBroken;
             int rState = remountState;
             int rTimer = remountTimer;
-
             RectLRTB phys = new RectLRTB(ref body[0]);
             using (grid.Sync.AcquireRead())
             {
@@ -413,25 +410,66 @@ namespace linerider.Game
                 var tail = body[RiderConstants.SledBL].Location - body[RiderConstants.SledTL].Location;
                 var head = body[RiderConstants.BodyShoulder].Location - body[RiderConstants.BodyButt].Location;
                 if (!dead && ((nose.X * tail.Y) - (nose.Y * tail.X) < 0 || // tail fakie
-                              (nose.X * head.Y) - (nose.Y * head.X) > 0))   // head fakie
+                             (nose.X * head.Y) - (nose.Y * head.X) > 0))   // head fakie
                 {
                     dead = true;
                     sledbroken = true;
                 }
             }
-
+            
             if (UseRemount)
             {
                 ProcessRemount(bones, body, ref dead, ref sledbroken, ref rState, ref rTimer);
             }
-
+            
             SimulationPoint[] scarf;
             if (stepscarf)
             {
                 scarf = Scarf.Step(friction: true);
-                scarf[0] = body[RiderConstants.BodyShoulder];
-                FlutterScarf(scarf, frameid, Utility.LengthFast(scarf[0].Momentum));
-                ProcessScarfBones(RiderConstants.ScarfBones, scarf);
+
+                if (Settings.multiScarfAmount * Settings.multiScarfSegments > RiderConstants.ScarfBones.Length) { Settings.multiScarfAmount = 1; } //if too big set to zero
+
+                if (Settings.multiScarfAmount > 1) //If using dual scarf
+                {
+                    
+                    List<SimulationPoint>[] scarves = new List<SimulationPoint>[Settings.multiScarfAmount];
+                    List<SimulationPoint> finalScarf = new List<SimulationPoint>();
+
+                    for (int i = 0; i < Settings.multiScarfAmount; i++) {
+                        scarf[i * Settings.multiScarfSegments] = body[RiderConstants.BodyShoulder];
+                        scarves[i] = new List<SimulationPoint>();
+
+                        if (i != Settings.multiScarfAmount - 1)
+                        {
+                            for (int k = 0; k < Settings.multiScarfSegments; k++)
+                            {
+                                scarves[i].Add(scarf[k + (i * Settings.multiScarfSegments)]);
+                            }
+                        }
+                        else
+                        {
+                            for (int k = 0; k < scarf.Length - (i * Settings.multiScarfSegments); k++) 
+                            {
+                                scarves[i].Add(scarf[k + (i * Settings.multiScarfSegments)]);
+                            }
+                        }
+
+                        SimulationPoint[] scarfArr = scarves[i].ToArray();
+
+                        FlutterScarf(scarfArr, frameid, Utility.LengthFast(scarf[i * Settings.multiScarfSegments].Momentum)+(i*5));
+                        ProcessScarfBones(RiderConstants.ScarfBones, scarfArr);
+
+                        for (int j = 0; j < scarfArr.Length; j++) { finalScarf.Add(scarfArr[j]); }
+                    }
+
+                    scarf = finalScarf.ToArray();
+                }
+                else
+                {
+                    scarf[0] = body[RiderConstants.BodyShoulder];
+                    FlutterScarf(scarf, frameid, Utility.LengthFast(scarf[0].Momentum));
+                    ProcessScarfBones(RiderConstants.ScarfBones, scarf);
+                }
             }
             else
             {

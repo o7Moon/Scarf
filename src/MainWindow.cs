@@ -227,7 +227,7 @@ namespace linerider
             
             //Code to run each frame
             int currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds; //Get current time for discord activity
-
+            //Debug.WriteLine(Track.Name);
             //Update bosh skin if needed
             if (currentBoshSkin!=Settings.SelectedBoshSkin) { 
                 reloadRiderModel();
@@ -245,6 +245,17 @@ namespace linerider
                 scarfNeedsUpdate = false;
                 editBoshPng = Settings.customScarfOnPng;
                 if (Settings.customScarfOnPng) { reloadRiderModel(); }
+
+                while (getScarfColorList().Count() < Settings.ScarfSegments)
+                {
+                    getScarfColorList().AddRange(getScarfColorList());
+                    getScarfOpacityList().AddRange(getScarfOpacityList());
+                }
+
+                for (int i = 1; i < Settings.multiScarfAmount; i++)
+                {
+                    insertScarfColor(0x0000FF, 0x00, ((i * Settings.multiScarfSegments))+(i-1)-(1+i));
+                }
             }
             //If edits to the png is toggled update the rider
             if (editBoshPng != Settings.customScarfOnPng)
@@ -288,7 +299,7 @@ namespace linerider
                         Track.ZoomBy(-0.08f);
                 }
             }
-            if (_autosavewatch.Elapsed.TotalMinutes >= 5)
+            if (_autosavewatch.Elapsed.TotalMinutes >= Settings.autosaveMinutes)
             {
                 _autosavewatch.Restart();
                 new Thread(() => { Track.BackupTrack(false); }).Start();
@@ -445,7 +456,7 @@ namespace linerider
                 SmallImage = smallKey,
                 SmallText = smallText,
             },
-                Instance = true,
+                Instance = false
             };
 
             activityManager.UpdateActivity(activity, result =>
@@ -1389,7 +1400,7 @@ namespace linerider
         {
             for (int i=0; i<shift; i++)
             {
-                insertScarfColor(getScarfColorList()[getScarfColorList().Count - 1], getScarfOpacityList()[getScarfOpacityList().Count - 1], 0);
+                 insertScarfColor(getScarfColorList()[getScarfColorList().Count - 1], getScarfOpacityList()[getScarfOpacityList().Count - 1], 0);
                 removeScarfColor(getScarfColorList().Count - 1);
             }
         }

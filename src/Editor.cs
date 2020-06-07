@@ -135,14 +135,13 @@ namespace linerider
                 }
             }
         }
-
         public bool UseRemount
         {
             get { return _track.Remount; }
             set
 
             {
-                if(_track.Remount != value)
+                if (_track.Remount != value)
                 {
                     _track.Remount = value;
                     Stop();
@@ -150,7 +149,6 @@ namespace linerider
                 }
             }
         }
-
         public RiderFrame RenderRiderInfo
         {
             get
@@ -543,7 +541,7 @@ namespace linerider
                     }
                     else
                     {
-                        if (TrackChanges > 50)
+                        if (TrackChanges > Settings.autosaveChanges)
                         {
                             TrackIO.CreateAutosave(_track);
                         }

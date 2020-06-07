@@ -89,6 +89,8 @@ namespace linerider
         public static bool PreviewMode;
         public static int SlowmoSpeed;
         public static float DefaultPlayback;
+
+        //LRTran settings
         public static String SelectedScarf; //What custom scarf is selected
         public static int ScarfSegments; //How many scarf segments on restart
         public static String SelectedBoshSkin; //What bosh skin is selected
@@ -100,6 +102,11 @@ namespace linerider
         public static String discordActivity4; //what activities are displayed
         public static String largeImageKey; //What image discord uses
         public static bool showChangelog; //Show the changelog
+        public static int multiScarfAmount; //How many scarves the rider has
+        public static int multiScarfSegments; //How many segments a multi scarf has
+        public static int autosaveChanges; //Changes when autosave starts
+        public static int autosaveMinutes; //Amount of minues per autosave
+
         public static bool ColorPlayback;
         public static bool OnionSkinning;
         public static string LastSelectedTrack = "";
@@ -195,6 +202,10 @@ namespace linerider
             discordActivity4 = "none";
             largeImageKey = "lrl";
             showChangelog = true;
+            multiScarfAmount = 1;
+            multiScarfSegments = 5;
+            autosaveChanges = 50;
+            autosaveMinutes = 5;
         }
         public static void ResetKeybindings()
         {
@@ -430,7 +441,12 @@ namespace linerider
             discordActivity4 = GetSetting(lines, nameof(discordActivity4));
             largeImageKey = GetSetting(lines, nameof(largeImageKey));
             LoadBool(GetSetting(lines, nameof(showChangelog)), ref showChangelog);
-            
+            LoadInt(GetSetting(lines, nameof(multiScarfSegments)), ref multiScarfSegments);
+            LoadInt(GetSetting(lines, nameof(multiScarfAmount)), ref multiScarfAmount);
+            LoadInt(GetSetting(lines, nameof(autosaveMinutes)), ref autosaveMinutes);
+            LoadInt(GetSetting(lines, nameof(autosaveChanges)), ref autosaveChanges);
+
+            if (multiScarfSegments == 0) { multiScarfSegments++; }
             if (ScarfSegments == 0) { ScarfSegments++; }
 
             var lasttrack = GetSetting(lines, nameof(LastSelectedTrack));
@@ -495,7 +511,12 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(discordActivity3), discordActivity3);
             config += "\r\n" + MakeSetting(nameof(discordActivity4), discordActivity4);
             config += "\r\n" + MakeSetting(nameof(largeImageKey), largeImageKey);
-            
+            config += "\r\n" + MakeSetting(nameof(showChangelog), showChangelog.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(multiScarfSegments), multiScarfSegments.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(multiScarfAmount), multiScarfAmount.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(autosaveChanges), autosaveChanges.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(autosaveMinutes), autosaveMinutes.ToString(Program.Culture));
+
             foreach (var binds in Keybinds)
             {
                 foreach (var bind in binds.Value)

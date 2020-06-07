@@ -107,7 +107,7 @@ namespace linerider.IO
             {
                 ret[TrackFeatures.songinfo] = true;
             }
-
+            
             if (trk.Remount)
             {
                 ret[TrackFeatures.remount] = true;
@@ -273,12 +273,13 @@ namespace linerider.IO
         public static void CreateAutosave(Track track)
         {
             var dir = GetTrackDirectory(track);
+            if (track.Name.Equals("*")|| track.Name.Equals("<untitled>")) { dir = Utils.Constants.TracksDirectory + "Unnamed Track" + Path.DirectorySeparatorChar;}
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
-            var sn1 = "autosave00";
-            var sn2 = "autosave01";
-            TryMoveAndReplaceFile(dir + sn1 + ".trk", dir + sn2 + ".trk");
-            TRKWriter.SaveTrack(track, sn1);
+            //var sn1 = "autosave00";
+            //var sn2 = "autosave01";
+            //TryMoveAndReplaceFile(dir + sn1 + ".trk", dir + sn2 + ".trk");
+            TRKWriter.SaveTrack(track, "autosave_" + DateTime.Now.Day + "." + DateTime.Now.Month + "." + DateTime.Now.Year + "_" + DateTime.Now.Hour + "." + DateTime.Now.Minute);
         }
         public static void CreateTestFromTrack(Track track)
         {

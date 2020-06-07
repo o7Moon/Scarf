@@ -15,6 +15,7 @@ namespace linerider.IO
         public static string SaveTrack(Track trk, string savename)
         {
             var dir = TrackIO.GetTrackDirectory(trk);
+            if (trk.Name.Equals("*") || trk.Name.Equals("<untitled>")) { dir = Utils.Constants.TracksDirectory + "Unnamed Track" + Path.DirectorySeparatorChar; }
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
             var filename = dir + savename + ".trk";
