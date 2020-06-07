@@ -32,6 +32,7 @@ namespace linerider.IO
             var ret = new Track();
             ret.Filename = trackfile;
             ret.Name = trackname;
+            ret.Remount = false;
             var addedlines = new Dictionary<int, StandardLine>();
             var location = trackfile;
             var bytes = File.ReadAllBytes(location);
@@ -78,6 +79,11 @@ namespace linerider.IO
                         case TrackFeatures.zerostart:
                             ret.ZeroStart = true;
                             break;
+
+                        case TrackFeatures.remount:
+                            ret.Remount = true;
+                            break;
+
                         default:
                             throw new TrackIO.TrackLoadException("Unsupported feature");
                     }

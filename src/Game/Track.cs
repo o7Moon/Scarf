@@ -58,6 +58,7 @@ namespace linerider
         public int BlueLines { get; private set; }
         public int RedLines { get; private set; }
         public bool ZeroStart = false;
+        public bool Remount = true;
 
         internal int _idcounter;
 
@@ -209,7 +210,7 @@ namespace linerider
         }
         public Rider GetStart()
         {
-            return Rider.Create(this.StartOffset, new Vector2d(ZeroStart ? 0 : RiderConstants.StartingMomentum, 0));
+            return Rider.Create(this.StartOffset, new Vector2d(ZeroStart ? 0 : RiderConstants.StartingMomentum, 0), Remount);
         }
         public void SetVersion(int version)
         {

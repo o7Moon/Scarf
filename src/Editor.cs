@@ -135,6 +135,22 @@ namespace linerider
                 }
             }
         }
+
+        public bool UseRemount
+        {
+            get { return _track.Remount; }
+            set
+
+            {
+                if(_track.Remount != value)
+                {
+                    _track.Remount = value;
+                    Stop();
+                    Reset();
+                }
+            }
+        }
+
         public RiderFrame RenderRiderInfo
         {
             get
@@ -673,7 +689,8 @@ namespace linerider
         {
             Vector2d start = Rider.Create(
                 _track.StartOffset,
-                Vector2d.Zero).CalculateCenter();//avoid a timeline query
+                Vector2d.Zero,
+                _track.Remount).CalculateCenter();//avoid a timeline query
             if (Camera != null)
             {
                 Camera.BeginFrame(1, Zoom);

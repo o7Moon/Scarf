@@ -9,5 +9,6 @@ namespace linerider.IO
         public const string songinfo = "SONGINFO";
         public const string ignorable_trigger = "IGNORABLE_TRIGGER";
         public const string zerostart = "ZEROSTART";
+        public const string remount = "REMOUNT";
     }
 }
