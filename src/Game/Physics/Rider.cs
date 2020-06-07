@@ -38,15 +38,21 @@ namespace linerider.Game
         public readonly ImmutablePointCollection Scarf;
         public readonly bool Crashed;
         public readonly bool SledBroken;
-        private Rider(SimulationPoint[] body, SimulationPoint[] scarf, RectLRTB physbounds, bool dead, bool sledbroken)
+        public bool UseRemount;
+        public readonly int remountState; //0 = Alive, 1 = dead cooldown, 2 = dead can remount, 3 = remounting
+        public readonly int remountTimer;
+        private Rider(SimulationPoint[] body, SimulationPoint[] scarf, RectLRTB physbounds, bool dead, bool sledbroken, bool useRemount, int rState = 0, int rTimer = 0)
         {
             Body = new ImmutablePointCollection(body);
             Scarf = new ImmutablePointCollection(scarf);
             Crashed = dead;
             SledBroken = sledbroken;
             PhysicsBounds = physbounds;
+            UseRemount = useRemount;
+            remountState = rState;
+            remountTimer = rTimer;
         }
-        public static Rider Create(Vector2d start, Vector2d momentum)
+        public static Rider Create(Vector2d start, Vector2d momentum, bool useRemount)
         {
             var joints = new SimulationPoint[RiderConstants.DefaultRider.Length];
             var scarf = new SimulationPoint[RiderConstants.DefaultScarf.Length + 1];
@@ -91,7 +97,7 @@ namespace linerider.Game
                 var pos = scarf[0].Location + RiderConstants.DefaultScarf[i];
                 scarf[i + 1] = new SimulationPoint(pos, pos, Vector2d.Zero, 0.9);
             }
-            return new Rider(joints, scarf, pbounds, false, false);
+            return new Rider(joints, scarf, pbounds, false, false, useRemount);
         }
 
 
@@ -130,7 +136,7 @@ namespace linerider.Game
             {
                 scarf[i] = r1.Scarf[i].Replace(Vector2d.Lerp(r1.Scarf[i].Location, r2.Scarf[i].Location, percent));
             }
-            return new Rider(joints, scarf, r1.PhysicsBounds, dead, r1.SledBroken);
+            return new Rider(joints, scarf, r1.PhysicsBounds, dead, r1.SledBroken, r1.UseRemount);
         }
         private static void FlutterScarf(SimulationPoint[] scarf, int frameid, double momentum)
         {
@@ -223,9 +229,11 @@ namespace linerider.Game
                 }
             }
         }
-        public unsafe static void ProcessBones(Bone[] bones, SimulationPoint[] body, ref bool dead, List<int> breaks = null)
+
+        public unsafe static bool TestSurvivable(Bone[] bones, SimulationPoint[] body, double enduranceMultiplier = 1.0) //Tests if a given Bosh state can survive with a given endurance multiplier
         {
             int bonelen = bones.Length;
+
             for (int i = 0; i < bonelen; i++)
             {
                 var bone = bones[i];
@@ -243,14 +251,110 @@ namespace linerider.Game
                     {
                         scalar = 0;
                     }
-                    if (bone.Breakable && (dead || scalar > bone.RestLength * RiderConstants.EnduranceFactor))
+                    if (bone.Breakable && (scalar > bone.RestLength * RiderConstants.EnduranceFactor * enduranceMultiplier))
+                    {
+                        return false; //If any of Bosh's bones is unsurvivable, return false as this position will kill Bosh
+                    }
+                }
+            }
+
+            return true; //If none of Bosh's bones are unsurvivable, the state survives so return true
+        }
+
+        public unsafe static void ProcessRemount(Bone[] bones, SimulationPoint[] body, ref bool dead, ref bool sledbroken, ref int rState, ref int rTimer)
+        {
+            if (sledbroken == true)
+            {
+                rState = 2; //Set just in case he gets stuck in remount state with no sled or something
+                return;
+            }
+
+            switch (rState)
+            {
+                default: //Invalid remount state
+                    break;
+                case 0: //Rider on sled
+                    if (dead) //If Bosh dies, enter dismounting state, set timer to 0
+                    {
+                        rState = 1;
+                        rTimer = 0;
+                    }
+                    break;
+                case 1: //Dismounting (dead & cannot remount)
+                    if (rTimer >= 30)
+                    {
+                        rState = 2;
+                        rTimer = 0;
+                    }
+                    else { rTimer += 1; }
+                    break;
+                case 2: //Dismounted (dead & can remount)
+                    if (TestSurvivable(bones, body, 2.0))
+                    {
+                        if (rTimer >= 3) //If Bosh has been within 2x endurance range for 3 consecutive frames, go to remounting phase
+                        {
+                            rState = 3;
+                            dead = false;
+                            rTimer = 0;
+                        }
+                        else { rTimer += 1; }
+
+                    }
+                    else { rTimer = 0; }
+                    break;
+                case 3: //Remounting
+                    if (!TestSurvivable(bones, body, 2.0) || dead) //If Bosh can't survive with 2x endurance range, go back to dismounted phase (TODO check if this is redundant)
+                    {
+                        rState = 2;
+                        rTimer = 0;
+                        dead = true;
+                    }
+                    if (TestSurvivable(bones, body, 1.0))
+                    {
+                        if (rTimer >= 3) //If Bosh has been within the standard endurance range for 3 consecutive frames, go to normal mounted phase
+                        {
+                            rState = 0;
+                            rTimer = 0;
+                        }
+                        else { rTimer += 1; }
+                    }
+                    else { rTimer = 0; }
+                    break;
+            }
+        }
+
+        public unsafe static void ProcessBones(Bone[] bones, SimulationPoint[] body, ref bool dead, ref int rState, List<int> breaks = null)
+        {
+            int bonelen = bones.Length;
+
+            double strengthMult = rState == 3 ? RiderConstants.RemountStrengthMultiplier : 1.0;
+            double enduranceMult = rState == 3 ? RiderConstants.RemountEnduranceMultiplier : 1.0;
+
+            for (int i = 0; i < bonelen; i++)
+            {
+                var bone = bones[i];
+                int j1 = bone.joint1;
+                int j2 = bone.joint2;
+                var d = body[j1].Location - body[j2].Location;
+                var len = d.Length;
+
+                if (!bone.OnlyRepel || len < bone.RestLength)
+                {
+                    var scalar = (len - bone.RestLength) / len * 0.5;
+                    // instead of 0 checking dista the rationale is technically dista could be really really small
+                    // and round off into infinity which gives us the NaN error.
+                    if (double.IsInfinity(scalar))
+                    {
+                        scalar = 0;
+                    }
+                    if (bone.Breakable && (dead || scalar > bone.RestLength * RiderConstants.EnduranceFactor * enduranceMult))
                     {
                         dead = true;
                         breaks?.Add(i);
                     }
                     else
                     {
-                        d *= scalar;
+                        d *= scalar * strengthMult;
                         body[j1] = body[j1].AddPosition(-d);
                         body[j2] = body[j2].AddPosition(d);
                     }
@@ -291,12 +395,15 @@ namespace linerider.Game
             int bodylen = Body.Length;
             bool dead = Crashed;
             bool sledbroken = SledBroken;
+            int rState = remountState;
+            int rTimer = remountTimer;
+
             RectLRTB phys = new RectLRTB(ref body[0]);
             using (grid.Sync.AcquireRead())
             {
                 for (int i = 0; i < maxiteration; i++)
                 {
-                    ProcessBones(bones, body, ref dead);
+                    ProcessBones(bones, body, ref dead, ref rState);
                     ProcessLines(grid, body, ref phys, ref activetriggers, collisions);
                 }
             }
@@ -305,13 +412,19 @@ namespace linerider.Game
                 var nose = body[RiderConstants.SledTR].Location - body[RiderConstants.SledTL].Location;
                 var tail = body[RiderConstants.SledBL].Location - body[RiderConstants.SledTL].Location;
                 var head = body[RiderConstants.BodyShoulder].Location - body[RiderConstants.BodyButt].Location;
-                if ((nose.X * tail.Y) - (nose.Y * tail.X) < 0 || // tail fakie
-                    (nose.X * head.Y) - (nose.Y * head.X) > 0)   // head fakie
+                if (!dead && ((nose.X * tail.Y) - (nose.Y * tail.X) < 0 || // tail fakie
+                              (nose.X * head.Y) - (nose.Y * head.X) > 0))   // head fakie
                 {
                     dead = true;
                     sledbroken = true;
                 }
             }
+
+            if (UseRemount)
+            {
+                ProcessRemount(bones, body, ref dead, ref sledbroken, ref rState, ref rTimer);
+            }
+
             SimulationPoint[] scarf;
             if (stepscarf)
             {
@@ -324,7 +437,7 @@ namespace linerider.Game
             {
                 scarf = new SimulationPoint[Scarf.Length];
             }
-            return new Rider(body, scarf, phys, dead, sledbroken);
+            return new Rider(body, scarf, phys, dead, sledbroken, UseRemount, rState, rTimer);
         }
         public List<int> Diagnose(
             ISimulationGrid grid,
@@ -339,13 +452,14 @@ namespace linerider.Game
             SimulationPoint[] body = Body.Step();
             int bodylen = Body.Length;
             bool dead = Crashed;
+            int rState = remountState;
             RectLRTB phys = new RectLRTB(ref body[0]);
             List<int> breaks = new List<int>();
             using (grid.Sync.AcquireRead())
             {
                 for (int i = 0; i < maxiteration; i++)
                 {
-                    ProcessBones(bones, body, ref dead, breaks);
+                    ProcessBones(bones, body, ref dead, ref rState, breaks);
                     if (dead)
                     {
                         return breaks;

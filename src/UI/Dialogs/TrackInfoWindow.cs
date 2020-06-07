@@ -182,6 +182,13 @@ namespace linerider.UI
             AddFeature(table, trackfeatures, "Scenery Width", TrackFeatures.scenerywidth);
             AddFeature(table, trackfeatures, "Line Triggers", TrackFeatures.ignorable_trigger);
 
+            table = _tree.Add("Physics Modifiers", 150);
+            var remount = GwenHelper.AddPropertyCheckbox(table, "Remount", _editor.UseRemount);
+            remount.ValueChanged += (o, e) =>
+            {
+                _editor.UseRemount = remount.IsChecked;
+            };
+
             PopulateSong(song);
             _tree.ExpandAll();
             // table.Add

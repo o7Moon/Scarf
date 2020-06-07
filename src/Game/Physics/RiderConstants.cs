@@ -43,6 +43,8 @@ namespace linerider.Game
             return scarfVectors.ToArray();
         }
         public const double EnduranceFactor = 0.0285;
+        public const double RemountEnduranceMultiplier = 2.0;
+        public const double RemountStrengthMultiplier = 0.5;
         public const double StartingMomentum = 0.4;
         public static Vector2d Gravity = new Vector2d(0, 0.175);
         public const int SledTL = 0;

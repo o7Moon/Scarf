@@ -107,6 +107,12 @@ namespace linerider.IO
             {
                 ret[TrackFeatures.songinfo] = true;
             }
+
+            if (trk.Remount)
+            {
+                ret[TrackFeatures.remount] = true;
+            }
+
             return ret;
         }
         /// Checks a relative filename for validity
