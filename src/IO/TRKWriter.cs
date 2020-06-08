@@ -142,7 +142,6 @@ namespace linerider.IO
                 }
                 metadata.Add(TrackMetadata.triggers + "=" + triggerstring.ToString());
                 bw.Write((short)metadata.Count);
-                bw.Write((short)metadata.Count);
                 foreach (var str in metadata)
                 {
                     WriteString(bw, str);
