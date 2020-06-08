@@ -206,17 +206,10 @@ namespace linerider
             else
             {
                 var changelogText = "" +
-                    " * Added Superdavo0001\'s remount mod into LRTran!\n" +
-                    " * Changelog toggle in the Preferences -> Other.\n" +
-                    " * Turning off the changelog actually works now.\n" +
-                    " * Autosaves now save to their own file (autosave_day.month.year_hours.minutes.trk).\n" +
-                    " * \"<untitled>\" will now be autosaved in the \"Unnamed Track\" folder.\n" +
-                    " * Autosaves can be configured in Preferences -> Other.\n" +
-                    " * Track changes will always be shown on screen.\n" +
-                    " * Added Multi-Scarf functionality in the Preferences -> Rider.\n" +
-                    " * When the game has enough changed where it will autosave, \"Autosave enabled!\" will appear in the top left corner.\n" +
+                    " * Merged changes from the `develop` branch into the `master` branch.\n" +
+                    " * Trigger support is now available from the merge!\n" +
                     "\n" +
-                    "NOTE: Discord is auto disabled on startup for now until I implement it in a more stable way.";
+                    "NOTE: Discord is still auto disabled on startup for now until I implement it in a more stable way.";
 
                 var window = MessageBox.Show(this, changelogText, "Changelog for " + Program.Version, MessageBox.ButtonType.YesNoCancel);
                 window.RenameButtonsYN("Previous Changelogs (Github)", "Continue and don\'t show again", "Continue");

@@ -273,7 +273,7 @@ namespace linerider
 
                 for (int i = 1; i < Settings.multiScarfAmount; i++)
                 {
-                    insertScarfColor(0x0000FF, 0x00, ((i * Settings.multiScarfSegments))+(i-1)-(1+i));
+                    insertScarfColor(0x0000FF, 0x00, ((i * Settings.multiScarfSegments)) + (i - 1) - (1 + i));
                 }
             }
             //If edits to the png is toggled update the rider
@@ -318,7 +318,6 @@ namespace linerider
                         Track.ZoomBy(-0.08f);
                 }
             }
-
 
             if (Track.Playing)
             {
