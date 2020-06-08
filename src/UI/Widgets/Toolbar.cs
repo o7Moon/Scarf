@@ -93,17 +93,22 @@ namespace linerider.UI
                 if (UI.InputUtils.Check(Hotkey.PlayButtonIgnoreFlag))
                 {
                     _editor.StartIgnoreFlag();
+                    _editor.Scheduler.DefaultSpeed();
                 }
                 else
                 {
                     if (_editor.Paused)
+                    {
                         _editor.TogglePause();
+                    }
                     else
+                    {
                         _editor.StartFromFlag();
+                        _editor.Scheduler.DefaultSpeed();
+                    }
                 }
-                _editor.Scheduler.DefaultSpeed();
                 _pause.IsHidden = false;
-                _start.IsHidden = true; ;
+                _start.IsHidden = true;
             };
             _stop.Clicked += (o, e) =>
             {
@@ -164,6 +169,7 @@ namespace linerider.UI
                 };
                 menu.AddItem("Preferences").Clicked += (o2, e2) => _canvas.ShowPreferencesDialog();
                 menu.AddItem("Track Properties").Clicked += (o2, e2) => _canvas.ShowTrackPropertiesDialog();
+                menu.AddItem("Triggers").Clicked += (o2, e2) => _canvas.ShowTriggerWindow();
                 menu.AddItem("Export Video").Clicked += (o2, e2) => _canvas.ShowExportVideoWindow();
                 var canvaspos = LocalPosToCanvas(new Point(_menu.X, _menu.Y));
                 menu.SetPosition(canvaspos.X, canvaspos.Y + 32);

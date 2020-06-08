@@ -82,11 +82,11 @@ namespace linerider.IO
             using (var trk = game.Track.CreateTrackReader())
             {
                 game.Track.Reset();
+                Recording = true;
+                Recording1080p = is1080P;
 
                 var state = game.Track.GetStart();
                 var frame = flag.FrameID;
-                Recording = true;
-                Recording1080p = is1080P;
                 game.Canvas.SetCanvasSize(game.RenderSize.Width, game.RenderSize.Height);
                 game.Canvas.Layout();
 

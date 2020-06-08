@@ -48,6 +48,10 @@
     <Compile Include="DiscordGameSDK\LobbyManager.cs" />
     <Compile Include="DiscordGameSDK\StorageManager.cs" />
     <Compile Include="DiscordGameSDK\StoreManager.cs" />
+    <Compile Include="Game\TriggerType.cs" />
+    <Compile Include="Game\GameTrigger.cs" />
+    <Compile Include="IO\json\RiderData.cs" />
+    <Compile Include="IO\TriggerConverter.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="GameCanvas.cs" />
     <Compile Include="Editor.cs" />
@@ -179,6 +183,7 @@
     <Compile Include="IO\json\track_json.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\Dialogs\TriggerWindow.cs" />
     <Compile Include="UI\PlatformImpl.cs" />
     <Compile Include="UI\Hotkey.cs" />
     <Compile Include="UI\Fonts.cs" />
