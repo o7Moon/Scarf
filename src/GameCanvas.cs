@@ -206,10 +206,16 @@ namespace linerider
             else
             {
                 var changelogText = "" +
-                    " * Merged changes from the `develop` branch into the `master` branch.\n" +
-                    " * Trigger support is now available from the merge!\n" +
+                    "* The `/Examples` folder will be bundled with future downloads so you no longer need to download the source code to get those files\n" +
+                    "* Added a new Background trigger! \n" +
+                    "  * It does nothing right now but is currently saved and loaded by .trk and .json files.\n" +
+                    "* The `Save` option has been renamed to `Save as...`\n" +
+                    "* Added keybinds for the `Trigger Menu` (P) and `Save as...` (Crtl+Shift+S) \n" +
+                    "* Default save format settings are now available in `Settings -> Other`\n" +
+                    "* Default window sizing options are now available in `Settings -> Other`\n" +
+                    "* Quicksaves now follow the format `quicksave_month.day.year_hours.minutes.filetype`\n" +
                     "\n" +
-                    "NOTE: Discord is still auto disabled on startup for now until I implement it in a more stable way.";
+                    "NOTE: Discord is *still* auto disabled on startup for now until I implement it in a more stable way.";
 
                 var window = MessageBox.Show(this, changelogText, "Changelog for " + Program.Version, MessageBox.ButtonType.YesNoCancel);
                 window.RenameButtonsYN("Previous Changelogs (Github)", "Continue and don\'t show again", "Continue");

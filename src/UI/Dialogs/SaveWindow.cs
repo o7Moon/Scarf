@@ -19,7 +19,7 @@ namespace linerider.UI
         private const string CreateNewTrack = "<create new track>";
         public SaveWindow(GameCanvas parent, Editor editor) : base(parent, editor)
         {
-            Title = "Save Track";
+            Title = "Save Track As...";
             RichLabel l = new RichLabel(this);
             l.Dock = Dock.Top;
             l.AutoSizeToContents = true;
@@ -49,8 +49,8 @@ namespace linerider.UI
             _savebutton = new DropDownButton(bottomcontainer)
             {
                 Dock = Dock.Right,
-                Text = "Save",
-                UserData = ".trk",
+                Text = "Save ("+Settings.DefaultSaveFormat+")",
+                UserData = Settings.DefaultSaveFormat,
                 Margin = new Margin(2, 0, 0, 0),
             };
             _savebutton.DropDownClicked += (o, e) =>
@@ -58,7 +58,7 @@ namespace linerider.UI
                   Menu pop = new Menu(_canvas);
                   pop.AddItem(".trk (recommended)").Clicked += (o2, e2) =>
                   {
-                      _savebutton.Text = "Save";
+                      _savebutton.Text = "Save (.trk)";
                       _savebutton.UserData = ".trk";
                   };
                   pop.AddItem(".track.json (for .com support)").Clicked += (o2, e2) =>

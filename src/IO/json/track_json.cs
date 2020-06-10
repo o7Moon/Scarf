@@ -16,7 +16,10 @@ namespace linerider.IO.json
             public int start;
             public int end;
             public int triggerType;
-            public float zoomTarget = 4;
+            public float zoomTarget = -999;
+            public int backgroundred = -999;
+            public int backgroundgreen = -999;
+            public int backgroundblue = -999;
         }
         public class point_json
         {

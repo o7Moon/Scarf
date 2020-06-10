@@ -127,10 +127,12 @@ namespace linerider.UI
 
             var misctable = _kbtree.Add("Misc", 150);
             AddBinding(misctable, "Quicksave", Hotkey.Quicksave);
+            AddBinding(misctable, "Save As Menu", Hotkey.SaveAsWindow);
             AddBinding(misctable, "Open Preferences", Hotkey.PreferencesWindow);
             AddBinding(misctable, "Open Game Menu", Hotkey.GameMenuWindow);
             AddBinding(misctable, "Open Track Properties", Hotkey.TrackPropertiesWindow);
             AddBinding(misctable, "Load Track", Hotkey.LoadWindow);
+            AddBinding(misctable, "Open Trigger Menu", Hotkey.TriggerMenuWindow);
             _kbtree.ExpandAll();
         }
         private List<Keybinding> FetchBinding(Hotkey hotkey)

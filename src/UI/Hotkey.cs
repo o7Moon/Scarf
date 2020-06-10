@@ -70,6 +70,8 @@ namespace linerider.UI
         TrackPropertiesWindow,
         LoadWindow,
         Quicksave,
+        SaveAsWindow,
+        TriggerMenuWindow,
 
         PlayButtonIgnoreFlag
     }

@@ -413,8 +413,36 @@ namespace linerider.UI
                 Settings.Save();
             });
 
-            var autosaveSettings = GwenHelper.CreateHeaderPanel(parent, "Autosaves");
-            var autosaveMinutes = new Spinner(autosaveSettings)
+            var mainWindowSettings = GwenHelper.CreateHeaderPanel(parent, "Window Launch Size");
+            var mainWindowWidth = new Spinner(mainWindowSettings)
+            {
+                Min = 1,
+                Max = int.MaxValue - 1,
+                Value = Settings.mainWindowWidth,
+            };
+            mainWindowWidth.ValueChanged += (o, e) =>
+            {
+                Settings.mainWindowWidth = (int)((Spinner)o).Value;
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(mainWindowSettings, "Main Window Width (Current: "+ (Program.GetWindowWidth()) + ")", mainWindowWidth); 
+            var mainWindowHeight = new Spinner(mainWindowSettings)
+            {
+                Min = 1,
+                Max = int.MaxValue - 1,
+                Value = Settings.mainWindowHeight,
+            };
+            mainWindowHeight.ValueChanged += (o, e) =>
+            {
+                Settings.mainWindowHeight = (int)((Spinner)o).Value;
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(mainWindowSettings, "Main Window Height (Current: " + (Program.GetWindowHeight()) + ")", mainWindowHeight);
+
+
+
+            var saveSettings = GwenHelper.CreateHeaderPanel(parent, "Saves");
+            var autosaveMinutes = new Spinner(saveSettings)
             {
                 Min = 1,
                 Max = int.MaxValue - 1,
@@ -425,9 +453,9 @@ namespace linerider.UI
                 Settings.autosaveMinutes = (int)((Spinner)o).Value;
                 Settings.Save();
             };
-            GwenHelper.CreateLabeledControl(autosaveSettings, "Minutes between autosaves", autosaveMinutes);
+            GwenHelper.CreateLabeledControl(saveSettings, "Minutes between autosaves", autosaveMinutes);
 
-            var autosaveChanges = new Spinner(autosaveSettings)
+            var autosaveChanges = new Spinner(saveSettings)
             {
                 Min = 1,
                 Max = int.MaxValue - 1,
@@ -438,7 +466,40 @@ namespace linerider.UI
                 Settings.autosaveChanges = (int)((Spinner)o).Value;
                 Settings.Save();
             };
-            GwenHelper.CreateLabeledControl(autosaveSettings, "Min changes to start autosaving", autosaveChanges);
+            GwenHelper.CreateLabeledControl(saveSettings, "Min changes to start autosaving", autosaveChanges);
+
+            ComboBox defaultSaveType = GwenHelper.CreateLabeledCombobox(saveSettings, "Default Save As Format:");
+            defaultSaveType.AddItem(".trk", "", ".trk");
+            defaultSaveType.AddItem(".json", "", ".json");
+            defaultSaveType.AddItem(".sol", "", ".sol");
+            defaultSaveType.SelectByUserData(Settings.DefaultSaveFormat.ToString(CultureInfo.InvariantCulture));
+            defaultSaveType.ItemSelected += (o, e) =>
+            {
+                Settings.DefaultSaveFormat = (String)e.SelectedItem.UserData;
+                Settings.Save();
+            };
+
+            ComboBox defaultQuicksaveType = GwenHelper.CreateLabeledCombobox(saveSettings, "Default Quicksave Format:");
+            defaultQuicksaveType.AddItem(".trk", "", ".trk");
+            defaultQuicksaveType.AddItem(".json", "", ".json");
+            defaultQuicksaveType.AddItem(".sol", "", ".sol");
+            defaultQuicksaveType.SelectByUserData(Settings.DefaultQuicksaveFormat.ToString(CultureInfo.InvariantCulture));
+            defaultQuicksaveType.ItemSelected += (o, e) =>
+            {
+                Settings.DefaultQuicksaveFormat = (String)e.SelectedItem.UserData;
+                Settings.Save();
+            };
+
+            ComboBox defaultAutosaveType = GwenHelper.CreateLabeledCombobox(saveSettings, "Default Autosave Format:");
+            defaultAutosaveType.AddItem(".trk", "", ".trk");
+            defaultAutosaveType.AddItem(".json", "", ".json");
+            defaultAutosaveType.AddItem(".sol", "", ".sol");
+            defaultAutosaveType.SelectByUserData(Settings.DefaultAutosaveFormat.ToString(CultureInfo.InvariantCulture));
+            defaultAutosaveType.ItemSelected += (o, e) =>
+            {
+                Settings.DefaultAutosaveFormat = (String)e.SelectedItem.UserData;
+                Settings.Save();
+            };
         }
         private void PopulateRiderSettings(ControlBase parent)
         {
@@ -458,7 +519,7 @@ namespace linerider.UI
 
             scarfCombobox.ItemSelected += (o, e) =>
             {
-                Settings.SelectedScarf = (String)e.SelectedItem.UserData; ;
+                Settings.SelectedScarf = (String)e.SelectedItem.UserData;
                 Debug.WriteLine("Selected Scarf: \"" + Settings.SelectedScarf + "\"");
                 Settings.Save();
             };

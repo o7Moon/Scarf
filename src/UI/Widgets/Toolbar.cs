@@ -125,7 +125,7 @@ namespace linerider.UI
             _menu.Clicked += (o, e) =>
             {
                 Menu menu = new Menu(_canvas);
-                menu.AddItem("Save").Clicked += (o2, e2) => { _canvas.ShowSaveDialog(); };
+                menu.AddItem("Save As...").Clicked += (o2, e2) => { _canvas.ShowSaveDialog(); };
                 menu.AddItem("Load").Clicked += (o2, e2) => { _canvas.ShowLoadDialog(); };
                 menu.AddItem("New").Clicked += (o2, e2) =>
                 {

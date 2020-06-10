@@ -22,11 +22,16 @@ namespace linerider.Game
 {
     public class GameTrigger
     {
-        public const int TriggerTypes = 1;
+        public const int TriggerTypes = 2;
         public int Start;
         public int End;
         public TriggerType TriggerType;
+        //Zoom
         public float ZoomTarget = 4;
+        //BG
+        public int backgroundRed;
+        public int backgroundGreen;
+        public int backgroundBlue;
 
         public bool CompareTo(GameTrigger other)
         {

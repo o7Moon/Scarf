@@ -126,21 +126,34 @@ namespace linerider.IO
                 for (int i = 0; i < trk.Triggers.Count; i++)
                 {
                     GameTrigger t = trk.Triggers[i];
-                    if (i != 0)
-                        triggerstring.Append("&");
-
-                    triggerstring.Append((int)TriggerType.Zoom);
-                    triggerstring.Append(":");
-                    if (t.TriggerType == TriggerType.Zoom)
+                    if (i != 0) { triggerstring.Append("&"); }
+                    switch (t.TriggerType)
                     {
-                        triggerstring.Append(t.ZoomTarget.ToString(Program.Culture));
-                        triggerstring.Append(":");
+                        case TriggerType.Zoom:
+                            triggerstring.Append((int)TriggerType.Zoom);
+                            triggerstring.Append(":");
+                            triggerstring.Append(t.ZoomTarget.ToString(Program.Culture));
+                            triggerstring.Append(":");
+                            break;
+                        case TriggerType.BGChange:
+                            triggerstring.Append((int)TriggerType.BGChange);
+                            triggerstring.Append(":");
+                            triggerstring.Append(t.backgroundRed.ToString(Program.Culture));
+                            triggerstring.Append(":");
+                            triggerstring.Append(t.backgroundGreen.ToString(Program.Culture));
+                            triggerstring.Append(":");
+                            triggerstring.Append(t.backgroundBlue.ToString(Program.Culture));
+                            triggerstring.Append(":");
+                            break;
                     }
                     triggerstring.Append(t.Start.ToString(Program.Culture));
                     triggerstring.Append(":");
                     triggerstring.Append(t.End.ToString(Program.Culture));
                 }
-                metadata.Add(TrackMetadata.triggers + "=" + triggerstring.ToString());
+                if (trk.Triggers.Count > 0) //If here are not trigger don't add triggers entry
+                {
+                    metadata.Add(TrackMetadata.triggers + "=" + triggerstring.ToString());
+                }
                 bw.Write((short)metadata.Count);
                 foreach (var str in metadata)
                 {

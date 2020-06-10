@@ -28,6 +28,7 @@ using OpenTK.Graphics;
 using linerider.Audio;
 using linerider.UI;
 using linerider.Utils;
+using System.Windows.Forms;
 
 namespace linerider
 {
@@ -106,6 +107,11 @@ namespace linerider
         public static int multiScarfSegments; //How many segments a multi scarf has
         public static int autosaveChanges; //Changes when autosave starts
         public static int autosaveMinutes; //Amount of minues per autosave
+        public static int mainWindowWidth; //Main window Width
+        public static int mainWindowHeight; //Main window height
+        public static String DefaultSaveFormat; //What the save menu auto picks 
+        public static String DefaultAutosaveFormat; //What the autosave format is
+        public static String DefaultQuicksaveFormat; //What the autosave format is
 
         public static bool ColorPlayback;
         public static bool OnionSkinning;
@@ -206,6 +212,11 @@ namespace linerider
             multiScarfSegments = 5;
             autosaveChanges = 50;
             autosaveMinutes = 5;
+            mainWindowWidth = 1280;
+            mainWindowHeight = 720;
+            DefaultSaveFormat = ".trk";
+            DefaultAutosaveFormat = ".trk";
+            DefaultQuicksaveFormat = ".trk";
         }
         public static void ResetKeybindings()
         {
@@ -301,6 +312,9 @@ namespace linerider
             SetupDefaultKeybind(Hotkey.ToolScaleAspectRatio, new Keybinding(KeyModifiers.Shift));
 
             SetupDefaultKeybind(Hotkey.ToolToggleOverlay, new Keybinding(Key.V));
+
+            SetupDefaultKeybind(Hotkey.TriggerMenuWindow, new Keybinding(Key.P));
+            SetupDefaultKeybind(Hotkey.SaveAsWindow, new Keybinding(Key.S, KeyModifiers.Control | KeyModifiers.Shift));
         }
         private static void SetupDefaultKeybind(Hotkey hotkey, Keybinding keybinding, Keybinding secondary = null)
         {
@@ -445,6 +459,11 @@ namespace linerider
             LoadInt(GetSetting(lines, nameof(multiScarfAmount)), ref multiScarfAmount);
             LoadInt(GetSetting(lines, nameof(autosaveMinutes)), ref autosaveMinutes);
             LoadInt(GetSetting(lines, nameof(autosaveChanges)), ref autosaveChanges);
+            LoadInt(GetSetting(lines, nameof(mainWindowWidth)), ref mainWindowWidth);
+            LoadInt(GetSetting(lines, nameof(mainWindowHeight)), ref mainWindowHeight);
+            DefaultSaveFormat = GetSetting(lines, nameof(DefaultSaveFormat));
+            DefaultAutosaveFormat = GetSetting(lines, nameof(DefaultAutosaveFormat));
+            DefaultQuicksaveFormat = GetSetting(lines, nameof(DefaultQuicksaveFormat));
 
             if (multiScarfSegments == 0) { multiScarfSegments++; }
             if (ScarfSegments == 0) { ScarfSegments++; }
@@ -516,6 +535,11 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(multiScarfAmount), multiScarfAmount.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(autosaveChanges), autosaveChanges.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(autosaveMinutes), autosaveMinutes.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(mainWindowWidth), mainWindowWidth.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(mainWindowHeight), mainWindowHeight.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(DefaultSaveFormat), DefaultSaveFormat.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(DefaultAutosaveFormat), DefaultAutosaveFormat.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(DefaultQuicksaveFormat), DefaultQuicksaveFormat.ToString(Program.Culture));
 
             foreach (var binds in Keybinds)
             {

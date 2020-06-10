@@ -96,8 +96,8 @@ namespace linerider
         private readonly Stopwatch _autosavewatch = Stopwatch.StartNew();
         public MainWindow()
             : base(
-                1280,
-                720,
+                Settings.mainWindowWidth,
+                Settings.mainWindowHeight,
                 new GraphicsMode(new ColorFormat(24), 0, 0, 0, ColorFormat.Empty),
                    "Line Rider: Advanced",
                    GameWindowFlags.Default,
@@ -1146,6 +1146,18 @@ namespace linerider
             () =>
             {
                 Canvas.ShowGameMenuWindow();
+            });
+            InputUtils.RegisterHotkey(Hotkey.TriggerMenuWindow,
+            () => !CurrentTools.SelectedTool.Active,
+            () =>
+            {
+                Canvas.ShowTriggerWindow();
+            });
+            InputUtils.RegisterHotkey(Hotkey.SaveAsWindow,
+            () => !CurrentTools.SelectedTool.Active,
+            () =>
+            {
+                Canvas.ShowSaveDialog();
             });
             InputUtils.RegisterHotkey(Hotkey.TrackPropertiesWindow,
             () => !CurrentTools.SelectedTool.Active,

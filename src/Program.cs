@@ -36,7 +36,7 @@ namespace linerider
 #endif
         public static string BinariesFolder = "bin";
         public readonly static CultureInfo Culture = new CultureInfo("en-US");
-        public static string Version = "6/8/20 - Build 1";
+        public static string Version = "6/10/20 - Build 1";
         public static string TestVersion = "";
         public static string NewVersion = null;
         public static readonly string WindowTitle = "Line Rider: Advanced (Tran\'s fork) " + Version + TestVersion;
@@ -158,7 +158,7 @@ namespace linerider
                 using (glGame = new MainWindow())
                 {
                     UI.InputUtils.SetWindow(glGame);
-                    glGame.RenderSize = new System.Drawing.Size(1280, 720);
+                    glGame.RenderSize = new System.Drawing.Size(Settings.mainWindowWidth, Settings.mainWindowHeight);
                     Rendering.GameRenderer.Game = glGame;
                     var ms = new MemoryStream(GameResources.icon);
                     glGame.Icon = new System.Drawing.Icon(ms);
@@ -208,6 +208,14 @@ namespace linerider
                     IsBackground = true
                 }.Start();
             }
+        }
+        public static int GetWindowWidth()
+        {
+            return (int)glGame.Width;
+        }
+        public static int GetWindowHeight()
+        {
+            return (int)glGame.Height;
         }
     }
 }

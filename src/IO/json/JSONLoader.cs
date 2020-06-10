@@ -116,13 +116,29 @@ namespace linerider.IO
                         throw new TrackIO.TrackLoadException(
                             "Unsupported trigger type " + t.triggerType);
                     }
-                    ret.Triggers.Add(new GameTrigger()
+                    switch (ttype)
                     {
-                        Start = t.start,
-                        End = t.end,
-                        TriggerType = ttype,
-                        ZoomTarget = t.zoomTarget,
-                    });
+                        case TriggerType.Zoom:
+                            ret.Triggers.Add(new GameTrigger()
+                            {
+                                Start = t.start,
+                                End = t.end,
+                                TriggerType = ttype,
+                                ZoomTarget = t.zoomTarget,
+                            });
+                            break;
+                        case TriggerType.BGChange:
+                            ret.Triggers.Add(new GameTrigger()
+                            {
+                                Start = t.start,
+                                End = t.end,
+                                TriggerType = ttype,
+                                backgroundRed = t.backgroundred,
+                                backgroundGreen = t.backgroundgreen,
+                                backgroundBlue = t.backgroundblue,
+                            });
+                            break;
+                    }
                 }
             }
             return ret;

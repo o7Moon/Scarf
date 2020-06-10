@@ -23,5 +23,6 @@ namespace linerider.Game
     public enum TriggerType
     {
         Zoom = 0,
+        BGChange = 1,
     }
 }

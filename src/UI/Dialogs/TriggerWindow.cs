@@ -14,15 +14,28 @@ namespace linerider.UI
 {
     public class TriggerWindow : DialogBase
     {
+        private TriggerType triggerSelected;
+        private Panel _triggeroptions;
+
         private const int FramePadding = 0;
         private HorizontalSlider _slider;
         private ListBox _lbtriggers;
-        private ControlBase _zoomoptions;
 
+        private ControlBase _zoomoptions;
         private Spinner _spinnerStart;
         private Spinner _spinnerDuration;
         private ComboBox _triggertype;
         private Spinner _zoomtarget;
+
+        private ControlBase _bgoptions;
+        private Spinner _backgrondred;
+        private Spinner _backgrondgreen;
+        private Spinner _backgrondblue;
+
+        //private ControlBase _lineoptions;
+        //private Spinner _linered;
+        //private Spinner _linegreen;
+        //private Spinner _lineblue;
         private int SliderFrames
         {
             get
@@ -171,12 +184,81 @@ namespace linerider.UI
                     }
                 }
             };
-            GwenHelper.CreateLabeledControl(
-                _zoomoptions, "Zoom Target:", _zoomtarget).Dock = Dock.Bottom;
+            GwenHelper.CreateLabeledControl(_zoomoptions, "Zoom Target:", _zoomtarget).Dock = Dock.Bottom;
+        }
+        private void SetupBG()
+        {
+            _bgoptions = new ControlBase(null)
+            {
+                Margin = new Margin(0, 0, 0, 0),
+                Dock = Dock.Fill
+            };
+            _backgrondred = new Spinner(null)
+            {
+                Min = 0,
+                Max = 255,
+                Value = 255, //Set to current LRLuna color when implemented 
+            };
+            _backgrondred.ValueChanged += (o, e) =>
+            {
+                if (_selecting_trigger)
+                    return;
+                using (var trk = _editor.CreateTrackWriter())
+                {
+                    var trigger = BeginModifyTrigger(trk);
+                    if (trigger != null)
+                    {
+                        trigger.backgroundRed = (int)_backgrondred.Value;
+                        EndModifyTrigger(trigger, trk);
+                    }
+                }
+            };
+            _backgrondgreen = new Spinner(null)
+            {
+                Min = 0,
+                Max = 255,
+                Value = 255, //Set to current LRLuna color when implemented 
+            };
+            _backgrondgreen.ValueChanged += (o, e) =>
+            {
+                if (_selecting_trigger)
+                    return;
+                using (var trk = _editor.CreateTrackWriter())
+                {
+                    var trigger = BeginModifyTrigger(trk);
+                    if (trigger != null)
+                    {
+                        trigger.backgroundGreen = (int)_backgrondgreen.Value;
+                        EndModifyTrigger(trigger, trk);
+                    }
+                }
+            };
+            _backgrondblue = new Spinner(null)
+            {
+                Min = 0,
+                Max = 255,
+                Value = 255, //Set to current LRLuna color when implemented 
+            };
+            _backgrondblue.ValueChanged += (o, e) =>
+            {
+                if (_selecting_trigger)
+                    return;
+                using (var trk = _editor.CreateTrackWriter())
+                {
+                    var trigger = BeginModifyTrigger(trk);
+                    if (trigger != null)
+                    {
+                        trigger.backgroundBlue = (int)_backgrondblue.Value;
+                        EndModifyTrigger(trigger, trk);
+                    }
+                }
+            };
+            GwenHelper.CreateLabeledControl(_bgoptions, "Background Blue", _backgrondblue).Dock = Dock.Bottom;
+            GwenHelper.CreateLabeledControl(_bgoptions, "Background Green", _backgrondgreen).Dock = Dock.Bottom;
+            GwenHelper.CreateLabeledControl(_bgoptions, "Background Red", _backgrondred).Dock = Dock.Bottom;
         }
         private void SetupRight()
         {
-            SetupZoom();
             ControlBase rightcontainer = new ControlBase(this)
             {
                 Margin = new Margin(0, 0, 0, 0),
@@ -221,23 +303,37 @@ namespace linerider.UI
                 CancelChange();
                 Close();
             };
-            Panel triggeroptions = new Panel(rightcontainer)
+            this._triggeroptions = new Panel(rightcontainer)
             {
                 Dock = Dock.Fill,
                 Padding = Padding.Four,
                 Margin = new Margin(0, 0, 0, 5)
             };
 
-            _zoomoptions.Parent = triggeroptions;
+            SetupZoom();
+            SetupBG();
+
+            _zoomoptions.Parent = _triggeroptions;
             _triggertype = GwenHelper.CreateLabeledCombobox(
                 rightcontainer, "Trigger Type:");
             _triggertype.Dock = Dock.Bottom;
 
             var zoom = _triggertype.AddItem("Zoom", "", TriggerType.Zoom);
-            zoom.Selected += (o, e) =>
+            zoom.CheckChanged += (o, e) =>
             {
-                triggeroptions.Children.Clear();
-                _zoomoptions.Parent = triggeroptions;
+                _triggeroptions.Children.Clear();
+                _zoomoptions.Parent = _triggeroptions;
+                triggerSelected = TriggerType.Zoom;
+                Debug.WriteLine("Changed to Zoom");
+
+            };
+            var bgColor = _triggertype.AddItem("Background (Does nothing rn)", "", TriggerType.BGChange); //Tran
+            bgColor.CheckChanged += (o, e) =>
+            {
+                _triggeroptions.Children.Clear();
+                _bgoptions.Parent = _triggeroptions;
+                triggerSelected = TriggerType.BGChange;
+                Debug.WriteLine("Changed to Background");
             };
             _triggertype.SelectedItem = zoom;
         }
@@ -288,13 +384,42 @@ namespace linerider.UI
             var delete = topcontainer.FindChildByName("btndelete");
             add.Clicked += (o, e) =>
             {
-                var trigger = new GameTrigger()
+                GameTrigger trigger = null;
+                switch (triggerSelected)
                 {
-                    TriggerType = TriggerType.Zoom,
-                    Start = _editor.Offset,
-                    End = _editor.Offset + 40,
-                    ZoomTarget = 4,
-                };
+                    case (TriggerType.Zoom):
+                        _triggeroptions.Children.Clear();
+                        _zoomoptions.Parent = _triggeroptions;
+                        trigger = new GameTrigger()
+                        {
+                            TriggerType = TriggerType.Zoom,
+                            Start = _editor.Offset,
+                            End = _editor.Offset + 40,
+                            ZoomTarget = 4,
+                        };
+
+                        break;
+                    case (TriggerType.BGChange):
+                        trigger = new GameTrigger()
+                        {
+                            TriggerType = TriggerType.BGChange,
+                            Start = _editor.Offset,
+                            End = _editor.Offset + 1,
+                            backgroundRed = 255,
+                            backgroundGreen = 255,
+                            backgroundBlue = 255,
+                        };
+                        break;
+                    default: //Default to the zoom trigger if something goes wrong
+                        trigger = new GameTrigger()
+                        {
+                            TriggerType = TriggerType.Zoom,
+                            Start = _editor.Offset,
+                            End = _editor.Offset + 40,
+                            ZoomTarget = 4,
+                        };
+                        break;
+                }
 
                 _changemade = true;
                 using (var trk = _editor.CreateTrackWriter())
@@ -316,8 +441,12 @@ namespace linerider.UI
                     _changemade = true;
                     using (var trk = _editor.CreateTrackWriter())
                     {
-                        trk.Triggers.RemoveAt(SelectedTrigger);
-                        _editor.Timeline.TriggerChanged(trigger, trigger);
+                        try
+                        {
+                            trk.Triggers.RemoveAt(SelectedTrigger);
+                            _editor.Timeline.TriggerChanged(trigger, trigger);
+                        }
+                        catch { /*Do nothing*/ }
                         UpdateFrame();
                     }
                     _lbtriggers.Children.Remove(row);
@@ -348,7 +477,7 @@ namespace linerider.UI
             {
                 OnlyWholeNumbers = true,
                 Min = 0,
-                Max = 40 * 60 * 2,//2 minutes is enough for a zoom trigger, you crazy nuts.
+                Max = 40 * 60 * 2,//2 minutes is enough for a trigger, you crazy nuts.
                 Value = 0
                 //TODO set values
             };
@@ -407,9 +536,29 @@ namespace linerider.UI
                 _spinnerStart.Value = trigger.Start;
                 _spinnerDuration.Value = trigger.End - trigger.Start;
                 _triggertype.SelectByUserData(trigger.TriggerType);
-                if (trigger.TriggerType == TriggerType.Zoom)
+                switch (trigger.TriggerType)
                 {
-                    _zoomtarget.Value = trigger.ZoomTarget;
+                    case TriggerType.Zoom:
+                        _triggeroptions.Children.Clear();
+                        _zoomoptions.Parent = _triggeroptions;
+                        Debug.WriteLine("Changed to Zoom");
+
+                        _zoomtarget.Value = trigger.ZoomTarget;
+                        triggerSelected = TriggerType.Zoom;
+                        break;
+                    case TriggerType.BGChange:
+                        _triggeroptions.Children.Clear();
+                        _bgoptions.Parent = _triggeroptions;
+                        Debug.WriteLine("Changed to Background");
+
+                        _backgrondred.Value = trigger.backgroundRed;
+                        _backgrondgreen.Value = trigger.backgroundGreen;
+                        _backgrondblue.Value = trigger.backgroundBlue;
+                        triggerSelected = TriggerType.BGChange;
+                        break;
+                    /* Add more triggers here */
+                    default:
+                        break;
                 }
             }
             finally
@@ -459,6 +608,9 @@ namespace linerider.UI
             {
                 case TriggerType.Zoom:
                     typelabel = "[Zoom]";
+                    break;
+                case TriggerType.BGChange:
+                    typelabel = "[Background]";
                     break;
             }
             return $"{typelabel} {trigger.Start} - {trigger.End}";

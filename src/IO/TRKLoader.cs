@@ -76,18 +76,36 @@ namespace linerider.IO
                                     "Unsupported trigger type");
                             }
                             GameTrigger newtrigger;
+                            int start;
+                            int end;
                             switch (ttype)
                             {
                                 case TriggerType.Zoom:
                                     var target = ParseFloat(tdata[1]);
-                                    var start = ParseInt(tdata[2]);
-                                    var end = ParseInt(tdata[3]);
+                                    start = ParseInt(tdata[2]);
+                                    end = ParseInt(tdata[3]);
                                     newtrigger = new GameTrigger()
                                     {
                                         Start = start,
                                         End = end,
                                         TriggerType = TriggerType.Zoom,
                                         ZoomTarget = target,
+                                    };
+                                    break;
+                                case TriggerType.BGChange:
+                                    var red = ParseInt(tdata[1]);
+                                    var green = ParseInt(tdata[2]);
+                                    var blue = ParseInt(tdata[3]);
+                                    start = ParseInt(tdata[4]);
+                                    end = ParseInt(tdata[5]);
+                                    newtrigger = new GameTrigger()
+                                    {
+                                        Start = start,
+                                        End = end,
+                                        TriggerType = TriggerType.BGChange,
+                                        backgroundRed = red,
+                                        backgroundGreen = green,
+                                        backgroundBlue = blue,
                                     };
                                     break;
                                 default:

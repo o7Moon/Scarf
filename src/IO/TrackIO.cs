@@ -209,17 +209,21 @@ namespace linerider.IO
             }
             if (Directory.Exists(dir))
             {
-                var files = EnumerateTrackFiles(dir);
-                if (files.Length > 0)
-                {
-                    if (ExtractSaveName(files[0]) == "quicksave")
-                    {
-                        TryMoveAndReplaceFile(files[0], dir + "quicksave_old.trk");
-                    }
-                }
+                var quicksaveString = ("quicksave_" + DateTime.Now.Day + "." + DateTime.Now.Month + "." + DateTime.Now.Year + "_" + DateTime.Now.Hour + "." + DateTime.Now.Minute);
                 try
                 {
-                    SaveTrackToFile(track, "quicksave");
+                    switch (Settings.DefaultQuicksaveFormat)
+                    {
+                        case ".trk": //.trk
+                            SaveTrackToFile(track, quicksaveString);
+                            break;
+                        case ".json": //.json
+                            SaveTrackToJsonFile(track, quicksaveString);
+                            break;
+                        case ".sol": //.sol
+                            SaveToSOL(track, quicksaveString);
+                            break;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -316,10 +320,20 @@ namespace linerider.IO
             if (track.Name.Equals("*")|| track.Name.Equals("<untitled>")) { dir = Utils.Constants.TracksDirectory + "Unnamed Track" + Path.DirectorySeparatorChar;}
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
-            //var sn1 = "autosave00";
-            //var sn2 = "autosave01";
-            //TryMoveAndReplaceFile(dir + sn1 + ".trk", dir + sn2 + ".trk");
-            TRKWriter.SaveTrack(track, "autosave_" + DateTime.Now.Day + "." + DateTime.Now.Month + "." + DateTime.Now.Year + "_" + DateTime.Now.Hour + "." + DateTime.Now.Minute);
+
+            String autosaveString = ("autosave_" + DateTime.Now.Day + "." + DateTime.Now.Month + "." + DateTime.Now.Year + "_" + DateTime.Now.Hour + "." + DateTime.Now.Minute);
+            switch (Settings.DefaultAutosaveFormat)
+            {
+                case ".trk":
+                    TRKWriter.SaveTrack(track, autosaveString);
+                    break;
+                case ".json":
+                    JSONWriter.SaveTrack(track, autosaveString);
+                    break;
+                case ".sol":
+                    SOLWriter.SaveTrack(track, autosaveString);
+                    break;
+            }
         }
         public static void CreateTestFromTrack(Track track)
         {
