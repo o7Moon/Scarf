@@ -145,6 +145,16 @@ namespace linerider.IO
                             triggerstring.Append(t.backgroundBlue.ToString(Program.Culture));
                             triggerstring.Append(":");
                             break;
+                        case TriggerType.LineColor:
+                            triggerstring.Append((int)TriggerType.LineColor);
+                            triggerstring.Append(":");
+                            triggerstring.Append(t.lineRed.ToString(Program.Culture));
+                            triggerstring.Append(":");
+                            triggerstring.Append(t.lineGreen.ToString(Program.Culture));
+                            triggerstring.Append(":");
+                            triggerstring.Append(t.lineBlue.ToString(Program.Culture));
+                            triggerstring.Append(":");
+                            break;
                     }
                     triggerstring.Append(t.Start.ToString(Program.Culture));
                     triggerstring.Append(":");

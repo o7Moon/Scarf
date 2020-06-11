@@ -20,6 +20,9 @@ namespace linerider.IO.json
             public int backgroundred = -999;
             public int backgroundgreen = -999;
             public int backgroundblue = -999;
+            public int lineRed = -999;
+            public int lineGreen = -999;
+            public int lineBlue = -999;
         }
         public class point_json
         {

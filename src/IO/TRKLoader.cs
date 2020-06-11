@@ -108,6 +108,22 @@ namespace linerider.IO
                                         backgroundBlue = blue,
                                     };
                                     break;
+                                case TriggerType.LineColor:
+                                    var linered = ParseInt(tdata[1]);
+                                    var linegreen = ParseInt(tdata[2]);
+                                    var lineblue = ParseInt(tdata[3]);
+                                    start = ParseInt(tdata[4]);
+                                    end = ParseInt(tdata[5]);
+                                    newtrigger = new GameTrigger()
+                                    {
+                                        Start = start,
+                                        End = end,
+                                        TriggerType = TriggerType.BGChange,
+                                        lineRed = linered,
+                                        lineGreen = linegreen,
+                                        lineBlue = lineblue,
+                                    };
+                                    break;
                                 default:
                                     throw new TrackIO.TrackLoadException(
                                         "Unsupported trigger type");

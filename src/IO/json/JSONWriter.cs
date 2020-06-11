@@ -97,6 +97,17 @@ namespace linerider.IO
                             end = trigger.End
                         });
                         break;
+                    case TriggerType.LineColor:
+                        trackobj.gameTriggers.Add(new track_json.gametrigger_json()
+                        {
+                            triggerType = (int)trigger.TriggerType,
+                            lineRed = trigger.lineRed,
+                            lineGreen = trigger.lineGreen,
+                            lineBlue = trigger.lineBlue,
+                            start = trigger.Start,
+                            end = trigger.End
+                        });
+                        break;
                 }
             }
             var dir = TrackIO.GetTrackDirectory(trk);

@@ -35,6 +35,9 @@ namespace linerider.Game
         public int backgroundGreen;
         public int backgroundBlue;
         //Line Color
+        public int lineRed;
+        public int lineGreen;
+        public int lineBlue;
 
         public bool CompareTo(GameTrigger other)
         {

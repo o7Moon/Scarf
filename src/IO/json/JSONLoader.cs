@@ -138,6 +138,17 @@ namespace linerider.IO
                                 backgroundBlue = t.backgroundblue,
                             });
                             break;
+                        case TriggerType.LineColor:
+                            ret.Triggers.Add(new GameTrigger()
+                            {
+                                Start = t.start,
+                                End = t.end,
+                                TriggerType = ttype,
+                                lineRed = t.lineRed,
+                                lineGreen = t.lineGreen,
+                                lineBlue = t.lineBlue,
+                            });
+                            break;
                     }
                 }
             }
