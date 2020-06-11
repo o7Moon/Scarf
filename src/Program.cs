@@ -50,7 +50,7 @@ namespace linerider
         /// Gets the current directory. Ends in Path.DirectorySeperator
         /// </summary>
         public static string UserDirectory
-        {
+        {       
             get
             {
                 if (_userdir == null)

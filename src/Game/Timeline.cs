@@ -26,6 +26,7 @@ using System.Threading;
 using linerider.Game;
 using linerider.Utils;
 using System.Diagnostics;
+using OpenTK.Graphics;
 
 namespace linerider.Game
 {
@@ -35,6 +36,7 @@ namespace linerider.Game
         {
             public Rider Rider;
             public float Zoom;
+            public Color4 Color;
         }
         private HitTestManager _hittest = new HitTestManager();
         private ResourceSync _framesync = new ResourceSync();
@@ -93,7 +95,7 @@ namespace linerider.Game
             {
                 _hittest.Reset();
                 _frames.Clear();
-                _frames.Add(new frameinfo() { Rider = state, Zoom = zoom });
+                _frames.Add(new frameinfo() { Rider = state, Zoom = zoom, Color = Constants.TriggerBGColor });
                 using (changesync.AcquireWrite())
                 {
                     _first_invalid_frame = _frames.Count;
@@ -172,6 +174,14 @@ namespace linerider.Game
             {
                 UnsafeEnsureFrameValid(frame);
                 return _frames[frame].Zoom;
+            }
+        }
+        public Color4 GetFrameBackgroundColor(int frame)
+        {
+            using (_framesync.AcquireWrite())
+            {
+                UnsafeEnsureFrameValid(frame);
+                return _frames[frame].Color;
             }
         }
         /// <summary>
@@ -283,8 +293,22 @@ namespace linerider.Game
                         var zoomtrigger = triggers[(int)TriggerType.Zoom];
                         if (zoomtrigger != null)
                         {
+                            Console.WriteLine("There's a Zoom Trigger on this frame! Add code here DEV!");
                             var delta = currentframe - zoomtrigger.Start;
                             zoomtrigger.ActivateZoom(delta, ref current.Zoom);
+                        }
+                        
+                        var bgtrigger = triggers[(int)TriggerType.BGChange];
+                        if (bgtrigger != null)
+                        {
+                            Console.WriteLine("There's a BG Trigger on this frame! Add code here DEV!");
+                            var delta = currentframe - bgtrigger.Start;
+                            bgtrigger.ActivateBG(delta, ref Constants.NonTriggerBGColor, ref Constants.TriggerBGColor, currentframe);
+                            current.Color = Constants.TriggerBGColor;
+                        }
+                        else
+                        {
+                            Constants.TriggerBGColor = (Settings.NightMode ? Constants.ColorNightMode : (Settings.WhiteBG ? Constants.ColorWhite : Constants.ColorOffwhite));
                         }
                     }
                     steps[i] = current;

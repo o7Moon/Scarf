@@ -327,7 +327,7 @@ namespace linerider.UI
                 Debug.WriteLine("Changed to Zoom");
 
             };
-            var bgColor = _triggertype.AddItem("Background (Does nothing rn)", "", TriggerType.BGChange); //Tran
+            var bgColor = _triggertype.AddItem("Background Color", "", TriggerType.BGChange); //Tran
             bgColor.CheckChanged += (o, e) =>
             {
                 _triggeroptions.Children.Clear();
@@ -469,7 +469,7 @@ namespace linerider.UI
             {
                 OnlyWholeNumbers = true,
                 Min = 1,
-                Max = Constants.MaxFrames,
+                Max = int.MaxValue - 1,
                 Value = _editor.Offset
                 //TODO set values
             };
@@ -477,7 +477,7 @@ namespace linerider.UI
             {
                 OnlyWholeNumbers = true,
                 Min = 0,
-                Max = 40 * 60 * 2,//2 minutes is enough for a trigger, you crazy nuts.
+                Max = int.MaxValue - 1, //Yeah I'm crazy for wanting a more than 2 min trigger
                 Value = 0
                 //TODO set values
             };

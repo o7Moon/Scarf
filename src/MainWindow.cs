@@ -162,9 +162,19 @@ namespace linerider
                 {
                     CurrentTools.PencilTool.OnMouseMoved(InputUtils.GetMouse());
                 }
-                GL.ClearColor(Settings.NightMode
-                   ? Constants.ColorNightMode
-                   : (Settings.WhiteBG ? Constants.ColorWhite : Constants.ColorOffwhite));
+
+                if (Track.Playing || Settings.PreviewMode )
+                {
+                    /* BG triggers and Line trigger updates */
+                    GL.ClearColor(Track.Timeline.GetFrameBackgroundColor(Track.Offset));
+                    
+                }
+                else
+                {
+                    GL.ClearColor(Settings.NightMode ? Constants.ColorNightMode : (Settings.WhiteBG ? Constants.ColorWhite : Constants.ColorOffwhite));
+                }
+                
+
                 MSAABuffer.Use(RenderSize.Width, RenderSize.Height);
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
                 GL.Clear(ClearBufferMask.ColorBufferBit);
