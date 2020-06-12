@@ -36,7 +36,8 @@ namespace linerider.Game
         {
             public Rider Rider;
             public float Zoom;
-            public Color4 Color;
+            public Color4 BGColor;
+            public Color LineColor;
         }
         private HitTestManager _hittest = new HitTestManager();
         private ResourceSync _framesync = new ResourceSync();
@@ -95,12 +96,24 @@ namespace linerider.Game
             {
                 _hittest.Reset();
                 _frames.Clear();
-                _frames.Add(new frameinfo() { Rider = state, Zoom = zoom, Color = Constants.TriggerBGColor });
+                _frames.Add(new frameinfo() { 
+                    Rider = state, 
+                    Zoom = zoom, 
+                    BGColor = Constants.ColorWhite,
+                    LineColor = Constants.DefaultLineColor,
+                });
                 using (changesync.AcquireWrite())
                 {
                     _first_invalid_frame = _frames.Count;
                 }
             }
+        }
+        /// <summary>
+        /// Clears out the frame info
+        /// </summary>
+        public void ClearFrameInfo()
+        {
+            _frames.Clear();
         }
         /// <summary>
         /// Extracts the rider and death details of the specified frame.
@@ -181,7 +194,15 @@ namespace linerider.Game
             using (_framesync.AcquireWrite())
             {
                 UnsafeEnsureFrameValid(frame);
-                return _frames[frame].Color;
+                return _frames[frame].BGColor;
+            }
+        }
+        public Color GetLineColor(int frame)
+        {
+            using (_framesync.AcquireWrite())
+            {
+                UnsafeEnsureFrameValid(frame);
+                return _frames[frame].LineColor;
             }
         }
         /// <summary>
@@ -293,7 +314,6 @@ namespace linerider.Game
                         var zoomtrigger = triggers[(int)TriggerType.Zoom];
                         if (zoomtrigger != null)
                         {
-                            Console.WriteLine("There's a Zoom Trigger on this frame! Add code here DEV!");
                             var delta = currentframe - zoomtrigger.Start;
                             zoomtrigger.ActivateZoom(delta, ref current.Zoom);
                         }
@@ -301,14 +321,16 @@ namespace linerider.Game
                         var bgtrigger = triggers[(int)TriggerType.BGChange];
                         if (bgtrigger != null)
                         {
-                            Console.WriteLine("There's a BG Trigger on this frame! Add code here DEV!");
                             var delta = currentframe - bgtrigger.Start;
-                            bgtrigger.ActivateBG(delta, ref Constants.NonTriggerBGColor, ref Constants.TriggerBGColor, currentframe);
-                            current.Color = Constants.TriggerBGColor;
+                            bgtrigger.ActivateBG(delta, currentframe, ref Constants.NonTriggerBGColor, ref Constants.TriggerBGColor, ref current.BGColor);
                         }
-                        else
+
+                        var linetrigger = triggers[(int)TriggerType.LineColor];
+                        if (linetrigger != null)
                         {
-                            Constants.TriggerBGColor = (Settings.NightMode ? Constants.ColorNightMode : (Settings.WhiteBG ? Constants.ColorWhite : Constants.ColorOffwhite));
+                            var delta = currentframe - linetrigger.Start;
+                            linetrigger.ActivateLine(delta, ref Constants.NonTriggerLineColorChange, ref Constants.TriggerLineColorChange, currentframe, ref current.LineColor);
+                            //Constants.TriggerLineColorChange = current.LineColor;
                         }
                     }
                     steps[i] = current;

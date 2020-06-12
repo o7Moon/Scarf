@@ -162,19 +162,25 @@ namespace linerider
                 {
                     CurrentTools.PencilTool.OnMouseMoved(InputUtils.GetMouse());
                 }
-
-                if (Track.Playing || Settings.PreviewMode )
+                if (Settings.PreviewMode || TrackRecorder.Recording)
                 {
                     /* BG triggers and Line trigger updates */
-                    GL.ClearColor(Track.Timeline.GetFrameBackgroundColor(Track.Offset));
-                    
+                    Constants.TriggerBGColor = Track.Timeline.GetFrameBackgroundColor(Track.Offset);
+                    GL.ClearColor(Constants.TriggerBGColor);
+                    Constants.TriggerLineColorChange = Track.Timeline.GetLineColor(Track.Offset);
                 }
                 else
                 {
                     GL.ClearColor(Settings.NightMode ? Constants.ColorNightMode : (Settings.WhiteBG ? Constants.ColorWhite : Constants.ColorOffwhite));
+                    if (Settings.NightMode)
+                    {
+                        Constants.TriggerLineColorChange = Constants.DefaultNightLineColor;
+                    }
+                    else
+                    {
+                        Constants.TriggerLineColorChange = Constants.DefaultLineColor;
+                    }
                 }
-                
-
                 MSAABuffer.Use(RenderSize.Width, RenderSize.Height);
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
                 GL.Clear(ClearBufferMask.ColorBufferBit);
@@ -360,7 +366,7 @@ namespace linerider
 
             try
             {
-                if (Settings.customScarfOnPng)
+                if (Settings.customScarfOnPng && !Settings.SelectedBoshSkin.Equals("*default*"))
                 {
                     bodyPNG = new Bitmap(Program.UserDirectory + "/Riders/" + Settings.SelectedBoshSkin + "/body.png");
                     bodyDeadPNG = new Bitmap(Program.UserDirectory + "/Riders/" + Settings.SelectedBoshSkin + "/bodydead.png");
@@ -397,7 +403,7 @@ namespace linerider
             }
             catch (Exception e) { Debug.WriteLine(e); Models.LoadModels(); }
             
-            if (Settings.SelectedBoshSkin == "default") { Models.LoadModels(); return; }
+            if (Settings.SelectedBoshSkin == "*default*") { Models.LoadModels(); return; }
 
             try
             {
@@ -420,7 +426,7 @@ namespace linerider
             string scarfLocation = Program.UserDirectory + "/Scarves/" + Settings.SelectedScarf;
             try
             {
-                if ((Settings.SelectedScarf != "default") && (File.ReadLines(scarfLocation).First() == "#LRTran Scarf File"))
+                if ((Settings.SelectedScarf != "*default*") && (File.ReadLines(scarfLocation).First() == "#LRTran Scarf File"))
                 {
                     string[] lines = File.ReadAllLines(scarfLocation);
                     for (int i = 1; i < lines.Length; i++)

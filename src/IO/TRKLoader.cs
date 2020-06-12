@@ -118,7 +118,7 @@ namespace linerider.IO
                                     {
                                         Start = start,
                                         End = end,
-                                        TriggerType = TriggerType.BGChange,
+                                        TriggerType = TriggerType.LineColor,
                                         lineRed = linered,
                                         lineGreen = linegreen,
                                         lineBlue = lineblue,

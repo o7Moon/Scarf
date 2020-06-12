@@ -1,3 +1,3 @@
 # Changelogs folder
 
-Read old changelogs here
+This folder contains the previous changelogs for LRTran!

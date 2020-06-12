@@ -19,6 +19,7 @@
 using linerider.Utils;
 using OpenTK.Graphics;
 using System;
+using System.Drawing;
 
 namespace linerider.Game
 {
@@ -70,7 +71,7 @@ namespace linerider.Game
             }
             return handled;
         }
-        public bool ActivateBG(int hitdelta, ref Color4 staticCurrentColor, ref Color4 changingCurrentColor, int currentFrame)
+        public bool ActivateBG(int hitdelta, int currentFrame, ref Color4 staticCurrentColor, ref Color4 currentColorChanging, ref Color4 frameInfoColor)
         {
             bool handled = false;
             if (TriggerType == TriggerType.BGChange)
@@ -82,26 +83,76 @@ namespace linerider.Game
                 {
                     if (frame < fadeframes)
                     {
-                        float diffR = this.backgroundRed - staticCurrentColor.R;
-                        float diffG = this.backgroundGreen - staticCurrentColor.G;
-                        float diffB = this.backgroundBlue - staticCurrentColor.B;
-                        float newR = (staticCurrentColor.R + (diffR * (frame / fadeframes)));
-                        float newG = (staticCurrentColor.G + (diffG * (frame / fadeframes)));
-                        float newB = (staticCurrentColor.B + (diffB * (frame / fadeframes)));
+                        float diffR = this.backgroundRed - staticCurrentColor.R * 255;
+                        float diffG = this.backgroundGreen - staticCurrentColor.G * 255;
+                        float diffB = this.backgroundBlue - staticCurrentColor.B * 255;
+                        float newR = ((staticCurrentColor.R * 255) + (diffR * (frame / fadeframes))) / 255;
+                        float newG = ((staticCurrentColor.G * 255) + (diffG * (frame / fadeframes))) / 255;
+                        float newB = ((staticCurrentColor.B * 255) + (diffB * (frame / fadeframes))) / 255;
 
-                        changingCurrentColor = new Color4((float)newR, (float)newG, (float)newB, 255);
-                        
+                        if (newR > 1) { newR = newR / 255; }
+                        if (newG > 1) { newG = newG / 255; }
+                        if (newB > 1) { newB = newB / 255; }
+
+                        frameInfoColor = new Color4((float)newR, (float)newG, (float)newB, 255);
+                        currentColorChanging = new Color4((float)newR, (float)newG, (float)newB, 255);
+
+                        //Console.WriteLine("R: " + newR);
+                        //Console.WriteLine("G: " + newG);
+                        //Console.WriteLine("B: " + newB);
+
                         handled = true;
                     }
                     else
                     {
-                        changingCurrentColor = new Color4((float)this.backgroundRed, (float)this.backgroundGreen, (float)this.backgroundBlue, 255);
-                        staticCurrentColor = new Color4((float)this.backgroundRed, (float)this.backgroundGreen, (float)this.backgroundBlue, 255);
+                        staticCurrentColor = new Color4((float)this.backgroundRed / 255, (float)this.backgroundGreen / 255, (float)this.backgroundBlue / 255, 255);
+                        frameInfoColor = new Color4((float)this.backgroundRed / 255, (float)this.backgroundGreen / 255, (float)this.backgroundBlue / 255, 255);
+                        currentColorChanging = new Color4((float)this.backgroundRed / 255, (float)this.backgroundGreen / 255, (float)this.backgroundBlue / 255, 255);
+                    }
+                }
+            }
+             return handled;
+        }
+
+        public bool ActivateLine(int hitdelta, ref Color staticCurrentColor, ref Color notStaticCurrentColor, int currentFrame, ref Color frameLineColor)
+        {
+            bool handled = false;
+            if (TriggerType == TriggerType.LineColor)
+            {
+                float fadeframes = End - Start;
+                float frame = (currentFrame - Start);
+
+                if (!staticCurrentColor.Equals(Color.FromArgb(255, this.lineRed, this.lineGreen, this.lineBlue)))
+                {
+                    if (frame < fadeframes)
+                    {
+                        float diffR = this.lineRed - staticCurrentColor.R;
+                        float diffG = this.lineGreen - staticCurrentColor.G;
+                        float diffB = this.lineBlue - staticCurrentColor.B;
+                        float newR = (staticCurrentColor.R + (diffR * (frame / fadeframes)));
+                        float newG = (staticCurrentColor.G + (diffG * (frame / fadeframes)));
+                        float newB = (staticCurrentColor.B + (diffB * (frame / fadeframes)));
+
+                        frameLineColor = Color.FromArgb(255, (int)newR, (int)newG, (int)newB);
+                        notStaticCurrentColor = Color.FromArgb(255, (int)newR, (int)newG, (int)newB);
+
+                        //Console.WriteLine(newR);
+                        //Console.WriteLine(newG);
+                        //Console.WriteLine(newB);
+
+                        handled = true;
+                    }
+                    else
+                    {
+                        staticCurrentColor = Color.FromArgb(255, this.lineRed, this.lineGreen, this.lineBlue);
+                        frameLineColor = Color.FromArgb(255, this.lineRed, this.lineGreen, this.lineBlue);
+                        notStaticCurrentColor = Color.FromArgb(255, this.lineRed, this.lineGreen, this.lineBlue);
                     }
                 }
             }
             return handled;
         }
+
         public GameTrigger Clone()
         {
             return new GameTrigger()

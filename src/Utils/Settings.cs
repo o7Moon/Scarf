@@ -198,8 +198,8 @@ namespace linerider
             ColorPlayback = false;
             OnionSkinning = false;
             ScarfSegments = 5;
-            SelectedScarf = "default";
-            SelectedBoshSkin = "default";
+            SelectedScarf = "*default*";
+            SelectedBoshSkin = "*default*";
             customScarfOnPng = false;
             discordActivityEnabled = false;
             discordActivity1 = "none";
@@ -537,9 +537,9 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(autosaveMinutes), autosaveMinutes.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(mainWindowWidth), mainWindowWidth.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(mainWindowHeight), mainWindowHeight.ToString(Program.Culture));
-            config += "\r\n" + MakeSetting(nameof(DefaultSaveFormat), DefaultSaveFormat.ToString(Program.Culture));
-            config += "\r\n" + MakeSetting(nameof(DefaultAutosaveFormat), DefaultAutosaveFormat.ToString(Program.Culture));
-            config += "\r\n" + MakeSetting(nameof(DefaultQuicksaveFormat), DefaultQuicksaveFormat.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(DefaultSaveFormat), DefaultSaveFormat);
+            config += "\r\n" + MakeSetting(nameof(DefaultAutosaveFormat), DefaultAutosaveFormat);
+            config += "\r\n" + MakeSetting(nameof(DefaultQuicksaveFormat), DefaultQuicksaveFormat);
 
             foreach (var binds in Keybinds)
             {

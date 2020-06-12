@@ -472,7 +472,6 @@ namespace linerider.UI
             defaultSaveType.AddItem(".trk", "", ".trk");
             defaultSaveType.AddItem(".json", "", ".json");
             defaultSaveType.AddItem(".sol", "", ".sol");
-            defaultSaveType.SelectByUserData(Settings.DefaultSaveFormat.ToString(CultureInfo.InvariantCulture));
             defaultSaveType.ItemSelected += (o, e) =>
             {
                 Settings.DefaultSaveFormat = (String)e.SelectedItem.UserData;
@@ -483,7 +482,6 @@ namespace linerider.UI
             defaultQuicksaveType.AddItem(".trk", "", ".trk");
             defaultQuicksaveType.AddItem(".json", "", ".json");
             defaultQuicksaveType.AddItem(".sol", "", ".sol");
-            defaultQuicksaveType.SelectByUserData(Settings.DefaultQuicksaveFormat.ToString(CultureInfo.InvariantCulture));
             defaultQuicksaveType.ItemSelected += (o, e) =>
             {
                 Settings.DefaultQuicksaveFormat = (String)e.SelectedItem.UserData;
@@ -494,12 +492,16 @@ namespace linerider.UI
             defaultAutosaveType.AddItem(".trk", "", ".trk");
             defaultAutosaveType.AddItem(".json", "", ".json");
             defaultAutosaveType.AddItem(".sol", "", ".sol");
-            defaultAutosaveType.SelectByUserData(Settings.DefaultAutosaveFormat.ToString(CultureInfo.InvariantCulture));
+            defaultAutosaveType.SelectByUserData(Settings.DefaultAutosaveFormat);
             defaultAutosaveType.ItemSelected += (o, e) =>
             {
                 Settings.DefaultAutosaveFormat = (String)e.SelectedItem.UserData;
                 Settings.Save();
             };
+
+            defaultSaveType.SelectByUserData(Settings.DefaultSaveFormat);
+            defaultQuicksaveType.SelectByUserData(Settings.DefaultQuicksaveFormat);
+            defaultAutosaveType.SelectByUserData(Settings.DefaultAutosaveFormat);
         }
         private void PopulateRiderSettings(ControlBase parent)
         {
@@ -507,15 +509,13 @@ namespace linerider.UI
             var riderSettingPanel = GwenHelper.CreateHeaderPanel(parent, "Rider Settings");
 
             ComboBox scarfCombobox = GwenHelper.CreateLabeledCombobox(scarfSettingPanel, "Selected Scarf:");
-            scarfCombobox.AddItem("Default", "default", "default");
+            scarfCombobox.AddItem("Default", "*default*", "*default*");
             string[] scarfPaths = Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\LRA\\Scarves");
             for (int i = 0; i < scarfPaths.Length; i++)
             {
                 string scarfNames = Path.GetFileName(scarfPaths[i]);
                 scarfCombobox.AddItem(scarfNames, scarfNames, scarfNames);
             }
-            
-            scarfCombobox.SelectByUserData(Settings.SelectedScarf.ToString(CultureInfo.InvariantCulture));
 
             scarfCombobox.ItemSelected += (o, e) =>
             {
@@ -569,7 +569,7 @@ namespace linerider.UI
                 Settings.Save();
             });
             ComboBox boshSkinCombobox = GwenHelper.CreateLabeledCombobox(riderSettingPanel, "Selected Rider:");
-            boshSkinCombobox.AddItem("Default", "default", "default");
+            boshSkinCombobox.AddItem("Default", "*default*", "*default*");
 
 
             string[] riderPaths = Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/LRA/Riders");
@@ -578,15 +578,15 @@ namespace linerider.UI
                 String riderNames = Path.GetFileName(riderPaths[i]);
                 boshSkinCombobox.AddItem(riderNames, riderNames, riderNames);
             }
-
-            boshSkinCombobox.SelectByUserData(Settings.SelectedBoshSkin.ToString(CultureInfo.InvariantCulture));
-
             boshSkinCombobox.ItemSelected += (o, e) =>
             {
                 Settings.SelectedBoshSkin = (String)e.SelectedItem.UserData; ;
                 Debug.WriteLine("Selected rider Skin: \"" + Settings.SelectedBoshSkin + "\"");
                 Settings.Save();
             };
+
+            scarfCombobox.SelectByUserData(Settings.SelectedScarf);
+            boshSkinCombobox.SelectByUserData(Settings.SelectedBoshSkin);
         }
 
         private void PopulateDiscordSettings(ControlBase parent)
@@ -613,10 +613,10 @@ namespace linerider.UI
                 boxArr[i].AddItem("Amount of Lines", "lineText", "lineText");
                 boxArr[i].AddItem("Version", "versionText", "versionText");
             }
-            activity1.SelectByUserData(Settings.discordActivity1.ToString(CultureInfo.InvariantCulture));
-            activity2.SelectByUserData(Settings.discordActivity2.ToString(CultureInfo.InvariantCulture));
-            activity3.SelectByUserData(Settings.discordActivity3.ToString(CultureInfo.InvariantCulture));
-            activity4.SelectByUserData(Settings.discordActivity4.ToString(CultureInfo.InvariantCulture));
+            activity1.SelectByUserData(Settings.discordActivity1);
+            activity2.SelectByUserData(Settings.discordActivity2);
+            activity3.SelectByUserData(Settings.discordActivity3);
+            activity4.SelectByUserData(Settings.discordActivity4);
 
             activity1.ItemSelected += (o, e) =>
             {
@@ -642,7 +642,7 @@ namespace linerider.UI
             ComboBox largeImageKey = GwenHelper.CreateLabeledCombobox(discordHeader, "Image:");
             largeImageKey.AddItem("LRTran App Icon", "lrl", "lrl");
             largeImageKey.AddItem(":boshbless:", "bosh_pray", "bosh_pray");
-            largeImageKey.SelectByUserData(Settings.largeImageKey.ToString(CultureInfo.InvariantCulture));
+            largeImageKey.SelectByUserData(Settings.largeImageKey);
             largeImageKey.ItemSelected += (o, e) =>
             {
                 Settings.largeImageKey = (String)e.SelectedItem.UserData; ;

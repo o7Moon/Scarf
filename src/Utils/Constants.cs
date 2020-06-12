@@ -7,8 +7,8 @@ namespace linerider.Utils
     {
         public static Color4 TriggerBGColor = new Color4(255, 255, 255, 255);
         public static Color4 NonTriggerBGColor = new Color4(255, 255, 255, 255);
-        //public static Color DefaultNightLineColor = Color.FromArgb(255, 255, 255);
-        //public static Color DefaultNightLineColor = Color.FromArgb(255, 255, 255);
+        public static Color TriggerLineColorChange = Color.FromArgb(0, 0, 0);
+        public static Color NonTriggerLineColorChange = Color.FromArgb(0, 0, 0);
 
         public static readonly Color4 ColorOffwhite = new Color4(244, 245, 249, 255);
         public static readonly Color4 ColorWhite = new Color4(255, 255, 255, 255);

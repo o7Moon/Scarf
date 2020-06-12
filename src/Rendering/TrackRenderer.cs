@@ -27,6 +27,7 @@ using System.Diagnostics;
 using linerider.Utils;
 using linerider.Drawing;
 using linerider.Game;
+using linerider.IO.json;
 
 namespace linerider.Rendering
 {
@@ -95,16 +96,9 @@ namespace linerider.Rendering
                 else
                     _sceneryvbo.KnobState = KnobState.Hidden;
 
-                if (options.NightMode)
-                {
-                    _sceneryvbo.OverrideColor = Constants.DefaultNightLineColor;
-                    _physvbo.OverrideColor = Constants.DefaultNightLineColor;
-                }
-                else
-                {
-                    _sceneryvbo.OverrideColor = Constants.DefaultLineColor;
-                    _physvbo.OverrideColor = Constants.DefaultLineColor;
-                }
+                _sceneryvbo.OverrideColor = Constants.TriggerLineColorChange;
+                _physvbo.OverrideColor = Constants.TriggerLineColorChange;
+
                 if (options.LineColors)
                 {
                     _sceneryvbo.OverrideColor = Constants.SceneryLineColor;

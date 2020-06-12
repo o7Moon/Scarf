@@ -325,9 +325,9 @@ namespace linerider.UI
                     }
                 }
             };
-            GwenHelper.CreateLabeledControl(_lineoptions, "Line Blue", _backgrondblue).Dock = Dock.Bottom;
-            GwenHelper.CreateLabeledControl(_lineoptions, "Line Green", _backgrondgreen).Dock = Dock.Bottom;
-            GwenHelper.CreateLabeledControl(_lineoptions, "Line Red", _backgrondred).Dock = Dock.Bottom;
+            GwenHelper.CreateLabeledControl(_lineoptions, "Line Blue", _linered).Dock = Dock.Bottom;
+            GwenHelper.CreateLabeledControl(_lineoptions, "Line Green", _linegreen).Dock = Dock.Bottom;
+            GwenHelper.CreateLabeledControl(_lineoptions, "Line Red", _lineblue).Dock = Dock.Bottom;
         }
         private void SetupRight()
         {
@@ -400,7 +400,7 @@ namespace linerider.UI
                 Debug.WriteLine("Changed to Zoom");
 
             };
-            var bgColor = _triggertype.AddItem("Background Color", "", TriggerType.BGChange); //Tran
+            var bgColor = _triggertype.AddItem("BG Color", "", TriggerType.BGChange); //Tran
             bgColor.CheckChanged += (o, e) =>
             {
                 _triggeroptions.Children.Clear();
@@ -409,7 +409,7 @@ namespace linerider.UI
                 Debug.WriteLine("Changed to Background");
             };
             var lineColor = _triggertype.AddItem("Line Color", "", TriggerType.LineColor); //Tran
-            bgColor.CheckChanged += (o, e) =>
+            lineColor.CheckChanged += (o, e) =>
             {
                 _triggeroptions.Children.Clear();
                 _lineoptions.Parent = _triggeroptions;
@@ -712,10 +712,10 @@ namespace linerider.UI
                     typelabel = "[Zoom]";
                     break;
                 case TriggerType.BGChange:
-                    typelabel = "[Background]";
+                    typelabel = "[BG Color]";
                     break;
                 case TriggerType.LineColor:
-                    typelabel = "[Background]";
+                    typelabel = "[Line Color]";
                     break;
                 default:
                     typelabel = "[No Name Found]";

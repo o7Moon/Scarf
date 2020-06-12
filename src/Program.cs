@@ -36,7 +36,7 @@ namespace linerider
 #endif
         public static string BinariesFolder = "bin";
         public readonly static CultureInfo Culture = new CultureInfo("en-US");
-        public static string Version = "6/10/20 - Build 1";
+        public static string Version = "6/11/20 - Build 1";
         public static string TestVersion = "";
         public static string NewVersion = null;
         public static readonly string WindowTitle = "Line Rider: Advanced (Tran\'s fork) " + Version + TestVersion;
@@ -140,6 +140,11 @@ namespace linerider
                 System.Windows.Forms.MessageBox.Show("LRA User directory created at:\r\n" + UserDirectory);
             }
             Settings.Load();
+            //Create critical settings if needed
+            if (Settings.DefaultSaveFormat == null) { Settings.DefaultSaveFormat = ".trk"; }
+            if (Settings.DefaultQuicksaveFormat == null) { Settings.DefaultSaveFormat = ".trk"; }
+            if (Settings.DefaultAutosaveFormat == null) { Settings.DefaultSaveFormat = ".trk"; }
+            Settings.Save();
 
             if (!Directory.Exists(UserDirectory + "Songs"))
                 Directory.CreateDirectory(UserDirectory + "Songs");

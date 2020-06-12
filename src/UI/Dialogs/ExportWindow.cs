@@ -132,7 +132,7 @@ namespace linerider.UI
             Button ok = new Button(bottomrow)
             {
                 Dock = Dock.Right,
-                Text = "Save"
+                Text = "Export"
             };
             if (!SafeFrameBuffer.CanRecord || !CheckRecord())
             {

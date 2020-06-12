@@ -81,9 +81,19 @@ namespace linerider.IO
             var invalid = false;
             using (var trk = game.Track.CreateTrackReader())
             {
-                game.Track.Reset();
                 Recording = true;
+                game.Track.Reset();
                 Recording1080p = is1080P;
+
+                //Set colors back to default for triggers
+                //linerider.Utils.Constants.TriggerBGColor = (Settings.NightMode ? linerider.Utils.Constants.ColorNightMode : (Settings.WhiteBG ? linerider.Utils.Constants.ColorWhite : linerider.Utils.Constants.ColorOffwhite));
+                //linerider.Utils.Constants.NonTriggerBGColor = (Settings.NightMode ? linerider.Utils.Constants.ColorNightMode : (Settings.WhiteBG ? linerider.Utils.Constants.ColorWhite : linerider.Utils.Constants.ColorOffwhite));
+                //linerider.Utils.Constants.NonTriggerLineColorChange = (Settings.NightMode ? linerider.Utils.Constants.DefaultNightLineColor : linerider.Utils.Constants.DefaultLineColor);
+                //linerider.Utils.Constants.TriggerLineColorChange = (Settings.NightMode ? linerider.Utils.Constants.DefaultNightLineColor : linerider.Utils.Constants.DefaultLineColor);
+                linerider.Utils.Constants.TriggerBGColor = linerider.Utils.Constants.ColorOffwhite;
+                linerider.Utils.Constants.NonTriggerBGColor = linerider.Utils.Constants.ColorOffwhite;
+                linerider.Utils.Constants.NonTriggerLineColorChange = linerider.Utils.Constants.DefaultLineColor;
+                linerider.Utils.Constants.TriggerLineColorChange = linerider.Utils.Constants.DefaultLineColor;
 
                 var state = game.Track.GetStart();
                 var frame = flag.FrameID;
