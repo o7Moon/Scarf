@@ -4,7 +4,7 @@ namespace linerider.IO.json
 {
     public class track_json
     {
-        public class zoomtrigger_json
+        public class zoomtrigger_json //Line zoom trigger
         {
             public int ID;
             public bool zoom;
@@ -33,7 +33,16 @@ namespace linerider.IO.json
         public string creator { get; set; }
         public string description { get; set; }
         public float startZoom { get; set; }
+        public int bgR { get; set; }
+        public int bgG { get; set; }
+        public int bgB { get; set; }
+        public int lineR { get; set; }
+        public int lineG { get; set; }
+        public int lineB { get; set; }
         public bool zeroStart { get; set; }
+        public float yGravity = 1; //Default grav
+        public float xGravity = 0; //Default grav
+        public double gravityWellSize = 10; //Default grav well size
         public int duration { get; set; }
         public string version { get; set; }
         public point_json startPosition { get; set; }

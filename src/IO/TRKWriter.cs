@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using linerider.Audio;
 using linerider.Game;
+using Discord;
+using System.Drawing;
 
 namespace linerider.IO
 {
@@ -15,14 +17,14 @@ namespace linerider.IO
         public static string SaveTrack(Track trk, string savename)
         {
             var dir = TrackIO.GetTrackDirectory(trk);
-            if (trk.Name.Equals("*") || trk.Name.Equals("<untitled>")) { dir = Utils.Constants.TracksDirectory + "Unnamed Track" + Path.DirectorySeparatorChar; }
+            if (trk.Name.Equals("<untitled>")) { dir = Utils.Constants.TracksDirectory + "Unnamed Track" + Path.DirectorySeparatorChar; }
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
             var filename = dir + savename + ".trk";
             using (var file = File.Create(filename))
             {
                 var bw = new BinaryWriter(file);
-                bw.Write(new byte[] { (byte)'T', (byte)'R', (byte)'K', 0xF2 });
+                bw.Write(new byte[] { (byte)'T', (byte)'R', (byte)'K', 0xF2 }); //TRK
                 bw.Write((byte)1);
                 string featurestring = "";
                 var lines = trk.GetLines();
@@ -122,6 +124,47 @@ namespace linerider.IO
                 bw.Write(new byte[] { (byte)'M', (byte)'E', (byte)'T', (byte)'A' });
                 List<string> metadata = new List<string>();
                 metadata.Add(TrackMetadata.startzoom + "=" + trk.StartZoom.ToString(Program.Culture));
+
+                //Only add if the values are different from default
+                if (trk.YGravity != 1)
+                {
+                    metadata.Add(TrackMetadata.ygravity + "=" + trk.YGravity.ToString(Program.Culture));
+                }
+                if (trk.XGravity != 0)
+                {
+                    metadata.Add(TrackMetadata.xgravity + "=" + trk.XGravity.ToString(Program.Culture));
+                }
+                if (trk.GravityWellSize != 10)
+                {
+                    metadata.Add(TrackMetadata.gravitywellsize + "=" + trk.GravityWellSize.ToString(Program.Culture));
+                }
+                
+                if (trk.BGColorR != Color.FromArgb(Utils.Constants.ColorOffwhite.ToArgb()).R) 
+                {
+                    metadata.Add(TrackMetadata.bgcolorR + "=" + trk.BGColorR.ToString(Program.Culture));
+                }
+                if (trk.BGColorG != Color.FromArgb(Utils.Constants.ColorOffwhite.ToArgb()).G)
+                {
+                    metadata.Add(TrackMetadata.bgcolorG + "=" + trk.BGColorG.ToString(Program.Culture));
+                }
+                if (trk.BGColorB != Color.FromArgb(Utils.Constants.ColorOffwhite.ToArgb()).B)
+                {
+                    metadata.Add(TrackMetadata.bgcolorB + "=" + trk.BGColorB.ToString(Program.Culture));
+                }
+                
+                if (trk.LineColorR != Utils.Constants.DefaultLineColor.R)
+                {
+                    metadata.Add(TrackMetadata.linecolorR + "=" + trk.LineColorR.ToString(Program.Culture));
+                }
+                if (trk.LineColorG != Utils.Constants.DefaultLineColor.G)
+                {
+                    metadata.Add(TrackMetadata.linecolorG + "=" + trk.LineColorG.ToString(Program.Culture));
+                }
+                if (trk.LineColorB != Utils.Constants.DefaultLineColor.B)
+                {
+                    metadata.Add(TrackMetadata.linecolorB + "=" + trk.LineColorB.ToString(Program.Culture));
+                }
+
                 StringBuilder triggerstring = new StringBuilder();
                 for (int i = 0; i < trk.Triggers.Count; i++)
                 {

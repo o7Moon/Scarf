@@ -86,14 +86,10 @@ namespace linerider.IO
                 Recording1080p = is1080P;
 
                 //Set colors back to default for triggers
-                //linerider.Utils.Constants.TriggerBGColor = (Settings.NightMode ? linerider.Utils.Constants.ColorNightMode : (Settings.WhiteBG ? linerider.Utils.Constants.ColorWhite : linerider.Utils.Constants.ColorOffwhite));
-                //linerider.Utils.Constants.NonTriggerBGColor = (Settings.NightMode ? linerider.Utils.Constants.ColorNightMode : (Settings.WhiteBG ? linerider.Utils.Constants.ColorWhite : linerider.Utils.Constants.ColorOffwhite));
-                //linerider.Utils.Constants.NonTriggerLineColorChange = (Settings.NightMode ? linerider.Utils.Constants.DefaultNightLineColor : linerider.Utils.Constants.DefaultLineColor);
-                //linerider.Utils.Constants.TriggerLineColorChange = (Settings.NightMode ? linerider.Utils.Constants.DefaultNightLineColor : linerider.Utils.Constants.DefaultLineColor);
-                linerider.Utils.Constants.TriggerBGColor = linerider.Utils.Constants.ColorOffwhite;
-                linerider.Utils.Constants.NonTriggerBGColor = linerider.Utils.Constants.ColorOffwhite;
-                linerider.Utils.Constants.NonTriggerLineColorChange = linerider.Utils.Constants.DefaultLineColor;
-                linerider.Utils.Constants.TriggerLineColorChange = linerider.Utils.Constants.DefaultLineColor;
+                linerider.Utils.Constants.TriggerBGColor = new Color4((byte)game.Track.StartingBGColorR, (byte)game.Track.StartingBGColorG, (byte)game.Track.StartingBGColorB, (byte)255);
+                linerider.Utils.Constants.StaticTriggerBGColor = new Color4((byte)game.Track.StartingBGColorR, (byte)game.Track.StartingBGColorG, (byte)game.Track.StartingBGColorB, (byte)255);
+                linerider.Utils.Constants.StaticTriggerLineColorChange = Color.FromArgb(255, game.Track.StartingLineColorR, game.Track.StartingLineColorG, game.Track.StartingLineColorB);
+                linerider.Utils.Constants.TriggerLineColorChange = Color.FromArgb(255, game.Track.StartingLineColorR, game.Track.StartingLineColorG, game.Track.StartingLineColorB);
 
                 var state = game.Track.GetStart();
                 var frame = flag.FrameID;
@@ -147,7 +143,7 @@ namespace linerider.IO
                     }
                     var firstframe = GrabScreenshot(game, frontbuffer);
                     SaveScreenshot(game.RenderSize.Width, game.RenderSize.Height, firstframe, dir + Path.DirectorySeparatorChar + "tmp" + 0 + ".png");
-                    int framecount = smooth ? (frame * 60) / 40 : frame;
+                    int framecount = smooth ? ((frame+1) * 60) / 40 : frame+1; //Add a extra frame
 
                     double frametime = 0;
                     Stopwatch sw = Stopwatch.StartNew();

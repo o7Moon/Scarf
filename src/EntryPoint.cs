@@ -17,7 +17,7 @@ namespace linerider
                 }
             }
 #endif
-            Program.Run();
+            Program.Run(args);
         }
     }
 }

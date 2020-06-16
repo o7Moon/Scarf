@@ -31,6 +31,10 @@ namespace linerider.IO
         public static string SaveTrack(Track track, string savename)
         {
             var dir = TrackIO.GetTrackDirectory(track);
+            if (track.Name.Equals("<untitled>"))
+            {
+                dir = Utils.Constants.TracksDirectory + "Unnamed Track" + Path.DirectorySeparatorChar;
+            }
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
             var filename = dir + savename + ".sol";

@@ -168,8 +168,92 @@ namespace linerider.UI
              {
                  _editor.ZeroStart = zerostart.IsChecked;
              };
-            table = _tree.Add("Info", 150);
+            
+            NumberProperty ygravity = new NumberProperty(null)
+            {
+                Min = float.MinValue+1,
+                Max = float.MaxValue-1,
+            };
+            ygravity.Value = ((float)_editor.YGravity).ToString();
+            ygravity.ValueChanged += (o, e) =>
+            {
+                _editor.YGravity = float.Parse(ygravity.Value);
+            };
+            table.Add("Y Gravity Multiplier", ygravity);
+            NumberProperty xgravity = new NumberProperty(null)
+            {
+                Min = float.MinValue + 1,
+                Max = float.MaxValue - 1,
+            };
+            xgravity.Value = ((float)_editor.XGravity).ToString();
+            xgravity.ValueChanged += (o, e) =>
+            {
+                _editor.XGravity = float.Parse(xgravity.Value);
+            };
+            table.Add("X Gravity Multiplier", xgravity);
 
+            NumberProperty gravitywellsize = new NumberProperty(null)
+            {
+                Min = 0,
+                Max = double.MaxValue - 1,
+            };
+            gravitywellsize.Value = ((double)_editor.GravityWellSize).ToString();
+            gravitywellsize.ValueChanged += (o, e) =>
+            {
+                _editor.GravityWellSize = double.Parse(gravitywellsize.Value);
+            };
+            table.Add("Gravity Well Size", gravitywellsize);
+
+            //BG COLORS
+            table = _tree.Add("Starting Background Color", 150);
+            NumberProperty startbgred = new NumberProperty(null) { Min = 0, Max = 255 };
+            startbgred.Value = _editor.StartingBGColorR.ToString(); //Put value out here because putting it in the number property makes it get set to 100 for some reason??? 
+            startbgred.ValueChanged += (o, e) =>
+            {
+                _editor.StartingBGColorR = int.Parse(startbgred.Value);
+            };
+            table.Add("Background Red", startbgred);
+            NumberProperty startbggreen = new NumberProperty(null) { Min = 0, Max = 255 };
+            startbggreen.Value = _editor.StartingBGColorG.ToString(); //Put value out here because putting it in the number property makes it get set to 100 for some reason??? 
+            startbggreen.ValueChanged += (o, e) =>
+            {
+                _editor.StartingBGColorG = int.Parse(startbggreen.Value);
+            };
+            table.Add("Background Green", startbggreen);
+            NumberProperty startbgblue = new NumberProperty(null) { Min = 0, Max = 255 };
+            startbgblue.Value = _editor.StartingBGColorB.ToString(); //Put value out here because putting it in the number property makes it get set to 100 for some reason??? 
+            startbgblue.ValueChanged += (o, e) =>
+            {
+                _editor.StartingBGColorB = int.Parse(startbgblue.Value);
+            };
+            table.Add("Background Blue", startbgblue);
+            //LINE COLORS
+            table = _tree.Add("Starting Line Color", 150);
+            NumberProperty startlinered = new NumberProperty(null) { Min = 0, Max = 255 };
+            startlinered.Value = _editor.StartingLineColorR.ToString(); //Put value out here because putting it in the number property makes it get set to 100 for some reason??? 
+            startlinered.ValueChanged += (o, e) =>
+            {
+                _editor.StartingLineColorR = int.Parse(startlinered.Value);
+            };
+            table.Add("Line Red", startlinered);
+            NumberProperty startlinegreen = new NumberProperty(null) { Min = 0, Max = 255 };
+            startlinegreen.Value = _editor.StartingLineColorG.ToString(); //Put value out here because putting it in the number property makes it get set to 100 for some reason??? 
+            startlinegreen.ValueChanged += (o, e) =>
+            {
+                _editor.StartingLineColorG = int.Parse(startlinegreen.Value);
+            };
+            table.Add("Line Green", startlinegreen);
+            NumberProperty startlineblue = new NumberProperty(null) { Min = 0, Max = 255 };
+            startlineblue.Value = _editor.StartingLineColorB.ToString(); //Put value out here because putting it in the number property makes it get set to 100 for some reason??? 
+            startlineblue.ValueChanged += (o, e) =>
+            {
+                _editor.StartingLineColorB = int.Parse(startlineblue.Value);
+            };
+            table.Add("Line Blue", startlineblue);
+
+
+
+            table = _tree.Add("Info", 150);
             // var trackname = table.AddLabel("Track Name", _editor.Name);
             var physics = table.AddLabel("Physics", CheckFeature(trackfeatures, TrackFeatures.six_one) ? "6.1" : "6.2");
 

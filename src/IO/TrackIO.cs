@@ -209,7 +209,7 @@ namespace linerider.IO
             }
             if (Directory.Exists(dir))
             {
-                var quicksaveString = ("quicksave_" + DateTime.Now.Day + "." + DateTime.Now.Month + "." + DateTime.Now.Year + "_" + DateTime.Now.Hour + "." + DateTime.Now.Minute);
+                var quicksaveString = ("quicksave_" + DateTime.Now.Month + "." + DateTime.Now.Day + "." + DateTime.Now.Year + "_" + DateTime.Now.Hour + "." + DateTime.Now.Minute);
                 try
                 {
                     switch (Settings.DefaultQuicksaveFormat)
@@ -321,7 +321,7 @@ namespace linerider.IO
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
 
-            String autosaveString = ("autosave_" + DateTime.Now.Day + "." + DateTime.Now.Month + "." + DateTime.Now.Year + "_" + DateTime.Now.Hour + "." + DateTime.Now.Minute);
+            String autosaveString = ("autosave_" + DateTime.Now.Month + "." + DateTime.Now.Day + "." + DateTime.Now.Year + "_" + DateTime.Now.Hour + "." + DateTime.Now.Minute);
             switch (Settings.DefaultAutosaveFormat)
             {
                 case ".trk":
@@ -390,9 +390,16 @@ namespace linerider.IO
         private static int GetSaveIndex(Track track)
         {
             var dir = GetTrackDirectory(track);
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
 
+            if (track.Name.Equals("<untitled>"))
+            {
+                dir = Utils.Constants.TracksDirectory + "Unnamed Track" + Path.DirectorySeparatorChar;
+            }
+            
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
             var trackfiles =
                 TrackIO.EnumerateTrackFiles(dir);
             int saveindex = 0;

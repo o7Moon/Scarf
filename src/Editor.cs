@@ -114,6 +114,59 @@ namespace linerider
                 }
             }
         }
+        public float YGravity
+        {
+            get
+            {
+                return _track.YGravity;
+            }
+            set
+            {
+                if (_track.YGravity != value)
+                {
+                    _track.YGravity = value;
+                    Stop();
+                    Reset();
+                    RiderConstants.Gravity = new Vector2d(0.175 * _track.XGravity, 0.175 * _track.YGravity); //gravity
+                }
+            }
+        }
+        public float XGravity
+        {
+            get
+            {
+                return _track.XGravity;
+            }
+            set
+            {
+                if (_track.XGravity != value)
+                {
+                    _track.XGravity = value;
+                    Stop();
+                    Reset();
+                    RiderConstants.Gravity = new Vector2d(0.175 * _track.XGravity , 0.175 * _track.YGravity); //gravity
+                }
+            }
+        }
+
+        public double GravityWellSize
+        {
+            get
+            {
+                return _track.GravityWellSize;
+            }
+            set
+            {
+                if (_track.GravityWellSize != value)
+                {
+                    _track.GravityWellSize = value;
+                    Stop();
+                    Reset();
+                    StandardLine.Zone = value;
+                    _renderer.RefreshTrack(_track);
+                }
+            }
+        }
         public bool NeedsDraw
         {
             get
@@ -144,6 +197,90 @@ namespace linerider
                 if (_track.Remount != value)
                 {
                     _track.Remount = value;
+                    Stop();
+                    Reset();
+                }
+            }
+        }
+        public int StartingBGColorR
+        {
+            get { return _track.BGColorR; }
+            set
+
+            {
+                if (_track.BGColorR != value)
+                {
+                    _track.BGColorR = value;
+                    Stop();
+                    Reset();
+                }
+            }
+        }
+        public int StartingBGColorG
+        {
+            get { return _track.BGColorG; }
+            set
+
+            {
+                if (_track.BGColorG != value)
+                {
+                    _track.BGColorG = value;
+                    Stop();
+                    Reset();
+                }
+            }
+        }
+        public int StartingBGColorB
+        {
+            get { return _track.BGColorB; }
+            set
+
+            {
+                if (_track.BGColorB != value)
+                {
+                    _track.BGColorB = value;
+                    Stop();
+                    Reset();
+                }
+            }
+        }
+        public int StartingLineColorR
+        {
+            get { return _track.LineColorR; }
+            set
+
+            {
+                if (_track.LineColorR != value)
+                {
+                    _track.LineColorR = value;
+                    Stop();
+                    Reset();
+                }
+            }
+        }
+        public int StartingLineColorG
+        {
+            get { return _track.LineColorG; }
+            set
+
+            {
+                if (_track.LineColorG != value)
+                {
+                    _track.LineColorG = value;
+                    Stop();
+                    Reset();
+                }
+            }
+        }
+        public int StartingLineColorB
+        {
+            get { return _track.LineColorB; }
+            set
+
+            {
+                if (_track.LineColorB != value)
+                {
+                    _track.LineColorB = value;
                     Stop();
                     Reset();
                 }
@@ -537,7 +674,22 @@ namespace linerider
                 {
                     if (Crash)
                     {
-                        TrackIO.SaveTrackToFile(_track, "Crash Backup");
+                        var backupName = ("Crash Backup " + DateTime.Now.Month + "." +DateTime.Now.Day+"." + + DateTime.Now.Year + "_" + DateTime.Now.Hour + "." + DateTime.Now.Minute);
+                        switch (Settings.DefaultCrashBackupFormat)
+                        {
+                            case ".trk":
+                                TrackIO.SaveTrackToFile(_track, backupName);
+                                break;
+                            case ".json":
+                                TrackIO.SaveTrackToJsonFile(_track, backupName);
+                                break;
+                            case ".sol":
+                                TrackIO.SaveToSOL(_track, backupName);
+                                break;
+                            default:
+                                TrackIO.SaveTrackToFile(_track, backupName);
+                                break;
+                        }
                     }
                     else
                     {
@@ -617,7 +769,11 @@ namespace linerider
         {
             ThreadPool.QueueUserWorkItem((o) =>
             {
-                AutoLoad();
+                try
+                {
+                    AutoLoad();
+                }
+                catch { Debug.WriteLine("Autoload failed!"); }
             });
         }
         private void AutoLoad()
@@ -625,10 +781,23 @@ namespace linerider
             try
             {
                 game.Canvas.Loading = true;
-                var lasttrack = Settings.LastSelectedTrack;
-                var trdr = Constants.TracksDirectory;
-                if (!lasttrack.StartsWith(trdr))
-                    return;
+                string lasttrack;
+                if (Program.args.Length > 0)
+                {
+                    Settings.LastSelectedTrack = Program.args[0];
+                    lasttrack = Settings.LastSelectedTrack;
+                }
+                else
+                {
+                    lasttrack = Settings.LastSelectedTrack;
+                    var trdr = Constants.TracksDirectory;
+                    if (!lasttrack.StartsWith(trdr))
+                        return;
+                }
+                if (lasttrack.Contains("Crash Backup"))
+                {
+                    if (!GameCanvas.ShowLoadCrashBackup(game.Canvas, lasttrack)) { game.Canvas.Loading = false; return; }
+                }
                 if (string.Equals(
                     Path.GetExtension(lasttrack),
                     ".trk",
@@ -653,6 +822,21 @@ namespace linerider
                         if (track.Name == Constants.DefaultTrackName ||
                         string.IsNullOrEmpty(track.Name))
                             track.Name = trackname;
+                        ChangeTrack(track);
+                    }
+                }
+                else if (string.Equals(
+                    Path.GetExtension(lasttrack),
+                    ".sol",
+                    StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var trackname = TrackIO.GetTrackName(lasttrack);
+                    var sol = SOLLoader.LoadSol(lasttrack);
+                    if (sol.Count == 0)
+                        return;
+                    lock (LoadSync)
+                    {
+                        var track = SOLLoader.LoadTrack(sol[0]);
                         ChangeTrack(track);
                     }
                 }
@@ -711,6 +895,10 @@ namespace linerider
         private void FrameInvalidated(object sender, int frame)
         {
             Camera.InvalidateFrame(frame);
+        }
+        public Track getTrack()
+        {
+            return _track;
         }
     }
 }

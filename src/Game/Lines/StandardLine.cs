@@ -27,7 +27,7 @@ namespace linerider.Game
 {
     public class StandardLine : GameLine
     {
-        public const double Zone = 10;
+        public static double Zone = 10;
         /// <summary>
         /// Extension direction
         /// </summary>
@@ -108,7 +108,7 @@ namespace linerider.Game
             {
                 var startDelta = p.Location - this.Position;
                 var disty = Vector2d.Dot(DiffNormal, startDelta);
-                if (disty > 0 && disty < Zone)
+                if (disty > 0 && disty < StandardLine.Zone)
                 {
                     var distx = Vector2d.Dot(startDelta, Difference) * DotScalar;
                     if (distx <= limit_right && distx >= limit_left)

@@ -24,6 +24,16 @@ namespace linerider.IO
             };
             trackobj.startZoom = trk.StartZoom;
             trackobj.zeroStart = trk.ZeroStart;
+            trackobj.yGravity = trk.YGravity;
+            trackobj.xGravity = trk.XGravity;
+            trackobj.gravityWellSize = trk.GravityWellSize;
+            trackobj.bgR = trk.BGColorR;
+            trackobj.bgG = trk.BGColorG;
+            trackobj.bgB = trk.BGColorB;
+            trackobj.lineR = trk.LineColorR;
+            trackobj.lineG = trk.LineColorG;
+            trackobj.lineB = trk.LineColorB;
+
             int ver = trk.GetVersion();
             switch (ver)
             {
@@ -111,6 +121,7 @@ namespace linerider.IO
                 }
             }
             var dir = TrackIO.GetTrackDirectory(trk);
+            if (trk.Name.Equals("<untitled>")) { dir = Utils.Constants.TracksDirectory + "Unnamed Track" + Path.DirectorySeparatorChar; }
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
             var filename = dir + savename + ".track.json";

@@ -60,6 +60,15 @@ namespace linerider
         public int RedLines { get; private set; }
         public bool ZeroStart = false;
         public bool Remount = true;
+        public int BGColorR = 244; //offwhite
+        public int BGColorG = 245; //offwhite
+        public int BGColorB = 249; //offwhite
+        public int LineColorR = 0; //black
+        public int LineColorG = 0; //black
+        public int LineColorB = 0; //black
+        public float YGravity = 1; //default gravity
+        public float XGravity = 0; //default gravity
+        public double GravityWellSize = 10; //Default Gravity Well Size
 
         internal int _idcounter;
 

@@ -172,7 +172,7 @@ namespace linerider
             }
             base.Think();
         }
-        private static void OpenUrl(string url)
+        public static void OpenUrl(string url)
         {
             try
             {
@@ -203,43 +203,28 @@ namespace linerider
         public void ShowChangelog()
         {
             if (Settings.showChangelog != true) { return; }
-            else
+            ShowDialog(new ChangelogWindow(this, game.Track));
+        }
+
+        public static bool ShowLoadCrashBackup(Canvas canvas, string name)
+        {
+            bool ret = false;
+            var text = "" +
+                "Hey, it looks like you are trying to load a Crash Backup.\n" +
+                "(" + name + ")\n" +
+                "Some issues with the save may cause the file to always crash this program.\n" +
+                "Are you sure you want to load it?";
+            var title = "So about that crash backup...";
+
+            if (System.Windows.Forms.MessageBox.Show(text, title,
+                System.Windows.Forms.MessageBoxButtons.YesNo)
+                 == System.Windows.Forms.DialogResult.Yes)
             {
-                var changelogText = "" +
-                    "* Crashes due to invalid settings files are now resolved!\n" +
-                    "* `BG Color` triggers now work as intended, blending into the new color for the duration of the trigger.\n" +
-                    "*Added in `Line Color` triggers!\n" +
-                    "  * They act the same as `BG Color` triggers but for line colors!\n" +
-                    "\n" +
-                    "NOTE: Discord is *still* auto disabled on startup for now until I implement it in a more stable way.";
-
-                var window = MessageBox.Show(this, changelogText, "Changelog for " + Program.Version, MessageBox.ButtonType.YesNoCancel);
-                window.RenameButtonsYN("Previous Changelogs (Github)", "Continue and don\'t show again", "Continue");
-                window.Dismissed += (o, e) =>
-                {
-                    if (window.Result == DialogResult.Yes) //Previous Changelogs (Github)
-                {
-                        try
-                        {
-                            OpenUrl(@"https://github.com/Tran-Foxxo/LRTran/tree/master/Changelogs");
-                        }
-                        catch
-                        {
-                            ShowError("Unable to open your browser.");
-                        }
-                    }
-                    if (window.Result == DialogResult.No) //Continue and don\'t show again
-                {
-                        Settings.showChangelog = false;
-                        Settings.Save();
-                        Debug.WriteLine("Changelog Disabled");
-                    }
-                    if (window.Result == DialogResult.Cancel) //Continue
-                {
-
-                    }
-                };
+                ret = true;
+                Settings.LastSelectedTrack = "";
+                Settings.Save();
             }
+            return ret;
         }
 
         public void ShowOutOfDate()

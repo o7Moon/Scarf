@@ -24,6 +24,7 @@ using System.Linq;
 using System.Collections.Generic;
 using linerider.Game;
 using linerider.Utils;
+using System.Security.Policy;
 
 namespace linerider.Game
 {
@@ -182,13 +183,15 @@ namespace linerider.Game
                 var celly = (int)Math.Floor(startpos.Y / 14);
 
                 //every itreration is at least 3x3, so asjust the info for that
-                physinfo.left = Math.Min(cellx - 1, physinfo.left);
-                physinfo.top = Math.Min(celly - 1, physinfo.top);
-                physinfo.right = Math.Max(cellx + 1, physinfo.right);
-                physinfo.bottom = Math.Max(celly + 1, physinfo.bottom);
-                for (var x = -1; x <= 1; x++)
+                int newbox = (int)Math.Floor(1 + (StandardLine.Zone / 14));
+
+                physinfo.left = Math.Min(cellx - newbox, physinfo.left);
+                physinfo.top = Math.Min(celly - newbox, physinfo.top);
+                physinfo.right = Math.Max(cellx + newbox, physinfo.right);
+                physinfo.bottom = Math.Max(celly + newbox, physinfo.bottom);
+                for (var x = 0-newbox; x <= newbox; x++)
                 {
-                    for (var y = -1; y <= 1; y++)
+                    for (var y = 0-newbox; y <= newbox; y++)
                     {
                         var cell = grid.GetCell(cellx + x, celly + y);
                         if (cell == null)

@@ -133,6 +133,8 @@ namespace linerider.UI
             AddBinding(misctable, "Open Track Properties", Hotkey.TrackPropertiesWindow);
             AddBinding(misctable, "Load Track", Hotkey.LoadWindow);
             AddBinding(misctable, "Open Trigger Menu", Hotkey.TriggerMenuWindow);
+            AddBinding(misctable, "Show Debug Grid", Hotkey.DrawDebugGrid);
+            AddBinding(misctable, "Show Debug Camera", Hotkey.DrawDebugCamera);
             _kbtree.ExpandAll();
         }
         private List<Keybinding> FetchBinding(Hotkey hotkey)

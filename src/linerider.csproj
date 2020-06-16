@@ -183,6 +183,7 @@
     <Compile Include="IO\json\track_json.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\Dialogs\ChangelogWindow.cs" />
     <Compile Include="UI\Dialogs\TriggerWindow.cs" />
     <Compile Include="UI\PlatformImpl.cs" />
     <Compile Include="UI\Hotkey.cs" />

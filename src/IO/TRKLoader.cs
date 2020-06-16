@@ -60,6 +60,30 @@ namespace linerider.IO
                     case TrackMetadata.startzoom:
                         ret.StartZoom = ParseFloat(metadata[1]);
                         break;
+                    case TrackMetadata.ygravity:
+                        ret.YGravity = ParseFloat(metadata[1]);
+                        break;
+                    case TrackMetadata.xgravity:
+                        ret.XGravity = ParseFloat(metadata[1]);
+                        break;
+                    case TrackMetadata.bgcolorR:
+                        ret.BGColorR = ParseInt(metadata[1]);
+                        break;
+                    case TrackMetadata.bgcolorG:
+                        ret.BGColorG = ParseInt(metadata[1]);
+                        break;
+                    case TrackMetadata.bgcolorB:
+                        ret.BGColorB = ParseInt(metadata[1]);
+                        break;
+                    case TrackMetadata.linecolorR:
+                        ret.LineColorR = ParseInt(metadata[1]);
+                        break;
+                    case TrackMetadata.linecolorG:
+                        ret.LineColorG = ParseInt(metadata[1]);
+                        break;
+                    case TrackMetadata.linecolorB:
+                        ret.LineColorB = ParseInt(metadata[1]);
+                        break;
                     case TrackMetadata.triggers:
                         string[] triggers = metadata[1].Split('&');
                         foreach (var t in triggers)

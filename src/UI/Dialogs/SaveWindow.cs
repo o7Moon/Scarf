@@ -61,7 +61,7 @@ namespace linerider.UI
                       _savebutton.Text = "Save (.trk)";
                       _savebutton.UserData = ".trk";
                   };
-                  pop.AddItem(".track.json (for .com support)").Clicked += (o2, e2) =>
+                  pop.AddItem(".track.json (for .com / regular LRA / other LRA mod support)").Clicked += (o2, e2) =>
                   {
                       _savebutton.Text = "Save (.json)";
                       _savebutton.UserData = ".json";

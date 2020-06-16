@@ -39,6 +39,7 @@ namespace linerider
             public static bool ShowTools = false;
             public static bool ShowFps = true;
             public static bool ShowPpf = true;
+            public static bool EnableColorTriggers = true;
         }
         public static class Local
         {
@@ -112,6 +113,7 @@ namespace linerider
         public static String DefaultSaveFormat; //What the save menu auto picks 
         public static String DefaultAutosaveFormat; //What the autosave format is
         public static String DefaultQuicksaveFormat; //What the autosave format is
+        public static String DefaultCrashBackupFormat; //Format crash backups are saved to
 
         public static bool ColorPlayback;
         public static bool OnionSkinning;
@@ -217,6 +219,7 @@ namespace linerider
             DefaultSaveFormat = ".trk";
             DefaultAutosaveFormat = ".trk";
             DefaultQuicksaveFormat = ".trk";
+            DefaultCrashBackupFormat = ".trk";
         }
         public static void ResetKeybindings()
         {
@@ -315,6 +318,8 @@ namespace linerider
 
             SetupDefaultKeybind(Hotkey.TriggerMenuWindow, new Keybinding(Key.P));
             SetupDefaultKeybind(Hotkey.SaveAsWindow, new Keybinding(Key.S, KeyModifiers.Control | KeyModifiers.Shift));
+            SetupDefaultKeybind(Hotkey.DrawDebugCamera, new Keybinding(Key.Period));
+            SetupDefaultKeybind(Hotkey.DrawDebugGrid, new Keybinding(Key.Comma));
         }
         private static void SetupDefaultKeybind(Hotkey hotkey, Keybinding keybinding, Keybinding secondary = null)
         {
@@ -464,7 +469,7 @@ namespace linerider
             DefaultSaveFormat = GetSetting(lines, nameof(DefaultSaveFormat));
             DefaultAutosaveFormat = GetSetting(lines, nameof(DefaultAutosaveFormat));
             DefaultQuicksaveFormat = GetSetting(lines, nameof(DefaultQuicksaveFormat));
-
+            DefaultCrashBackupFormat = GetSetting(lines, nameof(DefaultCrashBackupFormat));
             if (multiScarfSegments == 0) { multiScarfSegments++; }
             if (ScarfSegments == 0) { ScarfSegments++; }
 
@@ -540,7 +545,8 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(DefaultSaveFormat), DefaultSaveFormat);
             config += "\r\n" + MakeSetting(nameof(DefaultAutosaveFormat), DefaultAutosaveFormat);
             config += "\r\n" + MakeSetting(nameof(DefaultQuicksaveFormat), DefaultQuicksaveFormat);
-
+            config += "\r\n" + MakeSetting(nameof(DefaultCrashBackupFormat), DefaultCrashBackupFormat);
+            
             foreach (var binds in Keybinds)
             {
                 foreach (var bind in binds.Value)

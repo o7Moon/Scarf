@@ -48,6 +48,18 @@ namespace linerider.IO
                     Utils.Constants.MinimumZoom,
                     Utils.Constants.MaxZoom);
             }
+
+            ret.YGravity = trackobj.yGravity;
+            ret.XGravity = trackobj.xGravity;
+            ret.GravityWellSize = trackobj.gravityWellSize;
+            ret.BGColorR = trackobj.bgR;
+            ret.BGColorG = trackobj.bgG;
+            ret.BGColorB = trackobj.bgB;
+
+            ret.LineColorR = trackobj.lineR;
+            ret.LineColorG = trackobj.lineG;
+            ret.LineColorB = trackobj.lineB;
+
             ret.ZeroStart = trackobj.zeroStart;
             if (trackobj.startPosition != null)
             {

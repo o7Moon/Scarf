@@ -36,7 +36,7 @@ namespace linerider
 #endif
         public static string BinariesFolder = "bin";
         public readonly static CultureInfo Culture = new CultureInfo("en-US");
-        public static string Version = "6/11/20 - Build 1";
+        public static string Version = "6/15/20 - Build 1";
         public static string TestVersion = "";
         public static string NewVersion = null;
         public static readonly string WindowTitle = "Line Rider: Advanced (Tran\'s fork) " + Version + TestVersion;
@@ -45,6 +45,7 @@ namespace linerider
         private static MainWindow glGame;
         private static string _currdir;
         private static string _userdir;
+        public static string[] args;
 
         /// <summary>
         /// Gets the current directory. Ends in Path.DirectorySeperator
@@ -122,7 +123,7 @@ namespace linerider
         {
             System.Windows.Forms.MessageBox.Show("Non Fatal Error: " + err);
         }
-        public static void Run()
+        public static void Run(string[] givenArgs)
         {
 #if DEBUG
             if (IsDebugged)
@@ -134,6 +135,7 @@ namespace linerider
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             }
 #endif
+            args = givenArgs;
             if (!Directory.Exists(UserDirectory))
             {
                 Directory.CreateDirectory(UserDirectory);
@@ -142,8 +144,9 @@ namespace linerider
             Settings.Load();
             //Create critical settings if needed
             if (Settings.DefaultSaveFormat == null) { Settings.DefaultSaveFormat = ".trk"; }
-            if (Settings.DefaultQuicksaveFormat == null) { Settings.DefaultSaveFormat = ".trk"; }
-            if (Settings.DefaultAutosaveFormat == null) { Settings.DefaultSaveFormat = ".trk"; }
+            if (Settings.DefaultQuicksaveFormat == null) { Settings.DefaultQuicksaveFormat = ".trk"; }
+            if (Settings.DefaultAutosaveFormat == null) { Settings.DefaultAutosaveFormat = ".trk"; }
+            if (Settings.DefaultCrashBackupFormat == null) { Settings.DefaultCrashBackupFormat = ".trk"; }
             Settings.Save();
 
             if (!Directory.Exists(UserDirectory + "Songs"))

@@ -77,7 +77,7 @@ namespace linerider.Rendering
             _sceneryvbo = new LineRenderer(Shaders.LineShader);
             _sceneryvbo.OverrideColor = Color.Black;
         }
-        public void Render(DrawOptions options)
+        public void Render(DrawOptions options, bool recording = false)
         {
             using (new GLEnableCap(EnableCap.Texture2D))
             {
@@ -96,8 +96,16 @@ namespace linerider.Rendering
                 else
                     _sceneryvbo.KnobState = KnobState.Hidden;
 
-                _sceneryvbo.OverrideColor = Constants.TriggerLineColorChange;
-                _physvbo.OverrideColor = Constants.TriggerLineColorChange;
+                if ((Settings.PreviewMode || recording) && !(recording && !Settings.Recording.EnableColorTriggers))
+                {
+                    _sceneryvbo.OverrideColor = game.Track.Timeline.GetFrameLineColor(game.Track.Offset);
+                    _physvbo.OverrideColor = game.Track.Timeline.GetFrameLineColor(game.Track.Offset);
+                }
+                else
+                {
+                    _sceneryvbo.OverrideColor = (Settings.NightMode ? Constants.DefaultNightLineColor : Constants.DefaultLineColor);
+                    _physvbo.OverrideColor = (Settings.NightMode ? Constants.DefaultNightLineColor : Constants.DefaultLineColor);
+                }
 
                 if (options.LineColors)
                 {

@@ -29,6 +29,7 @@ namespace linerider.Rendering
             _lines.Clear();
             _vertexcounter = 0;
         }
+
         public void Draw(DrawOptions draw)
         {
             using (new GLEnableCap(EnableCap.Blend))

@@ -499,9 +499,21 @@ namespace linerider.UI
                 Settings.Save();
             };
 
+            ComboBox defaultCrashBackupType = GwenHelper.CreateLabeledCombobox(saveSettings, "Default Crash Backup Format:");
+            defaultCrashBackupType.AddItem(".trk", "", ".trk");
+            defaultCrashBackupType.AddItem(".json", "", ".json");
+            defaultCrashBackupType.AddItem(".sol", "", ".sol");
+            defaultCrashBackupType.SelectByUserData(Settings.DefaultCrashBackupFormat);
+            defaultCrashBackupType.ItemSelected += (o, e) =>
+            {
+                Settings.DefaultCrashBackupFormat = (String)e.SelectedItem.UserData;
+                Settings.Save();
+            };
+
             defaultSaveType.SelectByUserData(Settings.DefaultSaveFormat);
             defaultQuicksaveType.SelectByUserData(Settings.DefaultQuicksaveFormat);
             defaultAutosaveType.SelectByUserData(Settings.DefaultAutosaveFormat);
+            defaultAutosaveType.SelectByUserData(Settings.DefaultCrashBackupFormat);
         }
         private void PopulateRiderSettings(ControlBase parent)
         {

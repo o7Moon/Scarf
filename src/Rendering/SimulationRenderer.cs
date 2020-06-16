@@ -12,6 +12,7 @@ using Gwen.Controls;
 using linerider.Tools;
 using linerider.Audio;
 using linerider.Utils;
+using linerider.IO;
 
 namespace linerider.Rendering
 {
@@ -49,10 +50,10 @@ namespace linerider.Rendering
                 overlayopts.Zoom = options.Zoom;
                 overlayopts.LineColors = false;
                 overlayopts.Overlay = true;
-                _trackrenderer.Render(overlayopts);
+                _trackrenderer.Render(overlayopts, TrackRecorder.Recording);
                 GL.PopMatrix();
             }
-            _trackrenderer.Render(options);
+            _trackrenderer.Render(options, TrackRecorder.Recording);
             if (Settings.OnionSkinning)
             {
                 const int onions = 20;

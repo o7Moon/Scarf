@@ -118,6 +118,14 @@ namespace linerider.UI
                 table,
                 "Show Tools",
                 Settings.Recording.ShowTools);
+            var hitTest = AddPropertyCheckbox(
+               table,
+               "Show Hit Test",
+               Settings.Editor.HitTest);
+            var colorTriggers = AddPropertyCheckbox(
+                table,
+                "Enable Color Tiggers",
+                Settings.Recording.EnableColorTriggers);
             proptree.ExpandAll();
             Button Cancel = new Button(bottomrow)
             {
@@ -144,6 +152,8 @@ namespace linerider.UI
                     Settings.Recording.ShowPpf = ppf.IsChecked;
                     Settings.Recording.ShowFps = fps.IsChecked;
                     Settings.Recording.ShowTools = tools.IsChecked;
+                    Settings.Recording.EnableColorTriggers = colorTriggers.IsChecked;
+                    Settings.Editor.HitTest = hitTest.IsChecked;
 
                     Settings.Record1080p = qualitycb.SelectedItem.Text == "1080p";
                     Settings.RecordSmooth = smoothcheck.IsChecked;

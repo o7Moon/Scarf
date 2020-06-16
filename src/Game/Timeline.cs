@@ -99,21 +99,22 @@ namespace linerider.Game
                 _frames.Add(new frameinfo() { 
                     Rider = state, 
                     Zoom = zoom, 
-                    BGColor = Constants.ColorWhite,
-                    LineColor = Constants.DefaultLineColor,
+                    BGColor = new Color4((byte)_track.BGColorR, (byte)_track.BGColorG, (byte)_track.BGColorB, (byte)255),
+                    LineColor = Color.FromArgb(255, _track.LineColorR, _track.LineColorG, _track.LineColorB),
                 });
+                //Also reset the trigger colors
+                Constants.TriggerBGColor = new Color4((byte)_track.BGColorR, (byte)_track.BGColorG, (byte)_track.BGColorB, (byte)255);
+                Constants.StaticTriggerBGColor = new Color4((byte)_track.BGColorR, (byte)_track.BGColorG, (byte)_track.BGColorB, (byte)255);
+                Constants.TriggerLineColorChange = Color.FromArgb(255, _track.LineColorR, _track.LineColorG, _track.LineColorB);
+                Constants.StaticTriggerLineColorChange = Color.FromArgb(255, _track.LineColorR, _track.LineColorG, _track.LineColorB);
+                //Set Gravity
+                RiderConstants.Gravity = new Vector2d(0.175 * _track.XGravity, 0.175 * _track.YGravity); //gravity
+
                 using (changesync.AcquireWrite())
                 {
                     _first_invalid_frame = _frames.Count;
                 }
             }
-        }
-        /// <summary>
-        /// Clears out the frame info
-        /// </summary>
-        public void ClearFrameInfo()
-        {
-            _frames.Clear();
         }
         /// <summary>
         /// Extracts the rider and death details of the specified frame.
@@ -197,7 +198,7 @@ namespace linerider.Game
                 return _frames[frame].BGColor;
             }
         }
-        public Color GetLineColor(int frame)
+        public Color GetFrameLineColor(int frame)
         {
             using (_framesync.AcquireWrite())
             {
@@ -279,7 +280,7 @@ namespace linerider.Game
         /// The meat of the recompute engine, updating hit test and the
         /// cached frames.
         /// </summary>
-        private void ThreadUnsafeRunFrames(int start, int count)
+        public void ThreadUnsafeRunFrames(int start, int count)
         {
             var steps = new frameinfo[count];
             var collisionlist = new List<LinkedList<int>>(count);
@@ -322,15 +323,16 @@ namespace linerider.Game
                         if (bgtrigger != null)
                         {
                             var delta = currentframe - bgtrigger.Start;
-                            bgtrigger.ActivateBG(delta, currentframe, ref Constants.NonTriggerBGColor, ref Constants.TriggerBGColor, ref current.BGColor);
+                            Constants.StaticTriggerBGColor = _frames[start-1].BGColor;
+                            bgtrigger.ActivateBG(delta, currentframe, ref Constants.StaticTriggerBGColor, ref Constants.TriggerBGColor, ref current.BGColor);
                         }
 
                         var linetrigger = triggers[(int)TriggerType.LineColor];
                         if (linetrigger != null)
                         {
                             var delta = currentframe - linetrigger.Start;
-                            linetrigger.ActivateLine(delta, ref Constants.NonTriggerLineColorChange, ref Constants.TriggerLineColorChange, currentframe, ref current.LineColor);
-                            //Constants.TriggerLineColorChange = current.LineColor;
+                            Constants.StaticTriggerLineColorChange = _frames[start - 1].LineColor;
+                            linetrigger.ActivateLine(delta, ref Constants.StaticTriggerLineColorChange, ref Constants.TriggerLineColorChange, currentframe, ref current.LineColor);
                         }
                     }
                     steps[i] = current;

@@ -162,12 +162,22 @@ namespace linerider
                 {
                     CurrentTools.PencilTool.OnMouseMoved(InputUtils.GetMouse());
                 }
-                if (Settings.PreviewMode || TrackRecorder.Recording)
+                if ((Settings.PreviewMode || TrackRecorder.Recording) && !(TrackRecorder.Recording && !Settings.Recording.EnableColorTriggers))
                 {
                     /* BG triggers and Line trigger updates */
-                    Constants.TriggerBGColor = Track.Timeline.GetFrameBackgroundColor(Track.Offset);
-                    GL.ClearColor(Constants.TriggerBGColor);
-                    Constants.TriggerLineColorChange = Track.Timeline.GetLineColor(Track.Offset);
+                    if (Track.Offset == 0)
+                    {
+                        linerider.Utils.Constants.TriggerBGColor = new Color4((byte)Track.StartingBGColorR, (byte)Track.StartingBGColorG, (byte)Track.StartingBGColorB, (byte)255);
+                        linerider.Utils.Constants.StaticTriggerBGColor = new Color4((byte)Track.StartingBGColorR, (byte)Track.StartingBGColorG, (byte)Track.StartingBGColorB, (byte)255);
+                        linerider.Utils.Constants.StaticTriggerLineColorChange = Color.FromArgb(255, Track.StartingLineColorR, Track.StartingLineColorG, Track.StartingLineColorB);
+                        linerider.Utils.Constants.TriggerLineColorChange = Color.FromArgb(255, Track.StartingLineColorR, Track.StartingLineColorG, Track.StartingLineColorB);
+                        GL.ClearColor(Constants.TriggerBGColor);
+                    }
+                    else
+                    { 
+                        Constants.TriggerBGColor = Track.Timeline.GetFrameBackgroundColor(Track.Offset);
+                        GL.ClearColor(Constants.TriggerBGColor);
+                    }
                 }
                 else
                 {
@@ -181,23 +191,27 @@ namespace linerider
                         Constants.TriggerLineColorChange = Constants.DefaultLineColor;
                     }
                 }
+
                 MSAABuffer.Use(RenderSize.Width, RenderSize.Height);
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
                 GL.Clear(ClearBufferMask.ColorBufferBit);
                 GL.Enable(EnableCap.Blend);
 
-#if debuggrid
-                if (this.Keyboard.GetState().IsKeyDown(Key.C))
+                if (InputUtils.Check(Hotkey.DrawDebugGrid) && !TrackRecorder.Recording)
+                {
                     GameRenderer.DbgDrawGrid();
-#endif
+                }
+
                 Track.Render(blend);
-#if debugcamera
-                if (this.Keyboard.GetState().IsKeyDown(Key.C))
+
+                if (InputUtils.Check(Hotkey.DrawDebugCamera) && !TrackRecorder.Recording)
+                {
                     GameRenderer.DbgDrawCamera();
-#endif
+                }
+
                 Canvas.RenderCanvas();
                 MSAABuffer.End();
-
+                
                 if (Settings.NightMode)
                 {
                     StaticRenderer.RenderRect(new FloatRect(0, 0, RenderSize.Width, RenderSize.Height), Color.FromArgb(40, 0, 0, 0));
