@@ -162,7 +162,7 @@ namespace linerider
                     _track.GravityWellSize = value;
                     Stop();
                     Reset();
-                    StandardLine.Zone = value;
+                    StandardLine.Zone = _track.GravityWellSize;
                     _renderer.RefreshTrack(_track);
                 }
             }

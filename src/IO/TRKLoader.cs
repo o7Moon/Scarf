@@ -38,6 +38,17 @@ namespace linerider.IO
                     "Unable to parse string into float");
             return ret;
         }
+        private static double ParseDouble(string f)
+        {
+            if (!double.TryParse(
+                f,
+                NumberStyles.Float,
+                Program.Culture,
+                out double ret))
+                throw new TrackIO.TrackLoadException(
+                    "Unable to parse string into double");
+            return ret;
+        }
         private static int ParseInt(string f)
         {
             if (!int.TryParse(
@@ -65,6 +76,9 @@ namespace linerider.IO
                         break;
                     case TrackMetadata.xgravity:
                         ret.XGravity = ParseFloat(metadata[1]);
+                        break;
+                    case TrackMetadata.gravitywellsize:
+                        ret.GravityWellSize = ParseDouble(metadata[1]);
                         break;
                     case TrackMetadata.bgcolorR:
                         ret.BGColorR = ParseInt(metadata[1]);

@@ -16,8 +16,11 @@ namespace linerider.UI
         {
             Title = "Changelog for " + Program.Version;
             AutoSizeToContents = false;
+            SetSize(1100, 380);
 
-            var changelogText = "* Crashes due to invalid settings files are now resolved (again because I did it wrong last update).\n" +
+            var changelogText = "" +
+                    "6/15/20 - Build 1\n" +
+                    "* Crashes due to invalid settings files are now resolved (again because I did it wrong last update).\n" +
                     "* Default save format settings are now available for crash backups `Settings -> Other`.\n" +
                     "* Crash Backups now save in the format `## Crash Backup month.day.year_hours.minutes.filetype`.\n" +
                     "* Fixed a issue where autosaves and quicksaves were saved as `## XXXXsave_day.month.year_hours.minutes.filetype`, not `## XXXXsave_month.day.year_hours.minutes.filetype`.\n" +
@@ -31,6 +34,11 @@ namespace linerider.UI
                     "--* **However `.json` files saved in LRT will continue to work in LRA or LRA mods regardless** even with the extra features added to the file.\n" +
                     "--* Also custom Gravity Well sizes will modify the box Bosh uses to check for collisions, use the Debug Grid to see this change. \n" +
                     "----* The grid is not accurate on the first frame, this is a bug.\n" +
+                    "\n" +
+                    "================================================================================================================================\n" +
+                    "\n" +
+                    "6/16/20 - Build 1\n"+
+                    "* Fixed a issue where the Gravity Well size was not being set when loading a new track.\n" +
                     "\n" +
                     "NOTE: Discord is *still* auto disabled on startup for now until I reimplement it in a more stable way.";
 
@@ -109,7 +117,6 @@ namespace linerider.UI
             l.AddText(changelogText, Skin.Colors.Text.Foreground);
             MakeModal(true);
             DisableResizing();
-            SetSize(1100, 300);
         }
         
         private void CreateLabeledControl(ControlBase parent, string label, ControlBase control)

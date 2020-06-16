@@ -109,6 +109,8 @@ namespace linerider.Game
                 Constants.StaticTriggerLineColorChange = Color.FromArgb(255, _track.LineColorR, _track.LineColorG, _track.LineColorB);
                 //Set Gravity
                 RiderConstants.Gravity = new Vector2d(0.175 * _track.XGravity, 0.175 * _track.YGravity); //gravity
+                //Set Gravity well size
+                StandardLine.Zone = _track.GravityWellSize;
 
                 using (changesync.AcquireWrite())
                 {
