@@ -47,6 +47,7 @@ using System.Windows.Forms.VisualStyles;
 using System.IO;
 using System.Linq;
 using System.Configuration;
+using linerider.Addons;
 
 namespace linerider
 {
@@ -115,6 +116,7 @@ namespace linerider
             UpdateFrame += (o, e) => { GameUpdate(); };
             new Thread(AutosaveThreadRunner) { IsBackground = true, Name = "Autosave" }.Start();
             GameService.Initialize(this);
+            AddonManager.Initialize(this);
             RegisterHotkeys();
         }
 
@@ -985,6 +987,22 @@ namespace linerider
                 Settings.OnionSkinning = !Settings.OnionSkinning;
                 Settings.Save();
                 Track.Invalidate();
+            });
+            RegisterAddonSettingHotkeys();
+        }
+        private void RegisterAddonSettingHotkeys()
+        {
+            InputUtils.RegisterHotkey(Hotkey.MagicAnimateAdvanceFrame, () => true, () =>
+            {
+                MagicAnimator.AdvanceFrame();
+            });
+            InputUtils.RegisterHotkey(Hotkey.MagicAnimateRecedeFrame, () => true, () =>
+            {
+                MagicAnimator.RecedeFrame();
+            });
+            InputUtils.RegisterHotkey(Hotkey.MagicAnimateRecedeMultiFrame, () => true, () =>
+            {
+                MagicAnimator.RecedeMultiFrame();
             });
         }
         private void RegisterPlaybackHotkeys()

@@ -40,6 +40,9 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Addons\AddonManager.cs" />
+    <Compile Include="Addons\BaseAddon.cs" />
+    <Compile Include="Addons\MagicAnimator.cs" />
     <Compile Include="Discord\DiscordActivityController.cs" />
     <Compile Include="DiscordGameSDK\ActivityManager.cs" />
     <Compile Include="DiscordGameSDK\Constants.cs" />

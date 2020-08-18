@@ -115,6 +115,9 @@ namespace linerider
         public static String DefaultQuicksaveFormat; //What the autosave format is
         public static String DefaultCrashBackupFormat; //Format crash backups are saved to
 
+        // RatherBeLunar Addon Settings
+        public static bool magicAnimatorModeEnabled;
+
         public static bool ColorPlayback;
         public static bool OnionSkinning;
         public static string LastSelectedTrack = "";
@@ -231,6 +234,8 @@ namespace linerider
         }
         private static void SetupDefaultKeybinds()
         {
+            SetupAddonDefaultKeybinds();
+
             SetupDefaultKeybind(Hotkey.EditorPencilTool, new Keybinding(Key.Q));
             SetupDefaultKeybind(Hotkey.EditorLineTool, new Keybinding(Key.W));
             SetupDefaultKeybind(Hotkey.EditorEraserTool, new Keybinding(Key.E));
@@ -320,6 +325,12 @@ namespace linerider
             SetupDefaultKeybind(Hotkey.SaveAsWindow, new Keybinding(Key.S, KeyModifiers.Control | KeyModifiers.Shift));
             SetupDefaultKeybind(Hotkey.DrawDebugCamera, new Keybinding(Key.Period));
             SetupDefaultKeybind(Hotkey.DrawDebugGrid, new Keybinding(Key.Comma));
+        }
+        private static void SetupAddonDefaultKeybinds()
+        {
+            SetupDefaultKeybind(Hotkey.MagicAnimateAdvanceFrame, new Keybinding(Key.Keypad0));
+            SetupDefaultKeybind(Hotkey.MagicAnimateRecedeFrame, new Keybinding(Key.Keypad1));
+            SetupDefaultKeybind(Hotkey.MagicAnimateRecedeMultiFrame, new Keybinding(Key.Keypad2));
         }
         private static void SetupDefaultKeybind(Hotkey hotkey, Keybinding keybinding, Keybinding secondary = null)
         {

@@ -55,6 +55,11 @@ namespace linerider.Tools
         private bool _nodetop = false;
         private bool _nodeleft = false;
 
+        public List<LineSelection> GetLineSelections()
+        {
+            return _selection;
+        }
+
         public void CancelSelection()
         {
             if (Active)

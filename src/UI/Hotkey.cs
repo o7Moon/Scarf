@@ -75,7 +75,11 @@ namespace linerider.UI
         DrawDebugGrid,
         DrawDebugCamera,
 
-        PlayButtonIgnoreFlag
+        PlayButtonIgnoreFlag,
+
+        MagicAnimateAdvanceFrame,
+        MagicAnimateRecedeFrame,
+        MagicAnimateRecedeMultiFrame
     }
 
 }

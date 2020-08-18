@@ -662,7 +662,18 @@ namespace linerider.UI
             };
         }
 
-            private void Setup()
+        private void PopulateRBLSettings(ControlBase parent)
+        {
+            var rblHeader = GwenHelper.CreateHeaderPanel(parent, "RatherBeLunar's Magic Animator Settings");
+
+            var showid = GwenHelper.AddCheckbox(rblHeader, "Enable Magic Animator Mode", Settings.magicAnimatorModeEnabled, (o, e) =>
+            {
+                Settings.magicAnimatorModeEnabled = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
+        }
+
+        private void Setup()
         {
             var cat = _prefcontainer.Add("Settings");
             var page = AddPage(cat, "Editor");
@@ -687,6 +698,9 @@ namespace linerider.UI
             PopulateRiderSettings(page);
             page = AddPage(cat, "Discord");
             PopulateDiscordSettings(page);
+            cat = _prefcontainer.Add("Addons");
+            page = AddPage(cat, "RBL Magic Animator");
+            PopulateRBLSettings(page);
             if (Settings.SettingsPane >= _tabscount && _focus == null)
             {
                 Settings.SettingsPane = 0;
