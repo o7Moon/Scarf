@@ -331,6 +331,8 @@ namespace linerider
             SetupDefaultKeybind(Hotkey.MagicAnimateAdvanceFrame, new Keybinding(Key.Keypad0));
             SetupDefaultKeybind(Hotkey.MagicAnimateRecedeFrame, new Keybinding(Key.Keypad1));
             SetupDefaultKeybind(Hotkey.MagicAnimateRecedeMultiFrame, new Keybinding(Key.Keypad2));
+
+            SetupDefaultKeybind(Hotkey.LineGeneratorWindow, new Keybinding(Key.G));
         }
         private static void SetupDefaultKeybind(Hotkey hotkey, Keybinding keybinding, Keybinding secondary = null)
         {

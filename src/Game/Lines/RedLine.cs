@@ -23,7 +23,7 @@ namespace linerider.Game
     public class RedLine : StandardLine
     {
         private Vector2d _acc;
-        private const double ConstAcc = 0.1;
+        public const double ConstAcc = 0.1;
         private int _multiplier = 1;
         public int Multiplier
         {

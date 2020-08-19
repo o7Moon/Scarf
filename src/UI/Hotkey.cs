@@ -72,6 +72,7 @@ namespace linerider.UI
         Quicksave,
         SaveAsWindow,
         TriggerMenuWindow,
+        LineGeneratorWindow,
         DrawDebugGrid,
         DrawDebugCamera,
 

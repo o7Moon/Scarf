@@ -43,6 +43,10 @@
     <Compile Include="Addons\AddonManager.cs" />
     <Compile Include="Addons\BaseAddon.cs" />
     <Compile Include="Addons\MagicAnimator.cs" />
+    <Compile Include="Addons\LineGenerator\Generator.cs" />
+    <Compile Include="Addons\LineGenerator\GeneratorType.cs" />
+    <Compile Include="Addons\LineGenerator\CircleGenerator.cs" />
+    <Compile Include="Addons\LineGenerator\TenPCGenerator.cs" />
     <Compile Include="Discord\DiscordActivityController.cs" />
     <Compile Include="DiscordGameSDK\ActivityManager.cs" />
     <Compile Include="DiscordGameSDK\Constants.cs" />
@@ -187,6 +191,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UI\Dialogs\ChangelogWindow.cs" />
+    <Compile Include="UI\Dialogs\GeneratorWindow.cs" />
     <Compile Include="UI\Dialogs\TriggerWindow.cs" />
     <Compile Include="UI\PlatformImpl.cs" />
     <Compile Include="UI\Hotkey.cs" />

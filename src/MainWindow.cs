@@ -67,6 +67,8 @@ namespace linerider
         public MsaaFbo MSAABuffer;
         public GameCanvas Canvas;
         public bool ReversePlayback = false;
+
+        public Vector2d MouseGamePos = new Vector2d(0.0, 0.0);
         public Size RenderSize
         {
             get
@@ -176,7 +178,7 @@ namespace linerider
                         GL.ClearColor(Constants.TriggerBGColor);
                     }
                     else
-                    { 
+                    {
                         Constants.TriggerBGColor = Track.Timeline.GetFrameBackgroundColor(Track.Offset);
                         GL.ClearColor(Constants.TriggerBGColor);
                     }
@@ -213,7 +215,7 @@ namespace linerider
 
                 Canvas.RenderCanvas();
                 MSAABuffer.End();
-                
+
                 if (Settings.NightMode)
                 {
                     StaticRenderer.RenderRect(new FloatRect(0, 0, RenderSize.Width, RenderSize.Height), Color.FromArgb(40, 0, 0, 0));
@@ -275,7 +277,7 @@ namespace linerider
                 forceDiscordUpdate = true;
                 Settings.discordActivityEnabled = false; //Dumb but I'm doing this in case it leads to the app not starting due to discord not being open
             }
-            
+
             //Code to run each frame
             int currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds; //Get current time for discord activity
             //Debug.WriteLine(Track.Name);
@@ -366,7 +368,7 @@ namespace linerider
                     Track.Update(updates);
                 }
             }
-            if (Program.NewVersion != null) 
+            if (Program.NewVersion != null)
             {
                 Canvas.ShowOutOfDate();
             }
@@ -414,11 +416,11 @@ namespace linerider
                             }//for y
                         }//for x
                     }//for each (i)
-                   shiftScarfColors((scarfColorList.Count * palettePNG.Width) - palettePNG.Width);
+                    shiftScarfColors((scarfColorList.Count * palettePNG.Width) - palettePNG.Width);
                 }//if
             }
             catch (Exception e) { Debug.WriteLine(e); Models.LoadModels(); }
-            
+
             if (Settings.SelectedBoshSkin == "*default*") { Models.LoadModels(); return; }
 
             try
@@ -659,15 +661,15 @@ namespace linerider
                     if (!Track.Playing)
                     {
                         bool dragstart = false;
+                        MouseGamePos = ScreenPosition + (new Vector2d(e.X, e.Y) / Track.Zoom);
                         if (Track.Offset == 0 &&
                          e.Button == MouseButton.Left &&
                         InputUtils.Check(Hotkey.EditorMoveStart))
                         {
-                            var gamepos = ScreenPosition + (new Vector2d(e.X, e.Y) / Track.Zoom);
                             dragstart = Game.Rider.GetBounds(
                                 Track.GetStart()).Contains(
-                                    gamepos.X,
-                                    gamepos.Y);
+                                    MouseGamePos.X,
+                                    MouseGamePos.Y);
                             if (dragstart)
                             {
                                 // 5 is arbitrary, but i assume that's a decent
@@ -704,6 +706,7 @@ namespace linerider
                                 CurrentTools.SelectedTool.OnMouseRightDown(new Vector2d(e.X, e.Y));
                             }
                         }
+
                     }
                     else if (CurrentTools.SelectedTool == CurrentTools.PencilTool && CurrentTools.PencilTool.DrawingScenery)
                     {
@@ -770,6 +773,8 @@ namespace linerider
             base.OnMouseMove(e);
             try
             {
+                var pos = new Vector2d(e.X, e.Y);
+                MouseGamePos = ScreenPosition + (pos / Track.Zoom);
                 InputUtils.UpdateMouse(e.Mouse);
                 if (linerider.IO.TrackRecorder.Recording)
                     return;
@@ -782,12 +787,10 @@ namespace linerider
                 }
                 if (_dragRider)
                 {
-                    var pos = new Vector2d(e.X, e.Y);
-                    var gamepos = ScreenPosition + (pos / Track.Zoom);
                     Track.Stop();
                     using (var trk = Track.CreateTrackWriter())
                     {
-                        trk.Track.StartOffset = gamepos;
+                        trk.Track.StartOffset = MouseGamePos;
                         Track.Reset();
                         Track.NotifyTrackChanged();
                     }
@@ -1004,6 +1007,10 @@ namespace linerider
             {
                 MagicAnimator.RecedeMultiFrame();
             });
+            InputUtils.RegisterHotkey(Hotkey.LineGeneratorWindow, () => true, () =>
+            {
+                Canvas.ShowGeneratorWindow(MouseGamePos);
+            });
         }
         private void RegisterPlaybackHotkeys()
         {
@@ -1214,9 +1221,9 @@ namespace linerider
                 Canvas.ShowTrackPropertiesDialog();
             });
             InputUtils.RegisterHotkey(Hotkey.Quicksave, () => true, () =>
-               {
-                   Track.QuickSave();
-               });
+            {
+                Track.QuickSave();
+            });
         }
         private void RegisterEditorHotkeys()
         {
