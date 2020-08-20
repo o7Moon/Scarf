@@ -20,7 +20,8 @@ namespace linerider.UI
         private ControlBase _focus;
         private int _tabscount = 0;
         private bool GeneratePressed = false;
-        private GeneratorType _currentgen;
+        private static bool initialised = false;
+        private static GeneratorType _currentgen;
 
         private ComboBox GeneratorTypeBox;
         private Panel GeneratorOptions;
@@ -38,9 +39,8 @@ namespace linerider.UI
         private Spinner TenPCRotation;
 
         
-
-        private CircleGenerator gen_Circle;
-        private TenPCGenerator gen_10pc;
+        private static CircleGenerator gen_Circle;
+        private static TenPCGenerator gen_10pc;
 
         private GeneratorType CurrentGenerator
         {
@@ -71,12 +71,16 @@ namespace linerider.UI
 
             MakeModal(true);
 
-            gen_Circle = new CircleGenerator("Circle Generator", 10.0, pos, 50, false);
-            gen_10pc = new TenPCGenerator("10PC Generator", new Vector2d(1.0, 1.0), 0.0);
-            gen_10pc.Generate_Preview();
+            if (!initialised)
+            {
+                gen_Circle = new CircleGenerator("Circle Generator", 10.0, pos, 50, false);
+                gen_10pc = new TenPCGenerator("10PC Generator", new Vector2d(1.0, 1.0), 0.0);
+                CurrentGenerator = GeneratorType.TenPC;
+            }
 
-            CurrentGenerator = GeneratorType.TenPC;
             Setup();
+
+            initialised = true;
         }
 
         protected override bool OnKeyEscape(bool down)
@@ -135,8 +139,8 @@ namespace linerider.UI
                 Close();
             };
 
-            Populate10pc();
             PopulateCircle();
+            Populate10pc();
 
             GeneratorTypeBox = GwenHelper.CreateLabeledCombobox(top, "Generator Type:");
             GeneratorTypeBox.Dock = Dock.Top;
@@ -155,9 +159,26 @@ namespace linerider.UI
                 CurrentGenerator = GeneratorType.Circle;
             };
 
-            GeneratorTypeBox.SelectedItem = tenpc;
             GeneratorOptions.Children.Clear();
-            TenPCOptions.Parent = GeneratorOptions;
+
+            switch (CurrentGenerator)
+            {
+                default:
+                    GeneratorTypeBox.SelectedItem = circle;
+                    CircleGenOptions.Parent = GeneratorOptions;
+                    break;
+                case GeneratorType.Circle:
+                    GeneratorTypeBox.SelectedItem = circle;
+                    CircleGenOptions.Parent = GeneratorOptions;
+                    break;
+                case GeneratorType.TenPC:
+                    GeneratorTypeBox.SelectedItem = tenpc;
+                    TenPCOptions.Parent = GeneratorOptions;
+                    break;
+            }
+
+            
+            
         }
 
         private void PopulateCircle()
@@ -344,10 +365,12 @@ namespace linerider.UI
                 case GeneratorType.Circle:
                     gen_Circle.DeleteLines();
                     gen_Circle.Generate();
+                    gen_Circle.Finalise();
                     break;
                 case GeneratorType.TenPC:
                     gen_10pc.DeleteLines();
                     gen_10pc.Generate();
+                    gen_10pc.Finalise();
                     break;
             }
         }

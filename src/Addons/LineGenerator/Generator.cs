@@ -42,7 +42,6 @@ namespace linerider.Game.LineGenerator
             }
             game.Track.NotifyTrackChanged();
         }
-
         public void ReGenerate_Preview()
         {
             DeleteLines();
@@ -63,6 +62,10 @@ namespace linerider.Game.LineGenerator
                 game.Track.Invalidate();
                 game.Track.NotifyTrackChanged();
             }  
+        }
+        public void Finalise() //Finalises the generation, to be called after properly generating the lines to reset the generator
+        {
+            lines.Clear();
         }
 
         protected GameLine CreateLine( //Creates a line from a pair of vectors (modified from Tool.cs)
