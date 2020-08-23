@@ -25,7 +25,7 @@ namespace linerider.UI
         public PreferencesWindow(GameCanvas parent, Editor editor) : base(parent, editor)
         {
             Title = "Preferences";
-            SetSize(450, 425);
+            SetSize(450, 470);
             MinimumSize = Size;
             ControlBase bottom = new ControlBase(this)
             {
@@ -72,10 +72,10 @@ namespace linerider.UI
         {
             var opts = GwenHelper.CreateHeaderPanel(parent, "Sync options");
             var syncenabled = GwenHelper.AddCheckbox(opts, "Mute", Settings.MuteAudio, (o, e) =>
-               {
-                   Settings.MuteAudio = ((Checkbox)o).IsChecked;
-                   Settings.Save();
-               });
+            {
+                Settings.MuteAudio = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
             HorizontalSlider vol = new HorizontalSlider(null)
             {
                 Min = 0,
@@ -84,10 +84,10 @@ namespace linerider.UI
                 Width = 80,
             };
             vol.ValueChanged += (o, e) =>
-              {
-                  Settings.Volume = (float)vol.Value;
-                  Settings.Save();
-              };
+            {
+                Settings.Volume = (float)vol.Value;
+                Settings.Save();
+            };
             GwenHelper.CreateLabeledControl(opts, "Volume", vol);
             vol.Width = 200;
         }
@@ -99,21 +99,21 @@ namespace linerider.UI
         {
             var background = GwenHelper.CreateHeaderPanel(parent, "Background Color");
             GwenHelper.AddCheckbox(background, "Night Mode", Settings.NightMode, (o, e) =>
-               {
-                   Settings.NightMode = ((Checkbox)o).IsChecked;
-                   Settings.Save();
-               });
+            {
+                Settings.NightMode = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
             var whitebg = GwenHelper.AddCheckbox(background, "Pure White Background", Settings.WhiteBG, (o, e) =>
-               {
-                   Settings.WhiteBG = ((Checkbox)o).IsChecked;
-                   Settings.Save();
-               });
+            {
+                Settings.WhiteBG = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
             var panelgeneral = GwenHelper.CreateHeaderPanel(parent, "General");
             var superzoom = GwenHelper.AddCheckbox(panelgeneral, "Superzoom", Settings.SuperZoom, (o, e) =>
-               {
-                   Settings.SuperZoom = ((Checkbox)o).IsChecked;
-                   Settings.Save();
-               });
+            {
+                Settings.SuperZoom = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
             ComboBox scroll = GwenHelper.CreateLabeledCombobox(panelgeneral, "Scroll Sensitivity:");
             scroll.Margin = new Margin(0, 0, 0, 0);
             scroll.Dock = Dock.Bottom;
@@ -209,13 +209,33 @@ namespace linerider.UI
                 Settings.Save();
             });
             var hittest = GwenHelper.AddCheckbox(advancedtools, "Hit Test", Settings.Editor.HitTest, (o, e) =>
-             {
-                 Settings.Editor.HitTest = ((Checkbox)o).IsChecked;
-                 Settings.Save();
-             });
+            {
+                Settings.Editor.HitTest = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
             var onion = GwenHelper.AddCheckbox(advancedtools, "Onion Skinning", Settings.OnionSkinning, (o, e) =>
             {
                 Settings.OnionSkinning = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
+            var drawgrid = GwenHelper.AddCheckbox(advancedtools, "Simulation Grid", Settings.DrawCollisionGrid, (o, e) =>
+            {
+                Settings.DrawCollisionGrid = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
+            var drawagws = GwenHelper.AddCheckbox(advancedtools, "Line Extensions (AGWs)", Settings.DrawAGWs, (o, e) =>
+            {
+                Settings.DrawAGWs = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
+            var drawfloatgrid = GwenHelper.AddCheckbox(advancedtools, "Floating-point (angled kramual) grid", Settings.DrawFloatGrid, (o, e) =>
+            {
+                Settings.DrawFloatGrid = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
+            var drawcam = GwenHelper.AddCheckbox(advancedtools, "Camera", Settings.DrawCamera, (o, e) =>
+            {
+                Settings.DrawCamera = ((Checkbox)o).IsChecked;
                 Settings.Save();
             });
             Panel pblifelock = GwenHelper.CreateHeaderPanel(parent, "Lifelock Conditions");
@@ -232,7 +252,7 @@ namespace linerider.UI
 
             var overlay = GwenHelper.CreateHeaderPanel(parent, "Frame Overlay");
             PopulateOverlay(overlay);
-            
+
             onion.Tooltip = "Visualize the rider before/after\nthe current frame.";
             momentum.Tooltip = "Visualize the direction of\nmomentum for each contact point";
             contact.Tooltip = "Visualize the parts of the rider\nthat interact with lines.";
@@ -270,27 +290,41 @@ namespace linerider.UI
             pbzoom.SetSelection(Settings.PlaybackZoomType);
             playbackspinner.Value = Settings.PlaybackZoomValue;
 
+            var zoomMultiplier = new Spinner(pbzoom)
+            {
+                Min = 0.01,
+                Max = 100.0,
+                Value = Settings.ZoomMultiplier,
+                IncrementSize = 0.1
+            };
+            zoomMultiplier.ValueChanged += (o, e) =>
+            {
+                Settings.ZoomMultiplier = (float)((Spinner)o).Value;
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(pbzoom, "Zoom Multiplier", zoomMultiplier);
+
             var playbackmode = GwenHelper.CreateHeaderPanel(parent, "Playback Color");
             GwenHelper.AddCheckbox(playbackmode, "Color Playback", Settings.ColorPlayback, (o, e) =>
-               {
-                   Settings.ColorPlayback = ((Checkbox)o).IsChecked;
-                   Settings.Save();
-               });
+            {
+                Settings.ColorPlayback = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
             var preview = GwenHelper.AddCheckbox(playbackmode, "Preview Mode", Settings.PreviewMode, (o, e) =>
-               {
-                   Settings.PreviewMode = ((Checkbox)o).IsChecked;
-                   Settings.Save();
-               });
+            {
+                Settings.PreviewMode = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
             var recording = GwenHelper.AddCheckbox(playbackmode, "Recording Mode", Settings.Local.RecordingMode, (o, e) =>
-               {
-                   Settings.Local.RecordingMode = ((Checkbox)o).IsChecked;
-               });
+            {
+                Settings.Local.RecordingMode = ((Checkbox)o).IsChecked;
+            });
             var framerate = GwenHelper.CreateHeaderPanel(parent, "Frame Control");
             var smooth = GwenHelper.AddCheckbox(framerate, "Smooth Playback", Settings.SmoothPlayback, (o, e) =>
-               {
-                   Settings.SmoothPlayback = ((Checkbox)o).IsChecked;
-                   Settings.Save();
-               });
+            {
+                Settings.SmoothPlayback = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
             ComboBox pbrate = GwenHelper.CreateLabeledCombobox(framerate, "Playback Rate:");
             for (var i = 0; i < Constants.MotionArray.Length; i++)
             {
@@ -326,7 +360,7 @@ namespace linerider.UI
                 Max = 999,
                 Value = Settings.Local.TrackOverlayOffset,
             };
-            offset.ValueChanged += (o,e)=>
+            offset.ValueChanged += (o, e) =>
             {
                 Settings.Local.TrackOverlayOffset = (int)offset.Value;
             };
@@ -364,20 +398,20 @@ namespace linerider.UI
         {
             var select = GwenHelper.CreateHeaderPanel(parent, "Select Tool -- Line Info");
             var length = GwenHelper.AddCheckbox(select, "Show Length", Settings.Editor.ShowLineLength, (o, e) =>
-               {
-                   Settings.Editor.ShowLineLength = ((Checkbox)o).IsChecked;
-                   Settings.Save();
-               });
+            {
+                Settings.Editor.ShowLineLength = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
             var angle = GwenHelper.AddCheckbox(select, "Show Angle", Settings.Editor.ShowLineAngle, (o, e) =>
-               {
-                   Settings.Editor.ShowLineAngle = ((Checkbox)o).IsChecked;
-                   Settings.Save();
-               });
+            {
+                Settings.Editor.ShowLineAngle = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
             var showid = GwenHelper.AddCheckbox(select, "Show ID", Settings.Editor.ShowLineID, (o, e) =>
-               {
-                   Settings.Editor.ShowLineID = ((Checkbox)o).IsChecked;
-                   Settings.Save();
-               });
+            {
+                Settings.Editor.ShowLineID = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
             Panel panelSnap = GwenHelper.CreateHeaderPanel(parent, "Snapping");
             var linesnap = GwenHelper.AddCheckbox(panelSnap, "Snap New Lines", Settings.Editor.SnapNewLines, (o, e) =>
             {
@@ -387,6 +421,11 @@ namespace linerider.UI
             var movelinesnap = GwenHelper.AddCheckbox(panelSnap, "Snap Line Movement", Settings.Editor.SnapMoveLine, (o, e) =>
             {
                 Settings.Editor.SnapMoveLine = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
+            var gridsnap = GwenHelper.AddCheckbox(panelSnap, "Snap to displayed grids", Settings.Editor.SnapToGrid, (o, e) =>
+            {
+                Settings.Editor.SnapToGrid = ((Checkbox)o).IsChecked;
                 Settings.Save();
             });
             var forcesnap = GwenHelper.AddCheckbox(panelSnap, "Force X/Y snap", Settings.Editor.ForceXySnap, (o, e) =>
@@ -402,10 +441,10 @@ namespace linerider.UI
             var updates = GwenHelper.CreateHeaderPanel(parent, "Updates");
 
             var showid = GwenHelper.AddCheckbox(updates, "Check For Updates", Settings.CheckForUpdates, (o, e) =>
-               {
-                   Settings.CheckForUpdates = ((Checkbox)o).IsChecked;
-                   Settings.Save();
-               });
+            {
+                Settings.CheckForUpdates = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
 
             var showChangelog = GwenHelper.AddCheckbox(updates, "Show LRTran Changelog", Settings.showChangelog, (o, e) =>
             {
@@ -425,7 +464,7 @@ namespace linerider.UI
                 Settings.mainWindowWidth = (int)((Spinner)o).Value;
                 Settings.Save();
             };
-            GwenHelper.CreateLabeledControl(mainWindowSettings, "Main Window Width (Current: "+ (Program.GetWindowWidth()) + ")", mainWindowWidth); 
+            GwenHelper.CreateLabeledControl(mainWindowSettings, "Main Window Width (Current: " + (Program.GetWindowWidth()) + ")", mainWindowWidth);
             var mainWindowHeight = new Spinner(mainWindowSettings)
             {
                 Min = 1,
@@ -616,7 +655,7 @@ namespace linerider.UI
             ComboBox activity3 = GwenHelper.CreateLabeledCombobox(discordHeader, "Line 2 Text 1:");
             ComboBox activity4 = GwenHelper.CreateLabeledCombobox(discordHeader, "Line 2 Text 2:");
             ComboBox[] boxArr = { activity1, activity2, activity3, activity4 };
-            for (int i=0; i<4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 boxArr[i].AddItem("None", "none", "none");
                 boxArr[i].AddItem("Selected Tool", "toolText", "toolText");

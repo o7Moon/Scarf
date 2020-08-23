@@ -28,6 +28,29 @@ namespace linerider.Drawing
                 return _ridershader;
             }
         }
+
+        public static Shader _simgridshader = null;
+        public static Shader SimGridShader
+        {
+            get
+            {
+                if (!_initialized)
+                    Load();
+                return _simgridshader;
+            }
+        }
+
+        public static Shader _floatgridshader = null;
+        public static Shader FloatGridShader
+        {
+            get
+            {
+                if (!_initialized)
+                    Load();
+                return _floatgridshader;
+            }
+        }
+
         private static bool _initialized = false;
         public static void Load()
         {
@@ -37,9 +60,15 @@ namespace linerider.Drawing
                 _lineshader = new Shader(
                     GameResources.simline_vert,
                     GameResources.simline_frag);
-                    _ridershader = new Shader(
+                _ridershader = new Shader(
                     GameResources.rider_vert,
                     GameResources.rider_frag);
+                _simgridshader = new Shader(
+                    GameResources.simgrid_vert,
+                    GameResources.simgrid_frag);
+                _floatgridshader = new Shader(
+                    GameResources.floatgrid_vert,
+                    GameResources.floatgrid_frag);
             }
         }
     }

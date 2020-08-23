@@ -66,7 +66,7 @@ namespace linerider
         {
             get
             {
-                return _zoom;
+                return _zoom * Settings.ZoomMultiplier;
             }
             set
             {
@@ -144,7 +144,7 @@ namespace linerider
                     _track.XGravity = value;
                     Stop();
                     Reset();
-                    RiderConstants.Gravity = new Vector2d(0.175 * _track.XGravity , 0.175 * _track.YGravity); //gravity
+                    RiderConstants.Gravity = new Vector2d(0.175 * _track.XGravity, 0.175 * _track.YGravity); //gravity
                 }
             }
         }
@@ -572,7 +572,7 @@ namespace linerider
             Camera.SetFrameCenter(Timeline.GetFrame(frameid).CalculateCenter());
 
             game.UpdateCursor();
-             switch (TrackRecorder.Recording ? 0 : Settings.PlaybackZoomType)
+            switch (TrackRecorder.Recording ? 0 : Settings.PlaybackZoomType)
             {
                 case 0://default
                     UseUserZoom = false;
@@ -674,7 +674,7 @@ namespace linerider
                 {
                     if (Crash)
                     {
-                        var backupName = ("Crash Backup " + DateTime.Now.Month + "." +DateTime.Now.Day+"." + + DateTime.Now.Year + "_" + DateTime.Now.Hour + "." + DateTime.Now.Minute);
+                        var backupName = ("Crash Backup " + DateTime.Now.Month + "." + DateTime.Now.Day + "." + +DateTime.Now.Year + "_" + DateTime.Now.Hour + "." + DateTime.Now.Minute);
                         switch (Settings.DefaultCrashBackupFormat)
                         {
                             case ".trk":

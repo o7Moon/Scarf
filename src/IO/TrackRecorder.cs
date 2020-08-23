@@ -68,17 +68,23 @@ namespace linerider.IO
 
             output.UnlockBits(bmpData);
             output.Save(name, ImageFormat.Png);
+            output.Dispose();
         }
 
         public static bool Recording;
         public static bool Recording1080p;
+
         public static void RecordTrack(MainWindow game, bool is1080P, bool smooth, bool music)
         {
             var flag = game.Track.GetFlag();
             if (flag == null) return;
-            var resolution = new Size(is1080P ? 1920 : 1280, is1080P ? 1080 : 720);
+            var resolution = new Size(Settings.RecordingWidth, Settings.RecordingHeight);
             var oldsize = game.RenderSize;
+            var oldZoomMultiplier = Settings.ZoomMultiplier;
             var invalid = false;
+
+            Settings.ZoomMultiplier *= game.ClientSize.Width > game.ClientSize.Height * 16 / 9 ? (float)Settings.RecordingWidth / (float)game.ClientSize.Width : (float)Settings.RecordingHeight / (float)game.ClientSize.Height;
+
             using (var trk = game.Track.CreateTrackReader())
             {
                 Recording = true;
@@ -143,7 +149,7 @@ namespace linerider.IO
                     }
                     var firstframe = GrabScreenshot(game, frontbuffer);
                     SaveScreenshot(game.RenderSize.Width, game.RenderSize.Height, firstframe, dir + Path.DirectorySeparatorChar + "tmp" + 0 + ".png");
-                    int framecount = smooth ? ((frame+1) * 60) / 40 : frame+1; //Add a extra frame
+                    int framecount = smooth ? ((frame + 1) * 60) / 40 : frame + 1; //Add a extra frame
 
                     double frametime = 0;
                     Stopwatch sw = Stopwatch.StartNew();
@@ -180,13 +186,13 @@ namespace linerider.IO
                             var screenshot = GrabScreenshot(game, frontbuffer);
                             SaveScreenshot(game.RenderSize.Width, game.RenderSize.Height, screenshot, dir + Path.DirectorySeparatorChar + "tmp" + (i + 1) + ".png");
                         }
-                        catch
+                        catch (Exception e)
                         {
                             hardexit = true;
-                            errormessage = "An error occured when saving the frame.";
+                            errormessage = "An error occured when saving the frame.\n(Perhaps the resolution chosen is too large?)";
                         }
 
-                        if (Keyboard.GetState()[Key.Escape])
+                        if (Keyboard.GetState()[Key.Escape] && game.Focused)
                         {
                             hardexit = true;
                             errormessage = "The user manually cancelled recording.";
@@ -270,7 +276,7 @@ namespace linerider.IO
                                             {
                                                 game.Title = Program.WindowTitle + string.Format(" [Encoding Video | {0:P} | Hold ESC to cancel]", parsedint / (double)framecount);
                                                 game.ProcessEvents();
-                                                if (Keyboard.GetState()[Key.Escape])
+                                                if (Keyboard.GetState()[Key.Escape] && game.Focused)
                                                 {
                                                     hardexit = true;
                                                     errormessage = "The user manually cancelled recording.";
@@ -287,7 +293,7 @@ namespace linerider.IO
                                 linerider.Utils.ErrorLog.WriteLine(
                                     "ffmpeg error" + Environment.NewLine + e);
                                 hardexit = true;
-                                errormessage = 
+                                errormessage =
                                     "An ffmpeg error occured.\n" + e.Message;
                             }
                         }
@@ -335,6 +341,7 @@ namespace linerider.IO
                 SafeFrameBuffer.DeleteRenderbuffers(1, new[] { rbo2 });
                 game.RenderSize = oldsize;
                 Recording = false;
+                Settings.ZoomMultiplier = oldZoomMultiplier;
 
                 game.Canvas.SetSize(game.RenderSize.Width, game.RenderSize.Height);
                 _screenshotbuffer = null;

@@ -75,7 +75,7 @@ namespace linerider
             {
                 if (TrackRecorder.Recording)
                 {
-                    return TrackRecorder.Recording1080p ? new Size(1920, 1080) : new Size(1280, 720);
+                    return new Size(Settings.RecordingWidth, Settings.RecordingHeight);
                 }
                 return ClientSize;
             }
@@ -201,14 +201,24 @@ namespace linerider
                 GL.Clear(ClearBufferMask.ColorBufferBit);
                 GL.Enable(EnableCap.Blend);
 
-                if (InputUtils.Check(Hotkey.DrawDebugGrid) && !TrackRecorder.Recording)
+                if (Settings.DrawFloatGrid)
+                {
+                    GameRenderer.DrawFloatGrid();
+                }
+
+                if ((InputUtils.Check(Hotkey.DrawDebugGrid) && !TrackRecorder.Recording) || Settings.DrawCollisionGrid)
                 {
                     GameRenderer.DbgDrawGrid();
                 }
 
+                if ((InputUtils.Check(Hotkey.DrawDebugGrid) && !TrackRecorder.Recording) || Settings.DrawAGWs)
+                {
+                    GameRenderer.DrawAGWs();
+                }
+
                 Track.Render(blend);
 
-                if (InputUtils.Check(Hotkey.DrawDebugCamera) && !TrackRecorder.Recording)
+                if ((InputUtils.Check(Hotkey.DrawDebugCamera) && !TrackRecorder.Recording) || Settings.DrawCamera)
                 {
                     GameRenderer.DbgDrawCamera();
                 }
@@ -282,7 +292,8 @@ namespace linerider
             int currentTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds; //Get current time for discord activity
             //Debug.WriteLine(Track.Name);
             //Update bosh skin if needed
-            if (currentBoshSkin!=Settings.SelectedBoshSkin) { 
+            if (currentBoshSkin != Settings.SelectedBoshSkin)
+            {
                 reloadRiderModel();
                 removeAllScarfColors();
                 updateScarf();
@@ -290,7 +301,7 @@ namespace linerider
                 editBoshPng = Settings.customScarfOnPng;
             }
             //Update scarf if needed
-            if ((scarfNeedsUpdate || (curentScarf != Settings.SelectedScarf))||((Settings.customScarfOnPng==false)&&(editBoshPng)))
+            if ((scarfNeedsUpdate || (curentScarf != Settings.SelectedScarf)) || ((Settings.customScarfOnPng == false) && (editBoshPng)))
             {
                 curentScarf = Settings.SelectedScarf;
                 removeAllScarfColors();
@@ -457,7 +468,7 @@ namespace linerider
                         addScarfColor(color, opacity);
                     }
                 }
-                else {addScarfColor(0xff6464, 0xff); /*Default Color 1*/ addScarfColor(0xD10101, 0xff); /*Default Color 2*/}
+                else { addScarfColor(0xff6464, 0xff); /*Default Color 1*/ addScarfColor(0xD10101, 0xff); /*Default Color 2*/}
             }
             catch { addScarfColor(0xff6464, 0xff); /*Default Color 1*/ addScarfColor(0xD10101, 0xff); /*Default Color 2*/}
         }
@@ -1478,9 +1489,9 @@ namespace linerider
         }
         public void shiftScarfColors(int shift) //Shifts scarf colors to the left
         {
-            for (int i=0; i<shift; i++)
+            for (int i = 0; i < shift; i++)
             {
-                 insertScarfColor(getScarfColorList()[getScarfColorList().Count - 1], getScarfOpacityList()[getScarfOpacityList().Count - 1], 0);
+                insertScarfColor(getScarfColorList()[getScarfColorList().Count - 1], getScarfOpacityList()[getScarfOpacityList().Count - 1], 0);
                 removeScarfColor(getScarfColorList().Count - 1);
             }
         }
