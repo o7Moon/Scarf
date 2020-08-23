@@ -783,7 +783,7 @@ namespace linerider.Tools
             }
             game.Invalidate();
         }
-        private void UnselectBox()
+        public void UnselectBox()
         {
             if (_boxselection.Count != 0)
             {
@@ -804,7 +804,7 @@ namespace linerider.Tools
                 _boxselection.Clear();
             }
         }
-        private void Unselect()
+        public void Unselect()
         {
             if (_selection.Count != 0)
             {
@@ -830,6 +830,30 @@ namespace linerider.Tools
             }
             _movemade = false;
         }
+
+        public List<LineSelection> SelectLines(List<GameLine> lines, bool additive = false)
+        {
+            if (!additive)
+            {
+                Unselect();
+                UnselectBox();
+            }
+            foreach (GameLine line in lines)
+            {
+                LineSelection selection = new LineSelection(line, true, null);
+                _selectedlines.Add(line.ID);
+                _selection.Add(selection);
+                _boxselection.Add(selection);
+
+                line.SelectionState = SelectionState.Selected;
+                game.Track.RedrawLine(line);
+            }
+            _selectionbox = GetBoxFromSelected(_selection);
+            Render();
+            
+            return _selection;
+        }
+
         private void SaveMovedSelection()
         {
             if (Active)

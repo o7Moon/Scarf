@@ -55,6 +55,7 @@ namespace linerider.Addons
                 window.Track.UndoManager.BeginAction();
             }
             TrackWriter trackWriter = window.Track.CreateTrackWriter();
+            List<GameLine> newLines = new List<GameLine>();
             foreach (LineSelection selection in selectedLines)
             {
                 GameLine selectedLine = selection.line;
@@ -74,26 +75,39 @@ namespace linerider.Addons
                     switch (selection.line.Type)
                     {
                         case LineType.Red:
-                            newLine = new RedLine(selectedLine.Position, selectedLine.Position2, ((RedLine)selectedLine).inv);
+                            newLine = new RedLine(nextP1, nextP2, ((RedLine)selectedLine).inv);
                             break;
                         case LineType.Blue:
-                            newLine = new StandardLine(selectedLine.Position, selectedLine.Position2, ((StandardLine)selectedLine).inv);
+                            newLine = new StandardLine(nextP1, nextP2, ((StandardLine)selectedLine).inv);
                             break;
                         case LineType.Scenery:
-                            newLine = new SceneryLine(selectedLine.Position, selectedLine.Position2);
+                            newLine = new SceneryLine(nextP1, nextP2);
                             break;
                         default:
-                            newLine = new SceneryLine(selectedLine.Position, selectedLine.Position2);
+                            newLine = new SceneryLine(nextP1, nextP2);
                             break;
                     }
                 }
                 else
                 {
-                    newLine = new SceneryLine(selectedLine.Position, selectedLine.Position2);
+                    // Scenery lines if going backwards. This should be configurable in settings
+                    newLine = new SceneryLine(nextP1, nextP2);
                 }
-                trackWriter.MoveLine(selection.line, nextP1, nextP2);
+                newLines.Add(newLine);
+
+                // trackWriter.MoveLine(selection.line, nextP1, nextP2);
+                // trackWriter.AddLine(newLine);
+            }
+
+            var selectTool = CurrentTools.SelectTool;
+            foreach (GameLine newLine in newLines)
+            {
                 trackWriter.AddLine(newLine);
             }
+            selectTool.SelectLines(newLines);
+
+
+
             if (isCompleteAction)
             {
                 window.Track.UndoManager.EndAction();
@@ -115,7 +129,7 @@ namespace linerider.Addons
 
         private static List<LineSelection> GetLineSelections()
         {
-            if (!CurrentTools.SelectedTool.Equals(CurrentTools.SelectedTool) || CurrentTools.SelectTool.IsMouseButtonDown)
+            if (!CurrentTools.SelectedTool.Equals(CurrentTools.SelectTool))
             {
                 // This tool shouldn't work mid-selection, or if the Selection tool isn't active
                 return new List<LineSelection>();
