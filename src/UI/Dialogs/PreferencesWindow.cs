@@ -666,9 +666,21 @@ namespace linerider.UI
         {
             var rblHeader = GwenHelper.CreateHeaderPanel(parent, "RatherBeLunar's Magic Animator Settings");
 
-            var showid = GwenHelper.AddCheckbox(rblHeader, "Enable Magic Animator Mode", Settings.magicAnimatorModeEnabled, (o, e) =>
+//            GwenHelper.AddCheckbox(rblHeader, "Reference frame based animation", Settings.velocityReferenceFrameAnimation, (o, e) =>
+//            {
+//                Settings.velocityReferenceFrameAnimation = ((Checkbox)o).IsChecked;
+//                Settings.Save();
+//            });
+
+            GwenHelper.AddCheckbox(rblHeader, "Convert lines sent to previous frames to scenery", Settings.recededLinesAsScenery, (o, e) =>
             {
-                Settings.magicAnimatorModeEnabled = ((Checkbox)o).IsChecked;
+                Settings.recededLinesAsScenery = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
+
+            GwenHelper.AddCheckbox(rblHeader, "Convert lines sent to forward frames to scenery", Settings.forwardLinesAsScenery, (o, e) =>
+            {
+                Settings.forwardLinesAsScenery = ((Checkbox)o).IsChecked;
                 Settings.Save();
             });
         }
@@ -699,7 +711,7 @@ namespace linerider.UI
             page = AddPage(cat, "Discord");
             PopulateDiscordSettings(page);
             cat = _prefcontainer.Add("Addons");
-            page = AddPage(cat, "RBL Magic Animator");
+            page = AddPage(cat, "Animation");
             PopulateRBLSettings(page);
             if (Settings.SettingsPane >= _tabscount && _focus == null)
             {

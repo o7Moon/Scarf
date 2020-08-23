@@ -12,7 +12,12 @@ namespace linerider.Addons
 {
     public class MagicAnimator : BaseAddon
     {
-        private static void MoveFrame(List<LineSelection> selectedLines, int direction = 1, bool isCompleteAction = true)
+        private static void MoveFrameStatic(List<LineSelection> selectedLines, int direction, bool isCompleteAction)
+        {
+            // TODO
+        }
+
+        private static void MoveFrameRelative(List<LineSelection> selectedLines, int direction, bool isCompleteAction)
         {
             RiderFrame flag = window.Track.GetFlag();
             int currentFrame = window.Track.Offset;
@@ -64,7 +69,7 @@ namespace linerider.Addons
 
                 // Add a new line in the same position, then move the existing line to maintain the selection
                 GameLine newLine;
-                if (direction > 0)
+                if (!Settings.forwardLinesAsScenery && (direction > 0 || !Settings.recededLinesAsScenery))
                 {
                     switch (selection.line.Type)
                     {
@@ -93,6 +98,18 @@ namespace linerider.Addons
             {
                 window.Track.UndoManager.EndAction();
                 window.Track.NotifyTrackChanged();
+            }
+        }
+
+        private static void MoveFrame(List<LineSelection> selectedLines, int direction = 1, bool isCompleteAction = true)
+        {
+            if (Settings.velocityReferenceFrameAnimation)
+            {
+                MoveFrameRelative(selectedLines, direction, isCompleteAction);
+            }
+            else
+            {
+                MoveFrameStatic(selectedLines, direction, isCompleteAction);
             }
         }
 

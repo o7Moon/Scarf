@@ -116,7 +116,9 @@ namespace linerider
         public static String DefaultCrashBackupFormat; //Format crash backups are saved to
 
         // RatherBeLunar Addon Settings
-        public static bool magicAnimatorModeEnabled;
+        public static bool velocityReferenceFrameAnimation = true;
+        public static bool recededLinesAsScenery;
+        public static bool forwardLinesAsScenery;
 
         public static bool ColorPlayback;
         public static bool OnionSkinning;
