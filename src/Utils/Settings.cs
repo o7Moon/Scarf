@@ -115,6 +115,11 @@ namespace linerider
         public static String DefaultQuicksaveFormat; //What the autosave format is
         public static String DefaultCrashBackupFormat; //Format crash backups are saved to
 
+        // RatherBeLunar Addon Settings
+        public static bool velocityReferenceFrameAnimation = true;
+        public static bool recededLinesAsScenery;
+        public static bool forwardLinesAsScenery;
+
         public static bool ColorPlayback;
         public static bool OnionSkinning;
         public static string LastSelectedTrack = "";
@@ -231,6 +236,8 @@ namespace linerider
         }
         private static void SetupDefaultKeybinds()
         {
+            SetupAddonDefaultKeybinds();
+
             SetupDefaultKeybind(Hotkey.EditorPencilTool, new Keybinding(Key.Q));
             SetupDefaultKeybind(Hotkey.EditorLineTool, new Keybinding(Key.W));
             SetupDefaultKeybind(Hotkey.EditorEraserTool, new Keybinding(Key.E));
@@ -321,6 +328,14 @@ namespace linerider
             SetupDefaultKeybind(Hotkey.DrawDebugCamera, new Keybinding(Key.Period));
             SetupDefaultKeybind(Hotkey.DrawDebugGrid, new Keybinding(Key.Comma));
         }
+        private static void SetupAddonDefaultKeybinds()
+        {
+            SetupDefaultKeybind(Hotkey.MagicAnimateAdvanceFrame, new Keybinding(Key.Keypad0));
+            SetupDefaultKeybind(Hotkey.MagicAnimateRecedeFrame, new Keybinding(Key.Keypad1));
+            SetupDefaultKeybind(Hotkey.MagicAnimateRecedeMultiFrame, new Keybinding(Key.Keypad2));
+
+            SetupDefaultKeybind(Hotkey.LineGeneratorWindow, new Keybinding(Key.G));
+        }
         private static void SetupDefaultKeybind(Hotkey hotkey, Keybinding keybinding, Keybinding secondary = null)
         {
             if (keybinding.IsEmpty)
@@ -391,7 +406,7 @@ namespace linerider
                     {
                         foreach (var keybind in keybinds.Value)
                         {
-                            if (keybind.IsBindingEqual(keybinding) && 
+                            if (keybind.IsBindingEqual(keybinding) &&
                                 !(inputconflicts == KeyConflicts.HardCoded &&
                                   inputconflicts == conflicts))
                                 return hk;
@@ -472,6 +487,7 @@ namespace linerider
             DefaultCrashBackupFormat = GetSetting(lines, nameof(DefaultCrashBackupFormat));
             if (multiScarfSegments == 0) { multiScarfSegments++; }
             if (ScarfSegments == 0) { ScarfSegments++; }
+            LoadAddonSettings(lines);
 
             var lasttrack = GetSetting(lines, nameof(LastSelectedTrack));
             if (File.Exists(lasttrack) && lasttrack.StartsWith(Constants.TracksDirectory))
@@ -487,6 +503,12 @@ namespace linerider
 
             Volume = MathHelper.Clamp(Settings.Volume, 0, 100);
             LoadDefaultKeybindings();
+        }
+        public static void LoadAddonSettings(string[] lines)
+        {
+            LoadBool(GetSetting(lines, nameof(velocityReferenceFrameAnimation)), ref velocityReferenceFrameAnimation);
+            LoadBool(GetSetting(lines, nameof(forwardLinesAsScenery)), ref forwardLinesAsScenery);
+            LoadBool(GetSetting(lines, nameof(recededLinesAsScenery)), ref recededLinesAsScenery);
         }
         public static void Save()
         {
@@ -546,7 +568,7 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(DefaultAutosaveFormat), DefaultAutosaveFormat);
             config += "\r\n" + MakeSetting(nameof(DefaultQuicksaveFormat), DefaultQuicksaveFormat);
             config += "\r\n" + MakeSetting(nameof(DefaultCrashBackupFormat), DefaultCrashBackupFormat);
-            
+            config = SaveAddonSettings(config);
             foreach (var binds in Keybinds)
             {
                 foreach (var bind in binds.Value)
@@ -580,6 +602,13 @@ namespace linerider
                 File.WriteAllText(Program.UserDirectory + "settings-LRT.conf", config);
             }
             catch { }
+        }
+        private static string SaveAddonSettings(string config)
+        {
+            config += "\r\n" + MakeSetting(nameof(velocityReferenceFrameAnimation), velocityReferenceFrameAnimation.ToString());
+            config += "\r\n" + MakeSetting(nameof(forwardLinesAsScenery), forwardLinesAsScenery.ToString());
+            config += "\r\n" + MakeSetting(nameof(recededLinesAsScenery), recededLinesAsScenery.ToString());
+            return config;
         }
         private static void LoadKeybinding(string[] config, Hotkey hotkey)
         {

@@ -346,5 +346,9 @@ namespace linerider
             ShowDialog(wnd);
             wnd.SetPosition(x - wnd.Width / 2, y - wnd.Height / 2);
         }
+        public void ShowGeneratorWindow(Vector2d pos)
+        {
+            ShowDialog(new GeneratorWindow(this, game.Track, pos));
+        }
     }
 }

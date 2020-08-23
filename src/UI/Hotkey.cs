@@ -72,10 +72,15 @@ namespace linerider.UI
         Quicksave,
         SaveAsWindow,
         TriggerMenuWindow,
+        LineGeneratorWindow,
         DrawDebugGrid,
         DrawDebugCamera,
 
-        PlayButtonIgnoreFlag
+        PlayButtonIgnoreFlag,
+
+        MagicAnimateAdvanceFrame,
+        MagicAnimateRecedeFrame,
+        MagicAnimateRecedeMultiFrame
     }
 
 }
