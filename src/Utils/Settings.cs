@@ -406,7 +406,7 @@ namespace linerider
                     {
                         foreach (var keybind in keybinds.Value)
                         {
-                            if (keybind.IsBindingEqual(keybinding) && 
+                            if (keybind.IsBindingEqual(keybinding) &&
                                 !(inputconflicts == KeyConflicts.HardCoded &&
                                   inputconflicts == conflicts))
                                 return hk;
@@ -487,6 +487,7 @@ namespace linerider
             DefaultCrashBackupFormat = GetSetting(lines, nameof(DefaultCrashBackupFormat));
             if (multiScarfSegments == 0) { multiScarfSegments++; }
             if (ScarfSegments == 0) { ScarfSegments++; }
+            LoadAddonSettings(lines);
 
             var lasttrack = GetSetting(lines, nameof(LastSelectedTrack));
             if (File.Exists(lasttrack) && lasttrack.StartsWith(Constants.TracksDirectory))
@@ -502,6 +503,12 @@ namespace linerider
 
             Volume = MathHelper.Clamp(Settings.Volume, 0, 100);
             LoadDefaultKeybindings();
+        }
+        public static void LoadAddonSettings(string[] lines)
+        {
+            LoadBool(GetSetting(lines, nameof(velocityReferenceFrameAnimation)), ref velocityReferenceFrameAnimation);
+            LoadBool(GetSetting(lines, nameof(forwardLinesAsScenery)), ref forwardLinesAsScenery);
+            LoadBool(GetSetting(lines, nameof(recededLinesAsScenery)), ref recededLinesAsScenery);
         }
         public static void Save()
         {
@@ -561,7 +568,7 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(DefaultAutosaveFormat), DefaultAutosaveFormat);
             config += "\r\n" + MakeSetting(nameof(DefaultQuicksaveFormat), DefaultQuicksaveFormat);
             config += "\r\n" + MakeSetting(nameof(DefaultCrashBackupFormat), DefaultCrashBackupFormat);
-            
+            config = SaveAddonSettings(config);
             foreach (var binds in Keybinds)
             {
                 foreach (var bind in binds.Value)
@@ -595,6 +602,13 @@ namespace linerider
                 File.WriteAllText(Program.UserDirectory + "settings-LRT.conf", config);
             }
             catch { }
+        }
+        private static string SaveAddonSettings(string config)
+        {
+            config += "\r\n" + MakeSetting(nameof(velocityReferenceFrameAnimation), velocityReferenceFrameAnimation.ToString());
+            config += "\r\n" + MakeSetting(nameof(forwardLinesAsScenery), forwardLinesAsScenery.ToString());
+            config += "\r\n" + MakeSetting(nameof(recededLinesAsScenery), recededLinesAsScenery.ToString());
+            return config;
         }
         private static void LoadKeybinding(string[] config, Hotkey hotkey)
         {
