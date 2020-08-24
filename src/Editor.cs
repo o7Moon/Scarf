@@ -447,7 +447,7 @@ namespace linerider
             if (Math.Abs(percent) < 0.00001)
                 return;
             UseUserZoom = true;
-            Zoom = Zoom + (Zoom * percent);
+            Zoom = _zoom + (_zoom * percent);
         }
         /// <summary>
         /// Function to be called after updating the playback buffer
