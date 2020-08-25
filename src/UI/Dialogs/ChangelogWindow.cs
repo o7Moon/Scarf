@@ -89,7 +89,7 @@ namespace linerider.UI
             {
                 try
                 {
-                    GameCanvas.OpenUrl(@"https://github.com/Tran-Foxxo/LRTran/tree/master/Changelogs");
+                    GameCanvas.OpenUrl(@"https://github.com/RatherBeLunar/LRA-Community-Edition/tree/master/Changelogs");
                 }
                 catch
                 {

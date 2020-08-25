@@ -239,7 +239,7 @@ namespace linerider
                 {
                     try
                     {
-                        OpenUrl(@"https://github.com/tran-foxxo/LRTran/releases/latest");
+                        OpenUrl(@"https://github.com/RatherBeLunar/LRA-Community-Edition/releases/latest");
                     }
                     catch
                     {

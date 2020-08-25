@@ -466,10 +466,10 @@ namespace linerider
         {
             String toolName = (linerider.Tools.CurrentTools.SelectedTool.ToString().Substring(16)); toolName = toolName.Substring(0, toolName.Length - 4).ToLower();
 
-            String versionText = "LRTran version " + linerider.Program.Version;
+            String versionText = "LRA:CE version " + linerider.Program.Version;
 
             String largeKey = Settings.largeImageKey;
-            String largeText = versionText + " ==================== Source code: https://github.com/Tran-Foxxo/LRTran";
+            String largeText = versionText + " ==================== Source code: https://github.com/RatherBeLunar/LRA-Community-Edition";
             String smallKey = toolName;
             String smallText = "Currently using the " + toolName + " tool";
 
@@ -519,7 +519,7 @@ namespace linerider
             String unsavedChangesText = "Unsaved changes: " + Track.TrackChanges;
             String toolText = "Currently using the " + toolName + " tool";
             String trackText = "Track name: \"" + Track.Name + "\"";
-            String versionText = "LRTran version " + linerider.Program.Version;
+            String versionText = "LRA:CE version " + linerider.Program.Version;
 
             switch (setting)
             {

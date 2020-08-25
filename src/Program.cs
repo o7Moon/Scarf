@@ -36,10 +36,10 @@ namespace linerider
 #endif
         public static string BinariesFolder = "bin";
         public readonly static CultureInfo Culture = new CultureInfo("en-US");
-        public static string Version = "6/16/20 - Build 1";
+        public static string Version = "8/24/20 - Build 1";
         public static string TestVersion = "";
         public static string NewVersion = null;
-        public static readonly string WindowTitle = "Line Rider: Advanced (Tran\'s fork) " + Version + TestVersion;
+        public static readonly string WindowTitle = "Line Rider Advanced: Community Edition " + Version + TestVersion;
         public static Random Random;
         private static bool _crashed;
         private static MainWindow glGame;
@@ -196,7 +196,7 @@ namespace linerider
                     {
                         using (WebClient wc = new WebClient())
                         {
-                            string currentversion = wc.DownloadString("https://raw.githubusercontent.com/tran-foxxo/LRTran/master/version");
+                            string currentversion = wc.DownloadString("https://raw.githubusercontent.com/RatherBeLunar/LRA-Community-Edition/master/version");
                             var idx = currentversion.IndexOfAny(new char[] { '\r', '\n' });
                             if (idx != -1)
                             {
