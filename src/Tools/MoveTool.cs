@@ -183,10 +183,25 @@ namespace linerider.Tools
                     {
                         SnapJoints(trk, line, ref joint1, ref joint2);
                     }
+
+                    /*GameLine newLine = line;
+                    if (UI.InputUtils.Check(Hotkey.DrawDebugCamera))
+                    {
+                        GameLine movedLine = line;
+                        movedLine.Position = joint1;
+                        movedLine.Position2 = joint2;
+                        newLine = FixNoFakie2(game.Track.Timeline, line, _selection.joint1 ? line.Position : line.Position2);
+                        joint1 = newLine.Position;
+                        joint2 = newLine.Position2;
+                        //trk.MoveLine(movedLine, newLine.Position, newLine.Position2);
+                        //line = newLine;
+                    }*/
+
                     trk.MoveLine(
                         line,
                         joint1,
                         joint2);
+                    //line = newLine;
 
                     foreach (var sl in _selection.snapped)
                     {
@@ -392,7 +407,7 @@ namespace linerider.Tools
             _hoverline = null;
             _hoverclick = false;
         }
-        private bool ApplyModifiers(ref Vector2d joint1, ref Vector2d joint2)
+        private bool ApplyModifiers(ref Vector2d joint1, ref Vector2d joint2) //Modifies the movement to account for angle locks & stuff
         {
             bool both = _selection.joint1 && _selection.joint2;
             bool modified = false;
@@ -432,6 +447,7 @@ namespace linerider.Tools
                     end = Utility.LengthLock(start, end, currentdelta.Length);
                     modified = true;
                 }
+
                 if (_selection.joint2)
                     joint2 = end;
                 else
@@ -450,18 +466,26 @@ namespace linerider.Tools
             }
             var snapj1 = joint1;
             var snapj2 = joint2;
+
             bool j1snapped = false;
             bool j2snapped = false;
+
             bool ignorescenery = line is StandardLine;
             if (_selection.joint1)
             {
                 j1snapped = GetSnapPoint(trk, joint1, line.Position2, joint1,
                     ignoreids, out snapj1, ignorescenery);
+
+                if (!j1snapped)
+                    j1snapped = GetSnapPoint_Grid(joint1, line.Position2, joint1, out snapj1);
             }
             if (_selection.joint2)
             {
                 j2snapped = GetSnapPoint(trk, line.Position, joint2, joint2,
                     ignoreids, out snapj2, ignorescenery);
+
+                if (!j2snapped)
+                    j2snapped = GetSnapPoint_Grid(line.Position, joint2, joint2, out snapj2);
             }
             if (_selection.BothJoints)
             {

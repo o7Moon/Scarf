@@ -332,6 +332,37 @@ namespace linerider
                 return GetString("shaders.rider.vert");
             }
         }
+        internal static string simgrid_frag
+        {
+            get
+            {
+                return GetString("shaders.simgrid.frag");
+            }
+        }
+        internal static string simgrid_vert
+        {
+            get
+            {
+                return GetString("shaders.simgrid.vert");
+            }
+        }
+
+        internal static string floatgrid_vert
+        {
+            get
+            {
+                return GetString("shaders.floatgrid.vert");
+            }
+        }
+
+        internal static string floatgrid_frag
+        {
+            get
+            {
+                return GetString("shaders.floatgrid.frag");
+            }
+        }
+
         #endregion
         #region Icons
         internal static System.Drawing.Bitmap pencil_icon

@@ -222,12 +222,67 @@ namespace linerider.Rendering
             GL.End();
             GameDrawingMatrix.Exit();
         }
+
+        public static void DrawFloatGrid() //Draws the grid of floating-point 'regions', used in the creation of stable angled kramuals
+        {
+            Shader _shader = Shaders.FloatGridShader;
+            _shader.Use();
+
+            var u_zoom = _shader.GetUniform("u_zoom"); //Set uniform var used in fragment shader
+
+            GL.Uniform1(u_zoom, Game.Track.Zoom);
+
+            GL.PushMatrix();
+            GL.Translate(new Vector3d(-Game.ScreenTranslation)); //This transforms from pixel coordinates back to world coordinates (used in vert shader)
+            GL.Scale(1.0 / Game.Track.Zoom, 1.0 / Game.Track.Zoom, 0);
+
+            GL.Begin(PrimitiveType.Quads);
+
+            GL.Vertex2(new Vector2d(0, 0));
+            GL.Vertex2(new Vector2d(Game.RenderSize.Width, 0));
+            GL.Vertex2(new Vector2d(Game.RenderSize.Width, Game.RenderSize.Height));
+            GL.Vertex2(new Vector2d(0, Game.RenderSize.Height));
+
+            GL.End();
+            _shader.Stop();
+            GL.PopMatrix();
+        }
+
+        public static void DrawGrid_Shader(int sqsize) //Draw the grid using per-pixel shading (more efficient for low zoom where more grid-lines are needed)
+        {
+            Shader _shader = Shaders.SimGridShader;
+            _shader.Use();
+
+            var u_zoom = _shader.GetUniform("u_zoom"); //Set uniform var used in fragment shader
+            var u_cellsize = _shader.GetUniform("u_cellsize");
+
+            GL.Uniform1(u_zoom, Game.Track.Zoom);
+            GL.Uniform1(u_cellsize, (float)sqsize); //TODO make this sync with DbgDrawGrid() cellsize
+
+            GL.PushMatrix();
+            GL.Translate(new Vector3d(-Game.ScreenTranslation)); //This transforms from pixel coordinates back to world coordinates (used in vert shader)
+            GL.Scale(1.0 / Game.Track.Zoom, 1.0 / Game.Track.Zoom, 0);
+
+            GL.Begin(PrimitiveType.Quads);
+
+            GL.Vertex2(new Vector2d(0, 0));
+            GL.Vertex2(new Vector2d(Game.RenderSize.Width, 0));
+            GL.Vertex2(new Vector2d(Game.RenderSize.Width, Game.RenderSize.Height));
+            GL.Vertex2(new Vector2d(0, Game.RenderSize.Height));
+
+            GL.End();
+            _shader.Stop();
+            GL.PopMatrix();
+        }
+
         public static void DbgDrawGrid()
         {
             bool fastgrid = false;
             bool renderext = true;
             bool renderridersquare = true;
+            bool useshadergrid = true;
             int sqsize = fastgrid ? EditorGrid.CellSize : SimulationGrid.CellSize;
+
             GL.PushMatrix();
             GL.Scale(Game.Track.Zoom, Game.Track.Zoom, 0);
             GL.Translate(new Vector3d(Game.ScreenTranslation));
@@ -286,24 +341,37 @@ namespace linerider.Rendering
             }
 
             GL.End();
-            GL.Begin(PrimitiveType.Lines);
-            GL.Color3(Color.Red);
-            for (var x = -sqsize; x < (Game.RenderSize.Width / Game.Track.Zoom); x += sqsize)
+
+            if (!useshadergrid)
             {
-                var yv = new Vector2d(x + (Game.ScreenPosition.X - (Game.ScreenPosition.X % sqsize)), Game.ScreenPosition.Y);
-                GL.Vertex2(yv);
-                yv.Y += Game.RenderSize.Height / Game.Track.Zoom;
-                GL.Vertex2(yv);
+                GL.Begin(PrimitiveType.Lines);
+                GL.Color3(Color.Red);
+                for (var x = -sqsize; x < (Game.RenderSize.Width / Game.Track.Zoom); x += sqsize)
+                {
+                    var yv = new Vector2d(x + (Game.ScreenPosition.X - (Game.ScreenPosition.X % sqsize)), Game.ScreenPosition.Y);
+                    GL.Vertex2(yv);
+                    yv.Y += Game.RenderSize.Height / Game.Track.Zoom;
+                    GL.Vertex2(yv);
+                }
+                for (var y = -sqsize; y < (Game.RenderSize.Height / Game.Track.Zoom); y += sqsize)
+                {
+                    var yv = new Vector2d(Game.ScreenPosition.X, y + (Game.ScreenPosition.Y - (Game.ScreenPosition.Y % sqsize)));
+                    GL.Vertex2(yv);
+                    yv.X += Game.RenderSize.Width / Game.Track.Zoom;
+                    GL.Vertex2(yv);
+                }
+                GL.End();
             }
-            for (var y = -sqsize; y < (Game.RenderSize.Height / Game.Track.Zoom); y += sqsize)
-            {
-                var yv = new Vector2d(Game.ScreenPosition.X, y + (Game.ScreenPosition.Y - (Game.ScreenPosition.Y % sqsize)));
-                GL.Vertex2(yv);
-                yv.X += Game.RenderSize.Width / Game.Track.Zoom;
-                GL.Vertex2(yv);
-            }
-            GL.End();
             GL.PopMatrix();
+            if (useshadergrid)
+            {
+                DrawGrid_Shader(sqsize);
+            }
+        }
+        public static void DrawAGWs()
+        {
+            bool renderext = true;
+
             if (renderext)
             {
                 using (var trk = Game.Track.CreateTrackReader())

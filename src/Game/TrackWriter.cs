@@ -149,7 +149,8 @@ namespace linerider
         public void MoveLine(
             GameLine line,
             Vector2d pos1,
-            Vector2d pos2)
+            Vector2d pos2,
+            bool render = true)
         {
             if (line.Position != pos1 || line.Position2 != pos2)
             {
@@ -174,7 +175,8 @@ namespace linerider
                 _editorcells.AddLine(line);
 
                 RegisterUndoAction(clone, line);
-                _renderer.RedrawLine(line);
+                if (render)
+                    _renderer.RedrawLine(line);
             }
         }
         /// <summary>

@@ -40,6 +40,7 @@ namespace linerider
             public static bool ShowFps = true;
             public static bool ShowPpf = true;
             public static bool EnableColorTriggers = true;
+            public static bool ResIndZoom = true; //Use resolution-independent zoom based on window size when recording
         }
         public static class Local
         {
@@ -61,6 +62,7 @@ namespace linerider
             public static bool HitTest;
             public static bool SnapNewLines;
             public static bool SnapMoveLine;
+            public static bool SnapToGrid;
             public static bool ForceXySnap;
             public static bool MomentumVectors;
             public static bool RenderGravityWells;
@@ -85,12 +87,20 @@ namespace linerider
         public static bool Record1080p;
         public static bool RecordSmooth;
         public static bool RecordMusic;
+        public static int RecordingWidth;
+        public static int RecordingHeight;
         public static float ScrollSensitivity;
         public static int SettingsPane;
         public static bool MuteAudio;
         public static bool PreviewMode;
         public static int SlowmoSpeed;
         public static float DefaultPlayback;
+        public static bool DrawCollisionGrid; //Draw the grid used in line collision detection
+        public static bool DrawAGWs; //Draw the normally invisible line extensions used to smooth curve collisions
+        public static bool DrawFloatGrid; //Draw the exponential grid of floating-point 'regions' (used for angled kramuals)
+        public static bool DrawCamera; //Draw the camera's area
+
+        public static float ZoomMultiplier; //A constant multiplier for the zoom
 
         //LRTran settings
         public static String SelectedScarf; //What custom scarf is selected
@@ -173,6 +183,7 @@ namespace linerider
             Editor.HitTest = false;
             Editor.SnapNewLines = true;
             Editor.SnapMoveLine = true;
+            Editor.SnapToGrid = false;
             Editor.ForceXySnap = false;
             Editor.MomentumVectors = false;
             Editor.RenderGravityWells = false;
@@ -196,6 +207,8 @@ namespace linerider
             Record1080p = false;
             RecordSmooth = true;
             RecordMusic = true;
+            RecordingWidth = 1280;
+            RecordingHeight = 720;
             ScrollSensitivity = 1;
             SettingsPane = 0;
             MuteAudio = false;
@@ -225,6 +238,11 @@ namespace linerider
             DefaultAutosaveFormat = ".trk";
             DefaultQuicksaveFormat = ".trk";
             DefaultCrashBackupFormat = ".trk";
+            DrawCollisionGrid = false;
+            DrawAGWs = false;
+            DrawFloatGrid = false;
+            DrawCamera = false;
+            ZoomMultiplier = 1.0f;
         }
         public static void ResetKeybindings()
         {
@@ -325,6 +343,7 @@ namespace linerider
 
             SetupDefaultKeybind(Hotkey.TriggerMenuWindow, new Keybinding(Key.P));
             SetupDefaultKeybind(Hotkey.SaveAsWindow, new Keybinding(Key.S, KeyModifiers.Control | KeyModifiers.Shift));
+            SetupDefaultKeybind(Hotkey.LineGeneratorWindow, new Keybinding(Key.G));
             SetupDefaultKeybind(Hotkey.DrawDebugCamera, new Keybinding(Key.Period));
             SetupDefaultKeybind(Hotkey.DrawDebugGrid, new Keybinding(Key.Comma));
         }
@@ -445,6 +464,8 @@ namespace linerider
             LoadBool(GetSetting(lines, nameof(Record1080p)), ref Record1080p);
             LoadBool(GetSetting(lines, nameof(RecordSmooth)), ref RecordSmooth);
             LoadBool(GetSetting(lines, nameof(RecordMusic)), ref RecordMusic);
+            LoadInt(GetSetting(lines, nameof(RecordingWidth)), ref RecordingWidth);
+            LoadInt(GetSetting(lines, nameof(RecordingHeight)), ref RecordingHeight);
             LoadBool(GetSetting(lines, nameof(Editor.LifeLockNoFakie)), ref Editor.LifeLockNoFakie);
             LoadBool(GetSetting(lines, nameof(Editor.LifeLockNoOrange)), ref Editor.LifeLockNoOrange);
             LoadInt(GetSetting(lines, nameof(SettingsPane)), ref SettingsPane);
@@ -452,6 +473,7 @@ namespace linerider
             LoadBool(GetSetting(lines, nameof(Editor.HitTest)), ref Editor.HitTest);
             LoadBool(GetSetting(lines, nameof(Editor.SnapNewLines)), ref Editor.SnapNewLines);
             LoadBool(GetSetting(lines, nameof(Editor.SnapMoveLine)), ref Editor.SnapMoveLine);
+            LoadBool(GetSetting(lines, nameof(Editor.SnapToGrid)), ref Editor.SnapToGrid);
             LoadBool(GetSetting(lines, nameof(Editor.ForceXySnap)), ref Editor.ForceXySnap);
             LoadBool(GetSetting(lines, nameof(Editor.MomentumVectors)), ref Editor.MomentumVectors);
             LoadBool(GetSetting(lines, nameof(Editor.RenderGravityWells)), ref Editor.RenderGravityWells);
@@ -485,6 +507,11 @@ namespace linerider
             DefaultAutosaveFormat = GetSetting(lines, nameof(DefaultAutosaveFormat));
             DefaultQuicksaveFormat = GetSetting(lines, nameof(DefaultQuicksaveFormat));
             DefaultCrashBackupFormat = GetSetting(lines, nameof(DefaultCrashBackupFormat));
+            LoadBool(GetSetting(lines, nameof(DrawCollisionGrid)), ref DrawCollisionGrid);
+            LoadBool(GetSetting(lines, nameof(DrawAGWs)), ref DrawAGWs);
+            LoadBool(GetSetting(lines, nameof(DrawFloatGrid)), ref DrawFloatGrid);
+            LoadBool(GetSetting(lines, nameof(DrawCamera)), ref DrawCamera);
+            LoadFloat(GetSetting(lines, nameof(ZoomMultiplier)), ref ZoomMultiplier);
             if (multiScarfSegments == 0) { multiScarfSegments++; }
             if (ScarfSegments == 0) { ScarfSegments++; }
             LoadAddonSettings(lines);
@@ -527,6 +554,8 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(Record1080p), Record1080p.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(RecordSmooth), RecordSmooth.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(RecordMusic), RecordMusic.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(RecordingWidth), RecordingWidth.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(RecordingHeight), RecordingHeight.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(ScrollSensitivity), ScrollSensitivity.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.LifeLockNoFakie), Editor.LifeLockNoFakie.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.LifeLockNoOrange), Editor.LifeLockNoOrange.ToString(Program.Culture));
@@ -535,6 +564,7 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(Editor.HitTest), Editor.HitTest.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.SnapNewLines), Editor.SnapNewLines.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.SnapMoveLine), Editor.SnapMoveLine.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(Editor.SnapToGrid), Editor.SnapToGrid.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.ForceXySnap), Editor.ForceXySnap.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.MomentumVectors), Editor.MomentumVectors.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.RenderGravityWells), Editor.RenderGravityWells.ToString(Program.Culture));
@@ -568,6 +598,11 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(DefaultAutosaveFormat), DefaultAutosaveFormat);
             config += "\r\n" + MakeSetting(nameof(DefaultQuicksaveFormat), DefaultQuicksaveFormat);
             config += "\r\n" + MakeSetting(nameof(DefaultCrashBackupFormat), DefaultCrashBackupFormat);
+            config += "\r\n" + MakeSetting(nameof(DrawCollisionGrid), DrawCollisionGrid.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(DrawAGWs), DrawAGWs.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(DrawFloatGrid), DrawFloatGrid.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(DrawCamera), DrawCamera.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(ZoomMultiplier), ZoomMultiplier.ToString(Program.Culture));
             config = SaveAddonSettings(config);
             foreach (var binds in Keybinds)
             {
