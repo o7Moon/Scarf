@@ -32,6 +32,7 @@ namespace linerider.UI
         private Spinner CircleOffsetX;
         private Spinner CircleOffsetY;
         private Checkbox CircleInverse;
+        private Checkbox CircleReverse;
 
         private ControlBase TenPCOptions;
         private Spinner TenPCX;
@@ -242,11 +243,59 @@ namespace linerider.UI
             GwenHelper.CreateLabeledControl(CircleGenOptions, "Line Count", CircleLineCount);
             GwenHelper.CreateLabeledControl(CircleGenOptions, "Centre X", CircleOffsetX);
             GwenHelper.CreateLabeledControl(CircleGenOptions, "Centre Y", CircleOffsetY);
+
+            var lineTypeRadioGroup = new RadioButtonGroup(CircleGenOptions)
+            {
+                Dock = Dock.Top,
+                ShouldDrawBackground = false,
+            };
+            var blueType = lineTypeRadioGroup.AddOption("Blue");
+            var redType = lineTypeRadioGroup.AddOption("Red");
+            var greenType = lineTypeRadioGroup.AddOption("Green");
+            blueType.CheckChanged += (o, e) =>
+            {
+                gen_Circle.lineType = LineType.Blue;
+                CircleInverse.Enable();
+                CircleReverse.Disable();
+            };
+            redType.CheckChanged += (o, e) =>
+            {
+                gen_Circle.lineType = LineType.Red;
+                CircleInverse.Enable();
+                CircleReverse.Enable();
+            };
+            greenType.CheckChanged += (o, e) =>
+            {
+                gen_Circle.lineType = LineType.Scenery;
+                CircleInverse.Disable();
+                CircleReverse.Disable();
+            };
+
             CircleInverse = GwenHelper.AddCheckbox(CircleGenOptions, "Invert", gen_Circle.invert, (o, e) =>
             {
                 gen_Circle.invert = ((Checkbox)o).IsChecked;
                 gen_Circle.ReGenerate_Preview();
             });
+            CircleReverse = GwenHelper.AddCheckbox(CircleGenOptions, "Reverse", gen_Circle.reverse, (o, e) =>
+            {
+                gen_Circle.reverse = ((Checkbox)o).IsChecked;
+                gen_Circle.ReGenerate_Preview();
+            });
+
+            switch (gen_Circle.lineType)
+            {
+                case LineType.Blue:
+                    blueType.Select();
+                    break;
+                case LineType.Red:
+                    redType.Select();
+                    break;
+                case LineType.Scenery:
+                    greenType.Select();
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void Populate10pc()

@@ -13,6 +13,13 @@ namespace linerider.Game.LineGenerator
         public Vector2d position; //Centre of the circle
         public int lineCount; //Number of lines used to generate the circle
         public bool invert;
+        public bool reverse;
+        public LineType _lineType;
+        public LineType lineType
+        {
+            set { _lineType = value; ReGenerate_Preview(); }
+            get { return _lineType; }
+        }
 
         public CircleGenerator(string _name, double _radius, Vector2d _position, int _lineCount, bool _invert)
         {
@@ -22,6 +29,7 @@ namespace linerider.Game.LineGenerator
             position = _position;
             lineCount = _lineCount;
             invert = _invert;
+            _lineType = LineType.Blue;
         }
 
         public override void Generate_Internal(TrackWriter trk)
@@ -32,11 +40,22 @@ namespace linerider.Game.LineGenerator
                 double ang = frac * 2.0 * 3.1415926535897932384626433832795028841971; //There must be a better way of writing pi
                 points.Add(position + radius * new Vector2d(Math.Cos(ang), Math.Sin(ang)));
             }
-            for (int i = 1; i < points.Count; i++)
+            if (invert != reverse) // XOR
             {
-                lines.Add(CreateLine(trk, points[i - 1], points[i], LineType.Blue, invert));
+                for (int i = 1; i < points.Count; i++)
+                {
+                    lines.Add(CreateLine(trk, points[i], points[i - 1], lineType, reverse));
+                }
+                lines.Add(CreateLine(trk, points[0], points[points.Count - 1], lineType, reverse));
             }
-            lines.Add(CreateLine(trk, points[points.Count - 1], points[0], LineType.Blue, invert));
+            else
+            {
+                for (int i = 1; i < points.Count; i++)
+                {
+                    lines.Add(CreateLine(trk, points[i - 1], points[i], lineType, reverse));
+                }
+                lines.Add(CreateLine(trk, points[points.Count - 1], points[0], lineType, reverse));
+            }
         }
         public override void Generate_Preview_Internal(TrackWriter trk)
         {
