@@ -129,6 +129,8 @@ namespace linerider
         public static bool velocityReferenceFrameAnimation = true;
         public static bool recededLinesAsScenery;
         public static bool forwardLinesAsScenery;
+        public static float animationRelativeVelX;
+        public static float animationRelativeVelY;
 
         public static bool ColorPlayback;
         public static bool OnionSkinning;
@@ -536,6 +538,8 @@ namespace linerider
             LoadBool(GetSetting(lines, nameof(velocityReferenceFrameAnimation)), ref velocityReferenceFrameAnimation);
             LoadBool(GetSetting(lines, nameof(forwardLinesAsScenery)), ref forwardLinesAsScenery);
             LoadBool(GetSetting(lines, nameof(recededLinesAsScenery)), ref recededLinesAsScenery);
+            LoadFloat(GetSetting(lines, nameof(animationRelativeVelX)), ref animationRelativeVelX);
+            LoadFloat(GetSetting(lines, nameof(animationRelativeVelY)), ref animationRelativeVelY);
         }
         public static void Save()
         {
@@ -643,6 +647,8 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(velocityReferenceFrameAnimation), velocityReferenceFrameAnimation.ToString());
             config += "\r\n" + MakeSetting(nameof(forwardLinesAsScenery), forwardLinesAsScenery.ToString());
             config += "\r\n" + MakeSetting(nameof(recededLinesAsScenery), recededLinesAsScenery.ToString());
+            config += "\r\n" + MakeSetting(nameof(animationRelativeVelX), animationRelativeVelX.ToString());
+            config += "\r\n" + MakeSetting(nameof(animationRelativeVelY), animationRelativeVelY.ToString());
             return config;
         }
         private static void LoadKeybinding(string[] config, Hotkey hotkey)

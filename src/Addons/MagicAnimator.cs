@@ -34,12 +34,17 @@ namespace linerider.Addons
             // This establishes the initial frame of reference
             //
             // flagNextFrameRider is considered to be the frame with 0 relative velocity to the reference frame
-            // All frames after will look as if the rider has started falling within the reference frame, because gravity
+            // All frames after will look as if the rider has started falling within the reference frame, because gravity.
+            // 
+            // This is all if the user-configured relative speeds are (0, 0). If the user changes these speeds,
+            // the lines will be drawn accordingly.
             Vector2d flagFramePos = Game.Rider.GetBounds(flagFrameRider).Vector;
             Vector2d flagNextFramePos = Game.Rider.GetBounds(flagNextFrameRider).Vector;
 
             // The difference between where the rider was on frames 0 and 1 establishes a reference speed to apply
             Vector2d firstFrameDiff = Vector2d.Subtract(flagNextFramePos, flagFramePos);
+            // Add the user-configurable speed offsets
+            firstFrameDiff = Vector2d.Add(firstFrameDiff, new Vector2d(Settings.animationRelativeVelX, Settings.animationRelativeVelY));
 
             int framesElapsed = currentFrame - flag.FrameID;
 
@@ -90,13 +95,9 @@ namespace linerider.Addons
                 }
                 else
                 {
-                    // Scenery lines if going backwards. This should be configurable in settings
                     newLine = new SceneryLine(nextP1, nextP2);
                 }
                 newLines.Add(newLine);
-
-                // trackWriter.MoveLine(selection.line, nextP1, nextP2);
-                // trackWriter.AddLine(newLine);
             }
 
             var selectTool = CurrentTools.SelectTool;

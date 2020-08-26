@@ -722,6 +722,32 @@ namespace linerider.UI
                 Settings.forwardLinesAsScenery = ((Checkbox)o).IsChecked;
                 Settings.Save();
             });
+
+            Spinner animationVelXSpinner = new Spinner(rblHeader)
+            {
+                Dock = Dock.Bottom,
+                Max = 1000,
+                Min = -1000,
+            };
+            Spinner animationVelYSpinner = new Spinner(rblHeader)
+            {
+                Dock = Dock.Bottom,
+                Max = 1000,
+                Min = -1000,
+            };
+            animationVelXSpinner.ValueChanged += (o, e) =>
+            {
+                Settings.animationRelativeVelX = (float)((Spinner)o).Value;
+                Settings.Save();
+            };
+            animationVelYSpinner.ValueChanged += (o, e) =>
+            {
+                Settings.animationRelativeVelY = (float)((Spinner)o).Value;
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(rblHeader, "Relative Animation X Velocity", animationVelXSpinner);
+            GwenHelper.CreateLabeledControl(rblHeader, "Relative Animation Y Velocity", animationVelYSpinner);
+
         }
 
         private void Setup()
