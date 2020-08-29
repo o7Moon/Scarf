@@ -118,7 +118,7 @@ namespace linerider.Audio
             lock (_sync)
             {
                 Empty();
-                if (_stream.Duration > time)
+                if (_stream.Duration > time && time > 0)
                 {
                     _stream.Position = time;
                     _needsrefill = true;

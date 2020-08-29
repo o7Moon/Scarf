@@ -83,7 +83,7 @@ namespace linerider.UI
                });
             Spinner offset = new Spinner(null)
             {
-                Min = 0,
+                Min = -2000,
                 Max = 2000,
                 Value = _editor.Song.Offset
             };
