@@ -29,6 +29,7 @@ using linerider.Audio;
 using linerider.UI;
 using linerider.Utils;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace linerider
 {
@@ -72,6 +73,14 @@ namespace linerider
             public static bool ShowLineLength;
             public static bool ShowLineAngle;
             public static bool ShowLineID;
+        }
+        public static class Lines
+        {
+            public static Color DefaultLine;
+            public static Color DefaultNightLine;
+            public static Color AccelerationLine;
+            public static Color SceneryLine;
+            public static Color StandardLine;
         }
         public static int PlaybackZoomType;
         public static float PlaybackZoomValue;
@@ -197,6 +206,11 @@ namespace linerider
             Editor.ShowLineLength = true;
             Editor.ShowLineAngle = true;
             Editor.ShowLineID = false;
+            Lines.DefaultLine = Constants.DefaultLineColor;
+            Lines.DefaultNightLine = Constants.DefaultNightLineColor;
+            Lines.AccelerationLine = Constants.RedLineColor;
+            Lines.SceneryLine = Constants.SceneryLineColor;
+            Lines.StandardLine = Constants.BlueLineColor;
             PlaybackZoomType = 0;
             PlaybackZoomValue = 4;
             Volume = 100;
@@ -520,9 +534,15 @@ namespace linerider
             LoadBool(GetSetting(lines, nameof(DrawFloatGrid)), ref DrawFloatGrid);
             LoadBool(GetSetting(lines, nameof(DrawCamera)), ref DrawCamera);
             LoadFloat(GetSetting(lines, nameof(ZoomMultiplier)), ref ZoomMultiplier);
+            LoadColor(GetSetting(lines, nameof(Lines.DefaultLine)), ref Lines.DefaultLine);
+            LoadColor(GetSetting(lines, nameof(Lines.DefaultNightLine)), ref Lines.DefaultNightLine);
+            //LoadColor(GetSetting(lines, nameof(Lines.AccelerationLine)), ref Lines.AccelerationLine);
+            LoadColor(GetSetting(lines, nameof(Lines.SceneryLine)), ref Lines.SceneryLine);
+            //LoadColor(GetSetting(lines, nameof(Lines.StandardLine)), ref Lines.StandardLine);
             if (multiScarfSegments == 0) { multiScarfSegments++; }
             if (ScarfSegments == 0) { ScarfSegments++; }
             LoadAddonSettings(lines);
+            
 
             var lasttrack = GetSetting(lines, nameof(LastSelectedTrack));
             if (File.Exists(lasttrack) && lasttrack.StartsWith(Constants.TracksDirectory))
@@ -547,6 +567,7 @@ namespace linerider
             LoadFloat(GetSetting(lines, nameof(animationRelativeVelX)), ref animationRelativeVelX);
             LoadFloat(GetSetting(lines, nameof(animationRelativeVelY)), ref animationRelativeVelY);
         }
+
         public static void Save()
         {
             string config = MakeSetting(nameof(LastSelectedTrack), LastSelectedTrack);
@@ -615,6 +636,11 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(DrawFloatGrid), DrawFloatGrid.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(DrawCamera), DrawCamera.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(ZoomMultiplier), ZoomMultiplier.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(Lines.DefaultLine), SaveColor(Lines.DefaultLine));
+            config += "\r\n" + MakeSetting(nameof(Lines.DefaultNightLine), SaveColor(Lines.DefaultNightLine));
+            //config += "\r\n" + MakeSetting(nameof(Lines.AccelerationLine), SaveColor(Lines.AccelerationLine));
+            config += "\r\n" + MakeSetting(nameof(Lines.SceneryLine), SaveColor(Lines.SceneryLine));
+            //config += "\r\n" + MakeSetting(nameof(Lines.StandardLine), SaveColor(Lines.StandardLine));
             config = SaveAddonSettings(config);
             foreach (var binds in Keybinds)
             {
@@ -746,6 +772,20 @@ namespace linerider
             bool val;
             if (bool.TryParse(setting, out val))
                 var = val;
+        }
+        private static void LoadColor(string setting, ref Color var)
+        {
+            if (setting != null)
+            {
+                int[] vals = setting.Split(',').Select(int.Parse).ToArray();
+                var = Color.FromArgb(vals[0], vals[1], vals[2]);
+            }
+        }
+
+        private static string SaveColor(Color color)
+        {
+            int[] colorValues = {color.R, color.G, color.B};
+            return String.Join(",", colorValues);
         }
     }
 }

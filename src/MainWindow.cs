@@ -188,11 +188,11 @@ namespace linerider
                     GL.ClearColor(Settings.NightMode ? Constants.ColorNightMode : (Settings.WhiteBG ? Constants.ColorWhite : Constants.ColorOffwhite));
                     if (Settings.NightMode)
                     {
-                        Constants.TriggerLineColorChange = Constants.DefaultNightLineColor;
+                        Constants.TriggerLineColorChange = Settings.Lines.DefaultNightLine;
                     }
                     else
                     {
-                        Constants.TriggerLineColorChange = Constants.DefaultLineColor;
+                        Constants.TriggerLineColorChange = Settings.Lines.DefaultLine;
                     }
                 }
 

@@ -152,15 +152,15 @@ namespace linerider.IO
                     metadata.Add(TrackMetadata.bgcolorB + "=" + trk.BGColorB.ToString(Program.Culture));
                 }
                 
-                if (trk.LineColorR != Utils.Constants.DefaultLineColor.R)
+                if (trk.LineColorR != Settings.Lines.DefaultLine.R)
                 {
                     metadata.Add(TrackMetadata.linecolorR + "=" + trk.LineColorR.ToString(Program.Culture));
                 }
-                if (trk.LineColorG != Utils.Constants.DefaultLineColor.G)
+                if (trk.LineColorG != Settings.Lines.DefaultLine.G)
                 {
                     metadata.Add(TrackMetadata.linecolorG + "=" + trk.LineColorG.ToString(Program.Culture));
                 }
-                if (trk.LineColorB != Utils.Constants.DefaultLineColor.B)
+                if (trk.LineColorB != Settings.Lines.DefaultLine.B)
                 {
                     metadata.Add(TrackMetadata.linecolorB + "=" + trk.LineColorB.ToString(Program.Culture));
                 }

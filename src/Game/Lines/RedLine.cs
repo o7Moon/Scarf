@@ -44,7 +44,7 @@ namespace linerider.Game
                 return LineType.Red;
             }
         }
-        public override System.Drawing.Color Color => Utils.Constants.RedLineColor;
+        public override System.Drawing.Color Color => Settings.Lines.AccelerationLine;
         protected RedLine() : base()
         {
         }
