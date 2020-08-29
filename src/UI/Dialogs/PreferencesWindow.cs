@@ -218,6 +218,18 @@ namespace linerider.UI
                 Settings.OnionSkinning = ((Checkbox)o).IsChecked;
                 Settings.Save();
             });
+            var onionSkins = new Spinner(advancedtools)
+            {
+                Min = 1,
+                Max = 100,
+                Value = Settings.NumOnionSkins,
+            };
+            onionSkins.ValueChanged += (o, e) =>
+            {
+                Settings.NumOnionSkins = (int)((Spinner)o).Value;
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(advancedtools, "Onion Skins", onionSkins);
             var drawgrid = GwenHelper.AddCheckbox(advancedtools, "Simulation Grid", Settings.DrawCollisionGrid, (o, e) =>
             {
                 Settings.DrawCollisionGrid = ((Checkbox)o).IsChecked;

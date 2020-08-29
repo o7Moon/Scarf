@@ -56,7 +56,7 @@ namespace linerider.Rendering
             _trackrenderer.Render(options, TrackRecorder.Recording);
             if (Settings.OnionSkinning)
             {
-                const int onions = 20;
+                int onions =  Settings.NumOnionSkins;
                 for (int i = -onions; i < onions; i++)
                 {
                     var frame = game.Track.Offset + i;
