@@ -251,7 +251,7 @@ namespace linerider.UI
                 Settings.Save();
             };
 
-            //GwenHelper.CreateLabeledControl(parent, "Acceleration line color (R,G,B)", new ControlBase[3] { accelRed, accelGreen, accelBlue });
+            GwenHelper.CreateLabeledControl(parent, "Acceleration line color (R,G,B)", new ControlBase[3] { accelRed, accelGreen, accelBlue });
 
             var sceneryRed = new Spinner(lineColors)
             {
@@ -327,7 +327,7 @@ namespace linerider.UI
                 Settings.Save();
             };
 
-            //GwenHelper.CreateLabeledControl(parent, "Standard line color (R,G,B)", new ControlBase[3] { standardRed, standardGreen, standardBlue });
+            GwenHelper.CreateLabeledControl(parent, "Standard line color (R,G,B)", new ControlBase[3] { standardRed, standardGreen, standardBlue });
 
         }
 

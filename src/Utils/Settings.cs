@@ -536,9 +536,9 @@ namespace linerider
             LoadFloat(GetSetting(lines, nameof(ZoomMultiplier)), ref ZoomMultiplier);
             LoadColor(GetSetting(lines, nameof(Lines.DefaultLine)), ref Lines.DefaultLine);
             LoadColor(GetSetting(lines, nameof(Lines.DefaultNightLine)), ref Lines.DefaultNightLine);
-            //LoadColor(GetSetting(lines, nameof(Lines.AccelerationLine)), ref Lines.AccelerationLine);
+            LoadColor(GetSetting(lines, nameof(Lines.AccelerationLine)), ref Lines.AccelerationLine);
             LoadColor(GetSetting(lines, nameof(Lines.SceneryLine)), ref Lines.SceneryLine);
-            //LoadColor(GetSetting(lines, nameof(Lines.StandardLine)), ref Lines.StandardLine);
+            LoadColor(GetSetting(lines, nameof(Lines.StandardLine)), ref Lines.StandardLine);
             if (multiScarfSegments == 0) { multiScarfSegments++; }
             if (ScarfSegments == 0) { ScarfSegments++; }
             LoadAddonSettings(lines);
@@ -638,9 +638,9 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(ZoomMultiplier), ZoomMultiplier.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Lines.DefaultLine), SaveColor(Lines.DefaultLine));
             config += "\r\n" + MakeSetting(nameof(Lines.DefaultNightLine), SaveColor(Lines.DefaultNightLine));
-            //config += "\r\n" + MakeSetting(nameof(Lines.AccelerationLine), SaveColor(Lines.AccelerationLine));
+            config += "\r\n" + MakeSetting(nameof(Lines.AccelerationLine), SaveColor(Lines.AccelerationLine));
             config += "\r\n" + MakeSetting(nameof(Lines.SceneryLine), SaveColor(Lines.SceneryLine));
-            //config += "\r\n" + MakeSetting(nameof(Lines.StandardLine), SaveColor(Lines.StandardLine));
+            config += "\r\n" + MakeSetting(nameof(Lines.StandardLine), SaveColor(Lines.StandardLine));
             config = SaveAddonSettings(config);
             foreach (var binds in Keybinds)
             {
