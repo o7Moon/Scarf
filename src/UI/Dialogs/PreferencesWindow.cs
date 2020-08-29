@@ -140,11 +140,6 @@ namespace linerider.UI
                 Settings.InvisibleRider = ((Checkbox)o).IsChecked;
                 Settings.Save();
             });
-            var frictionlessRider = GwenHelper.AddCheckbox(panelgeneral, "Frictionless (Requires Linerider Restart)", Settings.FrictionlessRider, (o, e) =>
-            {
-                Settings.FrictionlessRider = ((Checkbox)o).IsChecked;
-                Settings.Save();
-            });
         }
         private void PopulateCamera(ControlBase parent)
         {

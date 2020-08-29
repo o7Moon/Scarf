@@ -1029,12 +1029,6 @@ namespace linerider
                 Settings.Save();
                 Track.Invalidate();
             });
-            InputUtils.RegisterHotkey(Hotkey.FrictionlessRider, () => true, () =>
-            {
-                Settings.FrictionlessRider = !Settings.FrictionlessRider;
-                Settings.Save();
-                Track.Invalidate();
-            });
 
             RegisterAddonSettingHotkeys();
         }

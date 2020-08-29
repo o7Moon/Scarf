@@ -78,7 +78,6 @@ namespace linerider.UI
             //Malizma edit
             AddBinding(editortable, "Toggle Advanced Visuals", Hotkey.PreferenceAllCheckboxSettings);
             AddBinding(editortable, "Toggle Rider Visibility", Hotkey.InvisibleRider);
-            AddBinding(editortable, "Toggle Rider Friction", Hotkey.FrictionlessRider);
             AddBinding(editortable, "Focus on Rider", Hotkey.EditorFocusRider);
             AddBinding(editortable, "Focus on Flag", Hotkey.EditorFocusFlag);
             AddBinding(editortable, "Focus First Line", Hotkey.EditorFocusStart);

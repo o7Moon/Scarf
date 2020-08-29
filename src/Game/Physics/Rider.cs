@@ -67,11 +67,11 @@ namespace linerider.Game
                     case RiderConstants.SledTL:
                     case RiderConstants.BodyButt:
                     case RiderConstants.BodyShoulder:
-                        joints[i] = new SimulationPoint(coord, prev, Vector2d.Zero, Settings.FrictionlessRider ? 0 : 0.8);
+                        joints[i] = new SimulationPoint(coord, prev, Vector2d.Zero, 0.8);
                         break;
                     case RiderConstants.BodyHandLeft:
                     case RiderConstants.BodyHandRight:
-                        joints[i] = new SimulationPoint(coord, prev, Vector2d.Zero, Settings.FrictionlessRider ? 0 : 0.1);
+                        joints[i] = new SimulationPoint(coord, prev, Vector2d.Zero, 0.1);
                         break;
                     default:
                         joints[i] = new SimulationPoint(coord, prev, Vector2d.Zero, 0.0);
