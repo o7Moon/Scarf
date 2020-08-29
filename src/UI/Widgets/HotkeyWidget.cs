@@ -75,6 +75,7 @@ namespace linerider.UI
             AddBinding(editortable, "Swatch Color Green", Hotkey.EditorToolColor3);
             AddBinding(editortable, "Cycle Tool Setting", Hotkey.EditorCycleToolSetting);
             AddBinding(editortable, "Toggle Onion Skinning", Hotkey.PreferenceOnionSkinning);
+            AddBinding(editortable, "Toggle Advanced Visuals", Hotkey.PreferenceAllCheckboxSettings);
             AddBinding(editortable, "Focus on Rider", Hotkey.EditorFocusRider);
             AddBinding(editortable, "Focus on Flag", Hotkey.EditorFocusFlag);
             AddBinding(editortable, "Focus First Line", Hotkey.EditorFocusStart);
