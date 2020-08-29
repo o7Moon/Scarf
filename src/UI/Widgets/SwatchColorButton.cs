@@ -61,13 +61,13 @@ namespace linerider.UI
             switch (_linetype)
             {
                 case LineType.Blue:
-                    _color = Settings.Lines.StandardLine;
+                    _color = Utils.Constants.BlueLineColor;
                     break;
                 case LineType.Red:
-                    _color = Settings.Lines.AccelerationLine;
+                    _color = Utils.Constants.RedLineColor;
                     break;
                 case LineType.Scenery:
-                    _color = Settings.Lines.SceneryLine;
+                    _color = Utils.Constants.SceneryLineColor;
                     break;
             }
 
