@@ -1002,6 +1002,27 @@ namespace linerider
                 Settings.Save();
                 Track.Invalidate();
             });
+            //Malizma edit
+            InputUtils.RegisterHotkey(Hotkey.PreferenceAllCheckboxSettings, () => true, () =>
+            {
+                if (Settings.Editor.DrawContactPoints || Settings.Editor.MomentumVectors || Settings.Editor.HitTest || Settings.Editor.RenderGravityWells)
+                {
+                    Settings.Editor.DrawContactPoints = false;
+                    Settings.Editor.MomentumVectors = false;
+                    Settings.Editor.HitTest = false;
+                    Settings.Editor.RenderGravityWells = false;
+                }
+                else
+                {
+                    Settings.Editor.DrawContactPoints = true;
+                    Settings.Editor.MomentumVectors = true;
+                    Settings.Editor.HitTest = true;
+                    Settings.Editor.RenderGravityWells = true;
+                }
+                Settings.Save();
+                Track.Invalidate();
+            });
+            
             RegisterAddonSettingHotkeys();
         }
         private void RegisterAddonSettingHotkeys()

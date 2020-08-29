@@ -65,6 +65,8 @@ namespace linerider.UI
         PlaybackBackward,
         PlaybackResetCamera,
         PreferenceOnionSkinning,
+        //Malizma edit
+        PreferenceAllCheckboxSettings,
         PreferencesWindow,
         GameMenuWindow,
         TrackPropertiesWindow,
