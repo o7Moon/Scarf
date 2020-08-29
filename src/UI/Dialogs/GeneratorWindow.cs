@@ -178,8 +178,7 @@ namespace linerider.UI
                     break;
             }
 
-            
-            
+            Render_Preview();
         }
 
         private void PopulateCircle()
@@ -252,36 +251,6 @@ namespace linerider.UI
             var blueType = lineTypeRadioGroup.AddOption("Blue");
             var redType = lineTypeRadioGroup.AddOption("Red");
             var greenType = lineTypeRadioGroup.AddOption("Green");
-            blueType.CheckChanged += (o, e) =>
-            {
-                gen_Circle.lineType = LineType.Blue;
-                CircleInverse.Enable();
-                CircleReverse.Disable();
-            };
-            redType.CheckChanged += (o, e) =>
-            {
-                gen_Circle.lineType = LineType.Red;
-                CircleInverse.Enable();
-                CircleReverse.Enable();
-            };
-            greenType.CheckChanged += (o, e) =>
-            {
-                gen_Circle.lineType = LineType.Scenery;
-                CircleInverse.Disable();
-                CircleReverse.Disable();
-            };
-
-            CircleInverse = GwenHelper.AddCheckbox(CircleGenOptions, "Invert", gen_Circle.invert, (o, e) =>
-            {
-                gen_Circle.invert = ((Checkbox)o).IsChecked;
-                gen_Circle.ReGenerate_Preview();
-            });
-            CircleReverse = GwenHelper.AddCheckbox(CircleGenOptions, "Reverse", gen_Circle.reverse, (o, e) =>
-            {
-                gen_Circle.reverse = ((Checkbox)o).IsChecked;
-                gen_Circle.ReGenerate_Preview();
-            });
-
             switch (gen_Circle.lineType)
             {
                 case LineType.Blue:
@@ -296,6 +265,38 @@ namespace linerider.UI
                 default:
                     break;
             }
+            blueType.CheckChanged += (o, e) =>
+            {
+                gen_Circle.lineType = LineType.Blue;
+                gen_Circle.ReGenerate_Preview();
+                CircleInverse.Enable();
+                CircleReverse.Disable();
+            };
+            redType.CheckChanged += (o, e) =>
+            {
+                gen_Circle.lineType = LineType.Red;
+                gen_Circle.ReGenerate_Preview();
+                CircleInverse.Enable();
+                CircleReverse.Enable();
+            };
+            greenType.CheckChanged += (o, e) =>
+            {
+                gen_Circle.lineType = LineType.Scenery;
+                gen_Circle.ReGenerate_Preview();
+                CircleInverse.Disable();
+                CircleReverse.Disable();
+            };
+
+            CircleInverse = GwenHelper.AddCheckbox(CircleGenOptions, "Invert", gen_Circle.invert, (o, e) =>
+            {
+                gen_Circle.invert = ((Checkbox)o).IsChecked;
+                gen_Circle.ReGenerate_Preview();
+            });
+            CircleReverse = GwenHelper.AddCheckbox(CircleGenOptions, "Reverse", gen_Circle.reverse, (o, e) =>
+            {
+                gen_Circle.reverse = ((Checkbox)o).IsChecked;
+                gen_Circle.ReGenerate_Preview();
+            });
         }
 
         private void Populate10pc()
