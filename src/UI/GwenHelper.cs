@@ -47,9 +47,12 @@ namespace linerider.UI
             };
             return panel;
         }
-        public static ControlBase CreateLabeledControl(ControlBase parent, string label, ControlBase control)
+        public static ControlBase CreateLabeledControl(ControlBase parent, string label, ControlBase[] controls)
         {
-            control.Dock = Dock.Right;
+            foreach (var control in controls)
+            {
+                control.Dock = Dock.Right;
+            }
             ControlBase container = new ControlBase(parent)
             {
                 Children =
@@ -61,13 +64,20 @@ namespace linerider.UI
                         Alignment = Pos.Left | Pos.CenterV,
                         Margin = new Margin(0,0,10,0)
                     },
-                    control
                 },
                 AutoSizeToContents = true,
                 Dock = Dock.Top,
                 Margin = new Margin(0, 1, 0, 1)
             };
+            for (int i = controls.Length - 1; i >= 0; i--)
+            {
+                container.Children.Add(controls[i]);
+            }
             return container;
+        }
+        public static ControlBase CreateLabeledControl(ControlBase parent, string label, ControlBase control)
+        {
+            return CreateLabeledControl(parent, label, new ControlBase[1] { control });
         }
         public static ComboBox CreateLabeledCombobox(ControlBase parent, string label)
         {
