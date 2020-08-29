@@ -134,7 +134,8 @@ namespace linerider
 
         public static bool ColorPlayback;
         public static bool OnionSkinning;
-        public static int NumOnionSkins;
+        public static int PastOnionSkins;
+        public static int FutureOnionSkins;
         public static string LastSelectedTrack = "";
         public static Dictionary<Hotkey, KeyConflicts> KeybindConflicts = new Dictionary<Hotkey, KeyConflicts>();
         public static Dictionary<Hotkey, List<Keybinding>> Keybinds = new Dictionary<Hotkey, List<Keybinding>>();
@@ -220,7 +221,8 @@ namespace linerider
             DefaultPlayback = 1f;
             ColorPlayback = false;
             OnionSkinning = false;
-            NumOnionSkins = 20;
+            PastOnionSkins = 10;
+            FutureOnionSkins = 20;
             ScarfSegments = 5;
             SelectedScarf = "*default*";
             SelectedBoshSkin = "*default*";
@@ -487,7 +489,8 @@ namespace linerider
             LoadFloat(GetSetting(lines, nameof(DefaultPlayback)), ref DefaultPlayback);
             LoadBool(GetSetting(lines, nameof(ColorPlayback)), ref ColorPlayback);
             LoadBool(GetSetting(lines, nameof(OnionSkinning)), ref OnionSkinning);
-            LoadInt(GetSetting(lines, nameof(NumOnionSkins)), ref NumOnionSkins);
+            LoadInt(GetSetting(lines, nameof(PastOnionSkins)), ref PastOnionSkins);
+            LoadInt(GetSetting(lines, nameof(FutureOnionSkins)), ref FutureOnionSkins);
             LoadBool(GetSetting(lines, nameof(Editor.ShowLineLength)), ref Editor.ShowLineLength);
             LoadBool(GetSetting(lines, nameof(Editor.ShowLineAngle)), ref Editor.ShowLineAngle);
             LoadBool(GetSetting(lines, nameof(Editor.ShowLineID)), ref Editor.ShowLineID);
@@ -581,7 +584,8 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(DefaultPlayback), DefaultPlayback.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(ColorPlayback), ColorPlayback.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(OnionSkinning), OnionSkinning.ToString(Program.Culture));
-            config += "\r\n" + MakeSetting(nameof(NumOnionSkins), NumOnionSkins.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(PastOnionSkins), PastOnionSkins.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(FutureOnionSkins), FutureOnionSkins.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.ShowLineAngle), Editor.ShowLineAngle.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.ShowLineLength), Editor.ShowLineLength.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.ShowLineID), Editor.ShowLineID.ToString(Program.Culture));

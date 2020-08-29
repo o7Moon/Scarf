@@ -25,7 +25,7 @@ namespace linerider.UI
         public PreferencesWindow(GameCanvas parent, Editor editor) : base(parent, editor)
         {
             Title = "Preferences";
-            SetSize(450, 470);
+            SetSize(450, 500);
             MinimumSize = Size;
             ControlBase bottom = new ControlBase(this)
             {
@@ -218,18 +218,29 @@ namespace linerider.UI
                 Settings.OnionSkinning = ((Checkbox)o).IsChecked;
                 Settings.Save();
             });
-            var onionSkins = new Spinner(advancedtools)
+            var pastOnionSkins = new Spinner(advancedtools)
             {
-                Min = 1,
-                Max = 100,
-                Value = Settings.NumOnionSkins,
+                Min = 0,
+                Max = 1000,
+                Value = Settings.PastOnionSkins,
             };
-            onionSkins.ValueChanged += (o, e) =>
+            pastOnionSkins.ValueChanged += (o, e) =>
             {
-                Settings.NumOnionSkins = (int)((Spinner)o).Value;
+                Settings.PastOnionSkins = (int)((Spinner)o).Value;
                 Settings.Save();
             };
-            GwenHelper.CreateLabeledControl(advancedtools, "Onion Skins", onionSkins);
+            var futureOnionSkins = new Spinner(advancedtools)
+            {
+                Min = 0,
+                Max = 1000,
+                Value = Settings.FutureOnionSkins,
+            };
+            futureOnionSkins.ValueChanged += (o, e) =>
+            {
+                Settings.FutureOnionSkins = (int)((Spinner)o).Value;
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(advancedtools, "#Onion Skins (Before, After)", new ControlBase[2] { pastOnionSkins, futureOnionSkins });
             var drawgrid = GwenHelper.AddCheckbox(advancedtools, "Simulation Grid", Settings.DrawCollisionGrid, (o, e) =>
             {
                 Settings.DrawCollisionGrid = ((Checkbox)o).IsChecked;
