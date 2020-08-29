@@ -67,6 +67,8 @@ namespace linerider.UI
         PreferenceOnionSkinning,
         //Malizma edit
         PreferenceAllCheckboxSettings,
+        InvisibleRider,
+
         PreferencesWindow,
         GameMenuWindow,
         TrackPropertiesWindow,

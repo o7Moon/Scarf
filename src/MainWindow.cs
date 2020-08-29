@@ -1022,7 +1022,14 @@ namespace linerider
                 Settings.Save();
                 Track.Invalidate();
             });
-            
+
+            InputUtils.RegisterHotkey(Hotkey.InvisibleRider, () => true, () =>
+            {
+                Settings.InvisibleRider = !Settings.InvisibleRider;
+                Settings.Save();
+                Track.Invalidate();
+            });
+
             RegisterAddonSettingHotkeys();
         }
         private void RegisterAddonSettingHotkeys()
