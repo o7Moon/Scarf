@@ -143,6 +143,7 @@ namespace linerider
 
         //Malizma Addon Settings
         public static bool InvisibleRider;
+        public static bool FrictionlessRider;
         static Settings()
         {
             RestoreDefaultSettings();
@@ -253,6 +254,7 @@ namespace linerider
             DrawCamera = false;
             ZoomMultiplier = 1.0f;
             InvisibleRider = false;
+            FrictionlessRider = false;
         }
         public static void ResetKeybindings()
         {
@@ -332,6 +334,7 @@ namespace linerider
             //Malizma edit
             SetupDefaultKeybind(Hotkey.PreferenceAllCheckboxSettings, new Keybinding(Key.O, KeyModifiers.Shift | KeyModifiers.Control));
             SetupDefaultKeybind(Hotkey.InvisibleRider, new Keybinding(Key.I, KeyModifiers.Shift | KeyModifiers.Alt));
+            SetupDefaultKeybind(Hotkey.InvisibleRider, new Keybinding(Key.F, KeyModifiers.Shift | KeyModifiers.Control));
 
             SetupDefaultKeybind(Hotkey.PreferenceOnionSkinning, new Keybinding(Key.O, KeyModifiers.Control));
             SetupDefaultKeybind(Hotkey.LoadWindow, new Keybinding(Key.O));
@@ -530,6 +533,7 @@ namespace linerider
             LoadBool(GetSetting(lines, nameof(DrawCamera)), ref DrawCamera);
             LoadFloat(GetSetting(lines, nameof(ZoomMultiplier)), ref ZoomMultiplier);
             LoadBool(GetSetting(lines, nameof(InvisibleRider)), ref InvisibleRider);
+            LoadBool(GetSetting(lines, nameof(FrictionlessRider)), ref FrictionlessRider);
             if (multiScarfSegments == 0) { multiScarfSegments++; }
             if (ScarfSegments == 0) { ScarfSegments++; }
             LoadAddonSettings(lines);
@@ -626,6 +630,7 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(DrawCamera), DrawCamera.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(ZoomMultiplier), ZoomMultiplier.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(InvisibleRider), InvisibleRider.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(FrictionlessRider), FrictionlessRider.ToString(Program.Culture));
             config = SaveAddonSettings(config);
             foreach (var binds in Keybinds)
             {

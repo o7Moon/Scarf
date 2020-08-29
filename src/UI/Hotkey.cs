@@ -68,6 +68,7 @@ namespace linerider.UI
         //Malizma edit
         PreferenceAllCheckboxSettings,
         InvisibleRider,
+        FrictionlessRider,
 
         PreferencesWindow,
         GameMenuWindow,
