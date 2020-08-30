@@ -309,7 +309,7 @@ namespace linerider.UI
                 Max = 255,
                 Value = Settings.Lines.StandardLine.G
             };
-            defaultGreen.ValueChanged += (o, e) =>
+            standardGreen.ValueChanged += (o, e) =>
             {
                 Settings.Lines.StandardLine = Color.FromArgb(Settings.Lines.StandardLine.R, (int)((Spinner)o).Value, Settings.Lines.StandardLine.B);
                 SaveLines();
