@@ -22,6 +22,16 @@ namespace linerider.UI
             "The window will become unresponsive during this time.\n\n" +
             "After recording, a console window may open to encode the video. " +
             "Closing it will cancel the process and all progress will be lost.";
+
+        private readonly string[] resnames = {"360p", "480p", "720p", "1080p", "1440p", "2160p (4k)", "4320p (8k)" };
+        private readonly Size[] resolutions = {new Size(640, 360),
+                                               new Size(854, 480),
+                                               new Size(1280, 720),
+                                               new Size(1920, 1080),
+                                               new Size(2560, 1440),
+                                               new Size(3840, 2160),
+                                               new Size(7680, 4320)};
+
         public ExportWindow(GameCanvas parent, Editor editor, MainWindow window) : base(parent, editor)
         {
             _game = window;
@@ -89,13 +99,10 @@ namespace linerider.UI
             };
             var table = proptree.Add("Output Settings", 150);
             var qualitycb = new ComboBoxProperty(table);
-            qualitycb.AddItem("360p");
-            qualitycb.AddItem("480p");
-            qualitycb.AddItem("720p");
-            qualitycb.AddItem("1080p");
-            qualitycb.AddItem("1440p");
-            qualitycb.AddItem("2160p (4k)");
-            qualitycb.AddItem("4320p (8k)");
+
+            for(int i = 0; i < resnames.Length; i++)
+                qualitycb.AddItem(resnames[i]);
+            
             table.Add("Quality", qualitycb);
 
             var smoothcheck = AddPropertyCheckbox(
@@ -165,43 +172,26 @@ namespace linerider.UI
                     Settings.Recording.ResIndZoom = resIndZoom.IsChecked;
                     Settings.Editor.HitTest = hitTest.IsChecked;
 
-                    Settings.Record1080p = qualitycb.SelectedItem.Text == "1080p";
                     Settings.RecordSmooth = smoothcheck.IsChecked;
                     if (!music.IsDisabled)
                     {
                         Settings.RecordMusic = music.IsChecked;
                     }
-                    switch (qualitycb.SelectedItem.Text)
+
+                    var matched = false;
+                    for(int i = 0; i < resnames.Length; i++)
                     {
-                        case "360p":
-                            Settings.RecordingWidth = 640;
-                            Settings.RecordingHeight = 360;
+                        if(qualitycb.SelectedItem.Text == resnames[i])
+                        {
+                            matched = true;
+                            Settings.RecordingWidth = resolutions[i].Width;
+                            Settings.RecordingHeight = resolutions[i].Height;
                             break;
-                        case "480p":
-                            Settings.RecordingWidth = 854;
-                            Settings.RecordingHeight = 480;
-                            break;
-                        case "720p":
-                            Settings.RecordingWidth = 1280;
-                            Settings.RecordingHeight = 720;
-                            break;
-                        case "1080p":
-                            Settings.RecordingWidth = 1920;
-                            Settings.RecordingHeight = 1080;
-                            break;
-                        case "1440p":
-                            Settings.RecordingWidth = 2560;
-                            Settings.RecordingHeight = 1440;
-                            break;
-                        case "2160p(4k)":
-                            Settings.RecordingWidth = 3840;
-                            Settings.RecordingHeight = 2160;
-                            break;
-                        case "4320p (8k)":
-                            Settings.RecordingWidth = 7680;
-                            Settings.RecordingHeight = 4320;
-                            break;
+                        }
                     }
+                    if(!matched)
+                        throw new Exception("Invalid resolution: " + qualitycb.SelectedItem.Text);
+
                     Settings.Save();
                     Record();
                 };
@@ -224,7 +214,6 @@ namespace linerider.UI
         {
             IO.TrackRecorder.RecordTrack(
                 _game,
-                Settings.Record1080p,
                 Settings.RecordSmooth,
                 Settings.RecordMusic && !Settings.MuteAudio);
         }
