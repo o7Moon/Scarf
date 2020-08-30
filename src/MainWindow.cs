@@ -188,11 +188,11 @@ namespace linerider
                     GL.ClearColor(Settings.NightMode ? Constants.ColorNightMode : (Settings.WhiteBG ? Constants.ColorWhite : Constants.ColorOffwhite));
                     if (Settings.NightMode)
                     {
-                        Constants.TriggerLineColorChange = Constants.DefaultNightLineColor;
+                        Constants.TriggerLineColorChange = Settings.Lines.DefaultNightLine;
                     }
                     else
                     {
-                        Constants.TriggerLineColorChange = Constants.DefaultLineColor;
+                        Constants.TriggerLineColorChange = Settings.Lines.DefaultLine;
                     }
                 }
 
@@ -1002,6 +1002,33 @@ namespace linerider
                 Settings.Save();
                 Track.Invalidate();
             });
+            InputUtils.RegisterHotkey(Hotkey.PreferenceAllCheckboxSettings, () => true, () =>
+            {
+                if (Settings.Editor.DrawContactPoints || Settings.Editor.MomentumVectors || Settings.Editor.HitTest || Settings.Editor.RenderGravityWells)
+                {
+                    Settings.Editor.DrawContactPoints = false;
+                    Settings.Editor.MomentumVectors = false;
+                    Settings.Editor.HitTest = false;
+                    Settings.Editor.RenderGravityWells = false;
+                }
+                else
+                {
+                    Settings.Editor.DrawContactPoints = true;
+                    Settings.Editor.MomentumVectors = true;
+                    Settings.Editor.HitTest = true;
+                    Settings.Editor.RenderGravityWells = true;
+                }
+                Settings.Save();
+                Track.Invalidate();
+            });
+
+            InputUtils.RegisterHotkey(Hotkey.InvisibleRider, () => true, () =>
+            {
+                Settings.InvisibleRider = !Settings.InvisibleRider;
+                Settings.Save();
+                Track.Invalidate();
+            });
+
             RegisterAddonSettingHotkeys();
         }
         private void RegisterAddonSettingHotkeys()

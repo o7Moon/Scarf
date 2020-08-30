@@ -71,11 +71,11 @@ namespace linerider.Game
             switch (Type)
             {
                 case LineType.Blue:
-                    return Constants.BlueLineColor;
+                    return Settings.Lines.StandardLine;
                 case LineType.Red:
-                    return Constants.RedLineColor;
+                    return Settings.Lines.AccelerationLine;
                 case LineType.Scenery:
-                    return Constants.SceneryLineColor;
+                    return Settings.Lines.SceneryLine;
                 default:
                     throw new Exception("Unable to get the color for this line, its type is unknown");
             }

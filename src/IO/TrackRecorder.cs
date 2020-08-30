@@ -74,7 +74,7 @@ namespace linerider.IO
         public static bool Recording;
         public static bool Recording1080p;
 
-        public static void RecordTrack(MainWindow game, bool is1080P, bool smooth, bool music)
+        public static void RecordTrack(MainWindow game, bool smooth, bool music)
         {
             var flag = game.Track.GetFlag();
             if (flag == null) return;
@@ -89,7 +89,6 @@ namespace linerider.IO
             {
                 Recording = true;
                 game.Track.Reset();
-                Recording1080p = is1080P;
 
                 //Set colors back to default for triggers
                 linerider.Utils.Constants.TriggerBGColor = new Color4((byte)game.Track.StartingBGColorR, (byte)game.Track.StartingBGColorG, (byte)game.Track.StartingBGColorB, (byte)255);
