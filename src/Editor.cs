@@ -442,6 +442,13 @@ namespace linerider
         {
             _renderer.RedrawLine(line);
         }
+        public void RedrawAllLines()
+        {
+            foreach (KeyValuePair<int, GameLine> entry in _track.LineLookup)
+            {
+                RedrawLine(entry.Value);
+            }
+        }
         public void ZoomBy(float percent)
         {
             if (Math.Abs(percent) < 0.00001)
