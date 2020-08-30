@@ -84,7 +84,6 @@ namespace linerider
         public static bool RoundLegacyCamera;
         public static bool SmoothPlayback;
         public static bool CheckForUpdates;
-        public static bool Record1080p;
         public static bool RecordSmooth;
         public static bool RecordMusic;
         public static int RecordingWidth;
@@ -211,7 +210,6 @@ namespace linerider
             RoundLegacyCamera = true;
             SmoothPlayback = true;
             CheckForUpdates = true;
-            Record1080p = false;
             RecordSmooth = true;
             RecordMusic = true;
             RecordingWidth = 1280;
@@ -475,7 +473,6 @@ namespace linerider
             LoadBool(GetSetting(lines, nameof(CheckForUpdates)), ref CheckForUpdates);
             LoadBool(GetSetting(lines, nameof(SmoothPlayback)), ref SmoothPlayback);
             LoadBool(GetSetting(lines, nameof(RoundLegacyCamera)), ref RoundLegacyCamera);
-            LoadBool(GetSetting(lines, nameof(Record1080p)), ref Record1080p);
             LoadBool(GetSetting(lines, nameof(RecordSmooth)), ref RecordSmooth);
             LoadBool(GetSetting(lines, nameof(RecordMusic)), ref RecordMusic);
             LoadInt(GetSetting(lines, nameof(RecordingWidth)), ref RecordingWidth);
@@ -570,7 +567,6 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(PlaybackZoomType), PlaybackZoomType.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(PlaybackZoomValue), PlaybackZoomValue.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(RoundLegacyCamera), RoundLegacyCamera.ToString(Program.Culture));
-            config += "\r\n" + MakeSetting(nameof(Record1080p), Record1080p.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(RecordSmooth), RecordSmooth.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(RecordMusic), RecordMusic.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(RecordingWidth), RecordingWidth.ToString(Program.Culture));
