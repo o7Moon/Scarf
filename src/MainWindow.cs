@@ -1002,7 +1002,6 @@ namespace linerider
                 Settings.Save();
                 Track.Invalidate();
             });
-            //Malizma edit
             InputUtils.RegisterHotkey(Hotkey.PreferenceAllCheckboxSettings, () => true, () =>
             {
                 if (Settings.Editor.DrawContactPoints || Settings.Editor.MomentumVectors || Settings.Editor.HitTest || Settings.Editor.RenderGravityWells)
@@ -1022,7 +1021,14 @@ namespace linerider
                 Settings.Save();
                 Track.Invalidate();
             });
-            
+
+            InputUtils.RegisterHotkey(Hotkey.InvisibleRider, () => true, () =>
+            {
+                Settings.InvisibleRider = !Settings.InvisibleRider;
+                Settings.Save();
+                Track.Invalidate();
+            });
+
             RegisterAddonSettingHotkeys();
         }
         private void RegisterAddonSettingHotkeys()

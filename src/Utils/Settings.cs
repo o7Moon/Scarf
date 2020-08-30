@@ -140,6 +140,9 @@ namespace linerider
         public static Dictionary<Hotkey, KeyConflicts> KeybindConflicts = new Dictionary<Hotkey, KeyConflicts>();
         public static Dictionary<Hotkey, List<Keybinding>> Keybinds = new Dictionary<Hotkey, List<Keybinding>>();
         private static Dictionary<Hotkey, List<Keybinding>> DefaultKeybinds = new Dictionary<Hotkey, List<Keybinding>>();
+
+        //Malizma Addon Settings
+        public static bool InvisibleRider;
         static Settings()
         {
             RestoreDefaultSettings();
@@ -249,6 +252,7 @@ namespace linerider
             DrawFloatGrid = false;
             DrawCamera = false;
             ZoomMultiplier = 1.0f;
+            InvisibleRider = false;
         }
         public static void ResetKeybindings()
         {
@@ -325,8 +329,8 @@ namespace linerider
             SetupDefaultKeybind(Hotkey.GameMenuWindow, new Keybinding(Key.Escape));
             SetupDefaultKeybind(Hotkey.TrackPropertiesWindow, new Keybinding(Key.T, KeyModifiers.Control));
 
-            //Malizma edit
             SetupDefaultKeybind(Hotkey.PreferenceAllCheckboxSettings, new Keybinding(Key.O, KeyModifiers.Shift | KeyModifiers.Control));
+            SetupDefaultKeybind(Hotkey.InvisibleRider, new Keybinding(Key.I, KeyModifiers.Shift | KeyModifiers.Alt));
 
             SetupDefaultKeybind(Hotkey.PreferenceOnionSkinning, new Keybinding(Key.O, KeyModifiers.Control));
             SetupDefaultKeybind(Hotkey.LoadWindow, new Keybinding(Key.O));
@@ -524,6 +528,7 @@ namespace linerider
             LoadBool(GetSetting(lines, nameof(DrawFloatGrid)), ref DrawFloatGrid);
             LoadBool(GetSetting(lines, nameof(DrawCamera)), ref DrawCamera);
             LoadFloat(GetSetting(lines, nameof(ZoomMultiplier)), ref ZoomMultiplier);
+            LoadBool(GetSetting(lines, nameof(InvisibleRider)), ref InvisibleRider);
             if (multiScarfSegments == 0) { multiScarfSegments++; }
             if (ScarfSegments == 0) { ScarfSegments++; }
             LoadAddonSettings(lines);
@@ -619,6 +624,7 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(DrawFloatGrid), DrawFloatGrid.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(DrawCamera), DrawCamera.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(ZoomMultiplier), ZoomMultiplier.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(InvisibleRider), InvisibleRider.ToString(Program.Culture));
             config = SaveAddonSettings(config);
             foreach (var binds in Keybinds)
             {
