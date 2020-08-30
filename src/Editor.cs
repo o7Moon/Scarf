@@ -188,6 +188,20 @@ namespace linerider
                 }
             }
         }
+        public bool frictionless
+        {
+            get { return _track.frictionless; }
+            set
+
+            {
+                if (_track.frictionless != value)
+                {
+                    _track.frictionless = value;
+                    Stop();
+                    Reset();
+                }
+            }
+        }
         public bool UseRemount
         {
             get { return _track.Remount; }
@@ -872,7 +886,8 @@ namespace linerider
             Vector2d start = Rider.Create(
                 _track.StartOffset,
                 Vector2d.Zero,
-                _track.Remount).CalculateCenter();//avoid a timeline query
+                _track.Remount,
+                frictionless).CalculateCenter();//avoid a timeline query
             if (Camera != null)
             {
                 Camera.BeginFrame(1, Zoom);

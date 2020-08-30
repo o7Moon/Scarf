@@ -36,6 +36,7 @@ namespace linerider.IO
                 featurelist.TryGetValue(TrackFeatures.six_one, out bool six_one);
                 featurelist.TryGetValue(TrackFeatures.ignorable_trigger, out bool ignorable_trigger);
                 featurelist.TryGetValue(TrackFeatures.remount, out bool remount);
+                featurelist.TryGetValue(TrackFeatures.frictionless, out bool frictionless);
                 foreach (var feature in featurelist)
                 {
                     if (feature.Value)

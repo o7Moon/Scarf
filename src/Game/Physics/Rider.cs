@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using linerider.Game;
 using linerider.Utils;
 using System.Security.Policy;
+using linerider.IO.SOL;
 
 namespace linerider.Game
 {
@@ -53,7 +54,7 @@ namespace linerider.Game
             remountState = rState;
             remountTimer = rTimer;
         }
-        public static Rider Create(Vector2d start, Vector2d momentum, bool useRemount)
+        public static Rider Create(Vector2d start, Vector2d momentum, bool useRemount, bool frictionless)
         {
             var joints = new SimulationPoint[RiderConstants.DefaultRider.Length];
             var scarf = new SimulationPoint[RiderConstants.DefaultScarf.Length + 1];
@@ -67,14 +68,14 @@ namespace linerider.Game
                     case RiderConstants.SledTL:
                     case RiderConstants.BodyButt:
                     case RiderConstants.BodyShoulder:
-                        joints[i] = new SimulationPoint(coord, prev, Vector2d.Zero, 0.8);
+                        joints[i] = new SimulationPoint(coord, prev, Vector2d.Zero, frictionless ? 0 : 0.8);
                         break;
                     case RiderConstants.BodyHandLeft:
                     case RiderConstants.BodyHandRight:
-                        joints[i] = new SimulationPoint(coord, prev, Vector2d.Zero, 0.1);
+                        joints[i] = new SimulationPoint(coord, prev, Vector2d.Zero, frictionless ? 0 : 0.1);
                         break;
                     default:
-                        joints[i] = new SimulationPoint(coord, prev, Vector2d.Zero, 0.0);
+                        joints[i] = new SimulationPoint(coord, prev, Vector2d.Zero, frictionless ? 0 : 0.0);
                         break;
                 }
                 if (i == 0)
