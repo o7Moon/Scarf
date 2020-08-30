@@ -38,7 +38,7 @@ namespace linerider.Tools
                     }
                     else
                     {
-                        SelectedTool.Stop();
+                        // SelectedTool.Stop();
                     }
                     _quickpan = value;
                 }

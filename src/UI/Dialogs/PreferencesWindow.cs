@@ -134,6 +134,12 @@ namespace linerider.UI
                 }
             };
             superzoom.Tooltip = "Allows the user to zoom in\nnearly 10x more than usual.";
+
+            var invisibleRider = GwenHelper.AddCheckbox(panelgeneral, "Invisible Rider", Settings.InvisibleRider, (o, e) =>
+            {
+                Settings.InvisibleRider = ((Checkbox)o).IsChecked;
+                Settings.Save();
+            });
         }
 
         private void PopulateLines(ControlBase parent)

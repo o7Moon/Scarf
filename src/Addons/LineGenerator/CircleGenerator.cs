@@ -14,12 +14,7 @@ namespace linerider.Game.LineGenerator
         public int lineCount; //Number of lines used to generate the circle
         public bool invert;
         public bool reverse;
-        public LineType _lineType;
-        public LineType lineType
-        {
-            set { _lineType = value; ReGenerate_Preview(); }
-            get { return _lineType; }
-        }
+        public LineType lineType;
 
         public CircleGenerator(string _name, double _radius, Vector2d _position, int _lineCount, bool _invert)
         {
@@ -29,7 +24,7 @@ namespace linerider.Game.LineGenerator
             position = _position;
             lineCount = _lineCount;
             invert = _invert;
-            _lineType = LineType.Blue;
+            lineType = LineType.Blue;
         }
 
         public override void Generate_Internal(TrackWriter trk)
