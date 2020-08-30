@@ -23,14 +23,16 @@ namespace linerider.UI
             "After recording, a console window may open to encode the video. " +
             "Closing it will cancel the process and all progress will be lost.";
 
-        private readonly string[] resnames = {"360p", "480p", "720p", "1080p", "1440p", "2160p (4k)", "4320p (8k)" };
-        private readonly Size[] resolutions = {new Size(640, 360),
-                                               new Size(854, 480),
-                                               new Size(1280, 720),
-                                               new Size(1920, 1080),
-                                               new Size(2560, 1440),
-                                               new Size(3840, 2160),
-                                               new Size(7680, 4320)};
+        private readonly Dictionary<string, Size> resolutions = new Dictionary<string, Size>
+        {
+            { "360p", new Size(640, 360)},
+            { "480p", new Size(854, 480)},
+            { "720p", new Size(1280, 720)},
+            { "1080p", new Size(1920, 1080)},
+            { "1440p", new Size(2560, 1440)},
+            { "2160p (4k)", new Size(3840, 2160)},
+            { "4320p (8k)", new Size(7680, 4320)}
+        };
 
         public ExportWindow(GameCanvas parent, Editor editor, MainWindow window) : base(parent, editor)
         {
@@ -100,8 +102,10 @@ namespace linerider.UI
             var table = proptree.Add("Output Settings", 150);
             var qualitycb = new ComboBoxProperty(table);
 
-            for(int i = 0; i < resnames.Length; i++)
-                qualitycb.AddItem(resnames[i]);
+            foreach (var item in resolutions)
+            {
+                qualitycb.AddItem(item.Key);
+            }
             
             table.Add("Quality", qualitycb);
 
@@ -178,19 +182,16 @@ namespace linerider.UI
                         Settings.RecordMusic = music.IsChecked;
                     }
 
-                    var matched = false;
-                    for(int i = 0; i < resnames.Length; i++)
+                    try
                     {
-                        if(qualitycb.SelectedItem.Text == resnames[i])
-                        {
-                            matched = true;
-                            Settings.RecordingWidth = resolutions[i].Width;
-                            Settings.RecordingHeight = resolutions[i].Height;
-                            break;
-                        }
+                        var size = resolutions[qualitycb.SelectedItem.Text];
+                        Settings.RecordingWidth = size.Width;
+                        Settings.RecordingHeight = size.Height;
                     }
-                    if(!matched)
+                    catch (KeyNotFoundException)
+                    {
                         throw new Exception("Invalid resolution: " + qualitycb.SelectedItem.Text);
+                    }
 
                     Settings.Save();
                     Record();
