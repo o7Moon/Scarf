@@ -84,7 +84,7 @@ namespace linerider.Rendering
                     true);
 
             _riderrenderer.DrawRider(
-                /*Malizma Edit */ Settings.InvisibleRider ? 0 : options.ShowContactLines ? 0.5f : 1,
+                Settings.InvisibleRider ? 0 : options.ShowContactLines ? 0.5f : 1,
                 options.Rider,
                 true);
             if (options.ShowMomentumVectors)

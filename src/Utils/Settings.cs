@@ -329,7 +329,6 @@ namespace linerider
             SetupDefaultKeybind(Hotkey.GameMenuWindow, new Keybinding(Key.Escape));
             SetupDefaultKeybind(Hotkey.TrackPropertiesWindow, new Keybinding(Key.T, KeyModifiers.Control));
 
-            //Malizma edit
             SetupDefaultKeybind(Hotkey.PreferenceAllCheckboxSettings, new Keybinding(Key.O, KeyModifiers.Shift | KeyModifiers.Control));
             SetupDefaultKeybind(Hotkey.InvisibleRider, new Keybinding(Key.I, KeyModifiers.Shift | KeyModifiers.Alt));
 
