@@ -148,7 +148,7 @@ namespace linerider.UI
             defaultRed.ValueChanged += (o, e) =>
             {
                 Settings.Lines.DefaultLine = Color.FromArgb((int)((Spinner)o).Value, Settings.Lines.DefaultLine.G, Settings.Lines.DefaultLine.B);
-                SaveLines();
+                Settings.Save();
             };
 
             var defaultGreen = new Spinner(lineColors)
@@ -160,7 +160,7 @@ namespace linerider.UI
             defaultGreen.ValueChanged += (o, e) =>
             {
                 Settings.Lines.DefaultLine = Color.FromArgb(Settings.Lines.DefaultLine.R, (int)((Spinner)o).Value, Settings.Lines.DefaultLine.B);
-                SaveLines();
+                Settings.Save();
             };
 
             var defaultBlue = new Spinner(lineColors)
@@ -172,7 +172,7 @@ namespace linerider.UI
             defaultBlue.ValueChanged += (o, e) =>
             {
                 Settings.Lines.DefaultLine = Color.FromArgb(Settings.Lines.DefaultLine.R, Settings.Lines.DefaultLine.G, (int)((Spinner)o).Value);
-                SaveLines();
+                Settings.Save();
             };
 
             GwenHelper.CreateLabeledControl(parent, "Default line color (R,G,B)", new ControlBase[3] { defaultRed, defaultGreen, defaultBlue });
@@ -186,7 +186,7 @@ namespace linerider.UI
             nightRed.ValueChanged += (o, e) =>
             {
                 Settings.Lines.DefaultNightLine = Color.FromArgb((int)((Spinner)o).Value, Settings.Lines.DefaultNightLine.G, Settings.Lines.DefaultNightLine.B);
-                SaveLines();
+                Settings.Save();
             };
 
             var nightGreen = new Spinner(lineColors)
@@ -198,7 +198,7 @@ namespace linerider.UI
             nightGreen.ValueChanged += (o, e) =>
             {
                 Settings.Lines.DefaultNightLine = Color.FromArgb(Settings.Lines.DefaultNightLine.R, (int)((Spinner)o).Value, Settings.Lines.DefaultNightLine.B);
-                SaveLines();
+                Settings.Save();
             };
 
             var nightBlue = new Spinner(lineColors)
@@ -210,7 +210,7 @@ namespace linerider.UI
             nightBlue.ValueChanged += (o, e) =>
             {
                 Settings.Lines.DefaultNightLine = Color.FromArgb(Settings.Lines.DefaultNightLine.R, Settings.Lines.DefaultNightLine.G, (int)((Spinner)o).Value);
-                SaveLines();
+                Settings.Save();
             };
 
             GwenHelper.CreateLabeledControl(parent, "Night line color (R,G,B)", new ControlBase[3] { nightRed, nightGreen, nightBlue });
@@ -262,7 +262,7 @@ namespace linerider.UI
             sceneryRed.ValueChanged += (o, e) =>
             {
                 Settings.Lines.SceneryLine = Color.FromArgb((int)((Spinner)o).Value, Settings.Lines.SceneryLine.G, Settings.Lines.SceneryLine.B);
-                SaveLines();
+                Settings.Save();
             };
 
             var sceneryGreen = new Spinner(lineColors)
@@ -274,7 +274,7 @@ namespace linerider.UI
             sceneryGreen.ValueChanged += (o, e) =>
             {
                 Settings.Lines.SceneryLine = Color.FromArgb(Settings.Lines.SceneryLine.R, (int)((Spinner)o).Value, Settings.Lines.SceneryLine.B);
-                SaveLines();
+                Settings.Save();
             };
 
             var sceneryBlue = new Spinner(lineColors)
@@ -286,7 +286,7 @@ namespace linerider.UI
             sceneryBlue.ValueChanged += (o, e) =>
             {
                 Settings.Lines.SceneryLine = Color.FromArgb(Settings.Lines.SceneryLine.R, Settings.Lines.SceneryLine.G, (int)((Spinner)o).Value);
-                SaveLines();
+                Settings.Save();
             };
 
             GwenHelper.CreateLabeledControl(parent, "Scenery line color (R,G,B)", new ControlBase[3] { sceneryRed, sceneryGreen, sceneryBlue });
