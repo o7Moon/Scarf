@@ -89,8 +89,13 @@ namespace linerider.UI
             };
             var table = proptree.Add("Output Settings", 150);
             var qualitycb = new ComboBoxProperty(table);
+            qualitycb.AddItem("360p");
+            qualitycb.AddItem("480p");
             qualitycb.AddItem("720p");
             qualitycb.AddItem("1080p");
+            qualitycb.AddItem("1440p");
+            qualitycb.AddItem("2160p (4k)");
+            qualitycb.AddItem("4320p (8k)");
             table.Add("Quality", qualitycb);
 
             var smoothcheck = AddPropertyCheckbox(
@@ -124,8 +129,12 @@ namespace linerider.UI
                Settings.Editor.HitTest);
             var colorTriggers = AddPropertyCheckbox(
                 table,
-                "Enable Color Tiggers",
+                "Enable Color Triggers",
                 Settings.Recording.EnableColorTriggers);
+            var resIndZoom = AddPropertyCheckbox(
+                table,
+                "Resolution-Independent Zoom",
+                Settings.Recording.ResIndZoom);
             proptree.ExpandAll();
             Button Cancel = new Button(bottomrow)
             {
@@ -153,6 +162,7 @@ namespace linerider.UI
                     Settings.Recording.ShowFps = fps.IsChecked;
                     Settings.Recording.ShowTools = tools.IsChecked;
                     Settings.Recording.EnableColorTriggers = colorTriggers.IsChecked;
+                    Settings.Recording.ResIndZoom = resIndZoom.IsChecked;
                     Settings.Editor.HitTest = hitTest.IsChecked;
 
                     Settings.Record1080p = qualitycb.SelectedItem.Text == "1080p";
@@ -160,6 +170,37 @@ namespace linerider.UI
                     if (!music.IsDisabled)
                     {
                         Settings.RecordMusic = music.IsChecked;
+                    }
+                    switch (qualitycb.SelectedItem.Text)
+                    {
+                        case "360p":
+                            Settings.RecordingWidth = 640;
+                            Settings.RecordingHeight = 360;
+                            break;
+                        case "480p":
+                            Settings.RecordingWidth = 854;
+                            Settings.RecordingHeight = 480;
+                            break;
+                        case "720p":
+                            Settings.RecordingWidth = 1280;
+                            Settings.RecordingHeight = 720;
+                            break;
+                        case "1080p":
+                            Settings.RecordingWidth = 1920;
+                            Settings.RecordingHeight = 1080;
+                            break;
+                        case "1440p":
+                            Settings.RecordingWidth = 2560;
+                            Settings.RecordingHeight = 1440;
+                            break;
+                        case "2160p(4k)":
+                            Settings.RecordingWidth = 3840;
+                            Settings.RecordingHeight = 2160;
+                            break;
+                        case "4320p (8k)":
+                            Settings.RecordingWidth = 7680;
+                            Settings.RecordingHeight = 4320;
+                            break;
                     }
                     Settings.Save();
                     Record();
