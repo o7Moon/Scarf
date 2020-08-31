@@ -169,7 +169,13 @@ namespace linerider.UI
              {
                  _editor.ZeroStart = zerostart.IsChecked;
              };
-            
+
+            var frictionless = GwenHelper.AddPropertyCheckbox(table, "Zero Friction", _editor.frictionless);
+            frictionless.ValueChanged += (o, e) =>
+            {
+                _editor.frictionless = frictionless.IsChecked;
+            };
+
             NumberProperty ygravity = new NumberProperty(null)
             {
                 Min = float.MinValue+1,

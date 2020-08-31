@@ -959,12 +959,14 @@ namespace linerider.UI
                 Dock = Dock.Bottom,
                 Max = 1000,
                 Min = -1000,
+                Value = Settings.animationRelativeVelX
             };
             Spinner animationVelYSpinner = new Spinner(rblHeader)
             {
                 Dock = Dock.Bottom,
                 Max = 1000,
                 Min = -1000,
+                Value = Settings.animationRelativeVelY
             };
             animationVelXSpinner.ValueChanged += (o, e) =>
             {
