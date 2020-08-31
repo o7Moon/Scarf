@@ -229,6 +229,10 @@ namespace linerider.IO
                             ret.Remount = true;
                             break;
 
+                        case TrackFeatures.frictionless:
+                            ret.frictionless = true;
+                            break;
+
                         default:
                             throw new TrackIO.TrackLoadException("Unsupported feature");
                     }
