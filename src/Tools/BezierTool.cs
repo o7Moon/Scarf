@@ -128,34 +128,35 @@ namespace linerider.Tools
 
         public override void OnMouseRightDown(Vector2d pos)
         {
-            Active = false;
-            _addflip = UI.InputUtils.Check(UI.Hotkey.LineToolFlipLine);
-           if(points.Count > 1)
+            int closestIndex = -1;
+            double closestDist = 100000;
+            for (int i = 0; i < points.Count; i++)
             {
-                using (var trk = game.Track.CreateTrackWriter())
+                var dist = Distance(ScreenToGameCoords(pos), points[i]);
+                if (dist < closestDist)
                 {
-
-                    List<Vector2> newPoints = GameRenderer.GenerateBezierCurve(points.ToArray(), resolution).ToList();
-                    game.Track.UndoManager.BeginAction();
-                    for (int i = 1; i < newPoints.Count; i++)
-                    {
-                        Vector2d _start = (Vector2d)newPoints[i - 1];
-                        Vector2d _end = (Vector2d)newPoints[i];
-                        if ((_end - _start).Length >= MINIMUM_LINE)
-                        {
-                            var added = CreateLine(trk, _start, _end, _addflip, Snapped, EnableSnap);
-                            if (added is StandardLine)
-                            {
-                                game.Track.NotifyTrackChanged();
-                            }
-                        }
-                    }
-                    game.Track.UndoManager.EndAction();
+                    closestDist = dist;
+                    closestIndex = i;
                 }
-                points.Clear();
             }
-            game.Invalidate();
+
+            if (closestIndex >= 0 && closestDist < nodeSize)
+            {
+                points.RemoveAt(closestIndex);
+            }
             base.OnMouseRightDown(pos);
+        }
+
+        public override bool OnKeyDown(Key k)
+        {
+            switch(k)
+            {
+                case OpenTK.Input.Key.KeypadEnter:
+                case OpenTK.Input.Key.Enter:
+                    Finalize();
+                    break;
+            }
+            return base.OnKeyDown(k);
         }
 
         public override void OnMouseMoved(Vector2d pos)
@@ -268,8 +269,38 @@ namespace linerider.Tools
                 }
             }
         }
-        public static double Distance(Vector2d a, Vector2d b)
+        private double Distance(Vector2d a, Vector2d b)
             => Math.Sqrt(((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y)));
+        private void Finalize()
+        {
+            Active = false;
+            _addflip = UI.InputUtils.Check(UI.Hotkey.LineToolFlipLine);
+            if (points.Count > 1)
+            {
+                using (var trk = game.Track.CreateTrackWriter())
+                {
+
+                    List<Vector2> newPoints = GameRenderer.GenerateBezierCurve(points.ToArray(), resolution).ToList();
+                    game.Track.UndoManager.BeginAction();
+                    for (int i = 1; i < newPoints.Count; i++)
+                    {
+                        Vector2d _start = (Vector2d)newPoints[i - 1];
+                        Vector2d _end = (Vector2d)newPoints[i];
+                        if ((_end - _start).Length >= MINIMUM_LINE)
+                        {
+                            var added = CreateLine(trk, _start, _end, _addflip, Snapped, EnableSnap);
+                            if (added is StandardLine)
+                            {
+                                game.Track.NotifyTrackChanged();
+                            }
+                        }
+                    }
+                    game.Track.UndoManager.EndAction();
+                }
+                points.Clear();
+            }
+            game.Invalidate();
+        }
         public override void Cancel()
         {
             Stop();
