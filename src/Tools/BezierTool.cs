@@ -50,10 +50,9 @@ namespace linerider.Tools
         private List<Vector2d> points = new List<Vector2d> { };
         private Vector2d _end;
         private Vector2d _start;
-        private int resolution = 30; // TODO: Make customizable ingame
         private bool moving = false;
         private int pointToMove = -1;
-        private float nodeSize = 5;
+        private float nodeSize => Settings.BezierNodeSize / game.Track.Zoom;
 
         public BezierTool()
             : base()
@@ -229,12 +228,13 @@ namespace linerider.Tools
                 Color c = Color.FromArgb(200, 150, 150, 150);
 
                 List<Vector2> newPoints = new List<Vector2> { };
+                newPoints.Add((Vector2) _end);
                 for (int i = 0; i < points.Count; i++)
                 {
                     newPoints.Add((Vector2)points[i]);
                 }
 
-                GameRenderer.DrawBezierTrack(points, resolution, nodeSize, Swatch, _addflip);
+                GameRenderer.DrawBezierTrack(points, Settings.BezierResolution, nodeSize, Swatch, _addflip);
             }
 
         }
@@ -249,7 +249,7 @@ namespace linerider.Tools
                 using (var trk = game.Track.CreateTrackWriter())
                 {
 
-                    List<Vector2> newPoints = GameRenderer.GenerateBezierCurve(points.ToArray(), resolution).ToList();
+                    List<Vector2> newPoints = GameRenderer.GenerateBezierCurve(points.ToArray(), Settings.BezierResolution).ToList();
                     game.Track.UndoManager.BeginAction();
                     for (int i = 1; i < newPoints.Count; i++)
                     {
