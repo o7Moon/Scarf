@@ -224,7 +224,6 @@ namespace linerider.Rendering
             GL.End();
             GameDrawingMatrix.Exit();
         }
-
         public static void DrawBezierCurve(Vector2[] points, Color color, int resolution)
         {
             

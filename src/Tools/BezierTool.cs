@@ -25,6 +25,8 @@ using linerider.Game;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
+using System.Diagnostics;
+using linerider.Utils;
 
 namespace linerider.Tools
 {
@@ -49,6 +51,8 @@ namespace linerider.Tools
         private Vector2d _end;
         private Vector2d _start;
         private int resolution = 30; // TODO: Make customizable ingame
+        private bool moving = false;
+        private int pointToMove = -1;
 
         public BezierTool()
             : base()
@@ -89,6 +93,34 @@ namespace linerider.Tools
 
             _addflip = UI.InputUtils.Check(UI.Hotkey.LineToolFlipLine);
             _end = _start;
+
+            int closestIndex = -1;
+            double closestDist = 100000;
+            for (int i = 0; i < points.Count; i++)
+            {
+                var dist = Distance(ScreenToGameCoords(pos), points[i]);
+                if (dist < closestDist)
+                {
+                    closestDist = dist;
+                    closestIndex = i;
+                }
+            }
+
+            if (closestIndex >= 0 && closestDist < 2.5)
+            {
+                moving = true;
+                pointToMove = closestIndex;
+            }
+            else
+            {
+                moving = false;
+                pointToMove = -1;
+                if (points.Count < 20)
+                {
+                    points.Add(_end);
+                }
+            }
+
             game.Invalidate();
             base.OnMouseDown(pos);
         }
@@ -100,7 +132,7 @@ namespace linerider.Tools
             using (var trk = game.Track.CreateTrackWriter())
             {
 
-                List <Vector2> newPoints = GameRenderer.GenerateBezierCurve(points.ToArray(), resolution).ToList();
+                List<Vector2> newPoints = GameRenderer.GenerateBezierCurve(points.ToArray(), resolution).ToList();
                 game.Track.UndoManager.BeginAction();
                 for (int i = 1; i < newPoints.Count; i++)
                 {
@@ -126,7 +158,12 @@ namespace linerider.Tools
         {
             if (Active)
             {
-                _end = ScreenToGameCoords(pos);
+                if (pointToMove >= 0 && moving)
+                {
+                    points[pointToMove] = ScreenToGameCoords(pos);
+                }
+
+                //_end = ScreenToGameCoords(pos);
                 if (game.ShouldXySnap())
                 {
                     _end = Utility.SnapToDegrees(_start, _end);
@@ -152,7 +189,8 @@ namespace linerider.Tools
             game.Invalidate();
             if (Active)
             {
-                points.Add(_start);
+                moving = false;
+                pointToMove = -1;
                 var diff = _end - _start;
                 var x = diff.X;
                 var y = diff.Y;
@@ -190,7 +228,6 @@ namespace linerider.Tools
                 {
                     newPoints.Add((Vector2)points[i]);
                 }
-                newPoints.Add((Vector2)_end);
 
                 switch (Swatch.Selected)
                 {
@@ -216,9 +253,19 @@ namespace linerider.Tools
         {
             for (int i = 0; i < points.Count; i++)
             {
-                GameRenderer.DrawCircle(points[i], 2.5f, color);
+                if (i == 0 || i == points.Count-1)
+                {
+                    DoubleRect rect = new DoubleRect(points[i].X - 2.5, points[i].Y - 2.5, 5, 5);
+                    GameRenderer.RenderRoundedRectangle(rect, color, 1);
+                }
+                else
+                {
+                    GameRenderer.DrawCircle(points[i], 2.5f, color);
+                }
             }
         }
+        public static double Distance(Vector2d a, Vector2d b)
+            => Math.Sqrt(((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y)));
         public override void Cancel()
         {
             Stop();
