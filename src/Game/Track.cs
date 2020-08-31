@@ -59,6 +59,7 @@ namespace linerider
         public int BlueLines { get; private set; }
         public int RedLines { get; private set; }
         public bool ZeroStart = false;
+        public bool frictionless = false;
         public bool Remount = true;
         public int BGColorR = 244; //offwhite
         public int BGColorG = 245; //offwhite
@@ -220,7 +221,7 @@ namespace linerider
         }
         public Rider GetStart()
         {
-            return Rider.Create(this.StartOffset, new Vector2d(ZeroStart ? 0 : RiderConstants.StartingMomentum, 0), Remount);
+            return Rider.Create(this.StartOffset, new Vector2d(ZeroStart ? 0 : RiderConstants.StartingMomentum, 0), Remount, frictionless);
         }
         public void SetVersion(int version)
         {

@@ -75,6 +75,10 @@ namespace linerider.IO
             {
                 ret[TrackFeatures.zerostart] = true;
             }
+            if (trk.frictionless)
+            {
+                ret[TrackFeatures.frictionless] = true;
+            }
             foreach (GameLine l in trk.LineLookup.Values)
             {
                 var scenery = l as SceneryLine;
