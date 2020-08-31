@@ -48,7 +48,7 @@ namespace linerider.Tools
         private List<Vector2d> points = new List<Vector2d> { };
         private Vector2d _end;
         private Vector2d _start;
-        private int resolution = 100; // TODO: Make customizable ingame
+        private int resolution = 30; // TODO: Make customizable ingame
 
         public BezierTool()
             : base()
@@ -101,7 +101,6 @@ namespace linerider.Tools
             {
 
                 List <Vector2> newPoints = GameRenderer.GenerateBezierCurve(points.ToArray(), resolution).ToList();
-                newPoints.Add((Vector2) _end);
                 game.Track.UndoManager.BeginAction();
                 for (int i = 1; i < newPoints.Count; i++)
                 {
@@ -217,7 +216,7 @@ namespace linerider.Tools
         {
             for (int i = 0; i < points.Count; i++)
             {
-                GameRenderer.DrawCircle(points[i], 5, color);
+                GameRenderer.DrawCircle(points[i], 2.5f, color);
             }
         }
         public override void Cancel()

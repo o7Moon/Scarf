@@ -243,21 +243,23 @@ namespace linerider.Rendering
             }
         }
 
-        public static Vector2[] GenerateBezierCurve(Vector2[] points, int resolution)
+        public static Vector2[] GenerateBezierCurve(Vector2[] points, int resPerHundred)
         {
             BezierCurve curve = new BezierCurve(points);
+            float curveLength = curve.CalculateLength(0.1f);
+            float resolution = (curveLength / 100) * resPerHundred;
             List<Vector2> curvePoints = new List<Vector2> {};
 
             for (int i = 0; i < resolution; i++)
             {
-                float t = (float)i / (float)resolution;
+                float t = (float)i / resolution;
                 curvePoints.Add(curve.CalculatePoint(t));
             }
 
             return curvePoints.ToArray();
         }
 
-        public static Vector2[] GenerateBezierCurve(Vector2d[] points, int resolution)
+        public static Vector2[] GenerateBezierCurve(Vector2d[] points, int resPerHundred)
         {
             Vector2[] newPoints = new Vector2[points.Length];
             for(int i = 0; i < points.Length; i++)
@@ -267,6 +269,8 @@ namespace linerider.Rendering
 
             BezierCurve curve = new BezierCurve(newPoints);
             List<Vector2> curvePoints = new List<Vector2> { };
+            float curveLength = curve.CalculateLength(0.1f);
+            float resolution = (curveLength / 100) * resPerHundred;
 
             for (int i = 0; i < resolution; i++)
             {
