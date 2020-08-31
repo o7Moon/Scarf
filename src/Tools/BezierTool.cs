@@ -53,6 +53,7 @@ namespace linerider.Tools
         private int resolution = 30; // TODO: Make customizable ingame
         private bool moving = false;
         private int pointToMove = -1;
+        private float nodeSize = 5;
 
         public BezierTool()
             : base()
@@ -106,7 +107,7 @@ namespace linerider.Tools
                 }
             }
 
-            if (closestIndex >= 0 && closestDist < 2.5)
+            if (closestIndex >= 0 && closestDist < nodeSize)
             {
                 moving = true;
                 pointToMove = closestIndex;
@@ -129,27 +130,30 @@ namespace linerider.Tools
         {
             Active = false;
             _addflip = UI.InputUtils.Check(UI.Hotkey.LineToolFlipLine);
-            using (var trk = game.Track.CreateTrackWriter())
+           if(points.Count > 1)
             {
-
-                List<Vector2> newPoints = GameRenderer.GenerateBezierCurve(points.ToArray(), resolution).ToList();
-                game.Track.UndoManager.BeginAction();
-                for (int i = 1; i < newPoints.Count; i++)
+                using (var trk = game.Track.CreateTrackWriter())
                 {
-                    Vector2d _start = (Vector2d)newPoints[i - 1];
-                    Vector2d _end = (Vector2d)newPoints[i];
-                    if ((_end - _start).Length >= MINIMUM_LINE)
+
+                    List<Vector2> newPoints = GameRenderer.GenerateBezierCurve(points.ToArray(), resolution).ToList();
+                    game.Track.UndoManager.BeginAction();
+                    for (int i = 1; i < newPoints.Count; i++)
                     {
-                        var added = CreateLine(trk, _start, _end, _addflip, Snapped, EnableSnap);
-                        if (added is StandardLine)
+                        Vector2d _start = (Vector2d)newPoints[i - 1];
+                        Vector2d _end = (Vector2d)newPoints[i];
+                        if ((_end - _start).Length >= MINIMUM_LINE)
                         {
-                            game.Track.NotifyTrackChanged();
+                            var added = CreateLine(trk, _start, _end, _addflip, Snapped, EnableSnap);
+                            if (added is StandardLine)
+                            {
+                                game.Track.NotifyTrackChanged();
+                            }
                         }
                     }
+                    game.Track.UndoManager.EndAction();
                 }
-                game.Track.UndoManager.EndAction();
+                points.Clear();
             }
-            points.Clear();
             game.Invalidate();
             base.OnMouseRightDown(pos);
         }
@@ -255,12 +259,12 @@ namespace linerider.Tools
             {
                 if (i == 0 || i == points.Count-1)
                 {
-                    DoubleRect rect = new DoubleRect(points[i].X - 2.5, points[i].Y - 2.5, 5, 5);
+                    DoubleRect rect = new DoubleRect(points[i].X - nodeSize, points[i].Y - nodeSize, nodeSize*2, nodeSize*2);
                     GameRenderer.RenderRoundedRectangle(rect, color, 1);
                 }
                 else
                 {
-                    GameRenderer.DrawCircle(points[i], 2.5f, color);
+                    GameRenderer.DrawCircle(points[i], nodeSize, color);
                 }
             }
         }
