@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using linerider.Game;
 using linerider.Utils;
 using System.Security.Policy;
-using linerider.IO.SOL;
 
 namespace linerider.Game
 {
