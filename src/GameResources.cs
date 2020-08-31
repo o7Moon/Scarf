@@ -379,6 +379,13 @@ namespace linerider
                 return GetBitmap("icons.linetool.png");
             }
         }
+        internal static System.Drawing.Bitmap bezier_icon
+        {
+            get
+            {
+                return GetBitmap("icons.beziertool.png");
+            }
+        }
         internal static System.Drawing.Bitmap eraser_icon
         {
             get
