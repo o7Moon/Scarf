@@ -153,7 +153,7 @@ namespace linerider.Tools
             {
                 case OpenTK.Input.Key.KeypadEnter:
                 case OpenTK.Input.Key.Enter:
-                    Finalize();
+                    FinalizePlacement();
                     break;
             }
             return base.OnKeyDown(k);
@@ -234,44 +234,13 @@ namespace linerider.Tools
                     newPoints.Add((Vector2)points[i]);
                 }
 
-                switch (Swatch.Selected)
-                {
-                    case LineType.Blue:
-                        renderPoints(points, Settings.Lines.StandardLine);
-                        GameRenderer.DrawBezierCurve(newPoints.ToArray(), Settings.Lines.StandardLine, resolution);
-                        break;
-
-                    case LineType.Red:
-                        renderPoints(points, Settings.Lines.AccelerationLine);
-                        GameRenderer.DrawBezierCurve(newPoints.ToArray(), Settings.Lines.AccelerationLine, resolution);
-                        break;
-
-                    case LineType.Scenery:
-                        renderPoints(points, Settings.Lines.SceneryLine);
-                        GameRenderer.DrawBezierCurve(newPoints.ToArray(), Settings.Lines.SceneryLine, resolution);
-                        break;
-                }
+                GameRenderer.DrawBezierTrack(points, resolution, nodeSize, Swatch, _addflip);
             }
 
-        }
-        private void renderPoints(List<Vector2d> points, Color color)
-        {
-            for (int i = 0; i < points.Count; i++)
-            {
-                if (i == 0 || i == points.Count-1)
-                {
-                    DoubleRect rect = new DoubleRect(points[i].X - nodeSize, points[i].Y - nodeSize, nodeSize*2, nodeSize*2);
-                    GameRenderer.RenderRoundedRectangle(rect, color, 1);
-                }
-                else
-                {
-                    GameRenderer.DrawCircle(points[i], nodeSize, color);
-                }
-            }
         }
         private double Distance(Vector2d a, Vector2d b)
             => Math.Sqrt(((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y)));
-        private void Finalize()
+        private void FinalizePlacement()
         {
             Active = false;
             _addflip = UI.InputUtils.Check(UI.Hotkey.LineToolFlipLine);
