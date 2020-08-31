@@ -84,7 +84,7 @@ namespace linerider.UI
             _eraserbtn.Clicked += (o, e) => CurrentTools.SetTool(CurrentTools.EraserTool);
             _selectbtn.Clicked += (o, e) => CurrentTools.SetTool(CurrentTools.MoveTool);
             _handbtn.Clicked += (o, e) => CurrentTools.SetTool(CurrentTools.HandTool);
-            _linebtn.Clicked += (o, e) => CurrentTools.SetTool(CurrentTools.BezierTool);
+            _bezierbtn.Clicked += (o, e) => CurrentTools.SetTool(CurrentTools.BezierTool);
             _flag.Clicked += (o, e) =>
             {
                 _editor.Flag(_editor.Offset);

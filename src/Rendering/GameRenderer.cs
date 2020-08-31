@@ -26,6 +26,8 @@ using System.Drawing;
 using linerider.Game;
 using linerider.Utils;
 using linerider.Drawing;
+using System.IO;
+using System.Linq;
 
 namespace linerider.Rendering
 {
@@ -208,7 +210,7 @@ namespace linerider.Rendering
             // DrawCircle(Game.Track.Camera.GetSmoothedCameraOffset(), 5, Color.Blue);
             DrawCircle(Game.Track.Timeline.GetFrame(Game.Track.Offset).CalculateCenter(), 5, Color.Green);
         }
-        private static void DrawCircle(Vector2d point, float size, Color color)
+        public static void DrawCircle(Vector2d point, float size, Color color)
         {
             GameDrawingMatrix.Enter();
             var center = (Vector2)point;
@@ -221,6 +223,58 @@ namespace linerider.Rendering
             }
             GL.End();
             GameDrawingMatrix.Exit();
+        }
+
+        public static void DrawBezierCurve(Vector2[] points, Color color, int resolution)
+        {
+            
+            Vector2[] curvePoints = GenerateBezierCurve(points, resolution);
+            if (points.Length > 0)
+            {
+                GameDrawingMatrix.Enter();
+                GL.Begin(PrimitiveType.LineStrip);
+                GL.Color3(color);
+                for (int i = 0; i < curvePoints.Length; i++)
+                {
+                    GL.Vertex2(curvePoints[i]);
+                }
+                GL.End();
+                GameDrawingMatrix.Exit();
+            }
+        }
+
+        public static Vector2[] GenerateBezierCurve(Vector2[] points, int resolution)
+        {
+            BezierCurve curve = new BezierCurve(points);
+            List<Vector2> curvePoints = new List<Vector2> {};
+
+            for (int i = 0; i < resolution; i++)
+            {
+                float t = (float)i / (float)resolution;
+                curvePoints.Add(curve.CalculatePoint(t));
+            }
+
+            return curvePoints.ToArray();
+        }
+
+        public static Vector2[] GenerateBezierCurve(Vector2d[] points, int resolution)
+        {
+            Vector2[] newPoints = new Vector2[points.Length];
+            for(int i = 0; i < points.Length; i++)
+            {
+                newPoints[i] = (Vector2) points[i];
+            }
+
+            BezierCurve curve = new BezierCurve(newPoints);
+            List<Vector2> curvePoints = new List<Vector2> { };
+
+            for (int i = 0; i < resolution; i++)
+            {
+                float t = (float)i / (float)resolution;
+                curvePoints.Add(curve.CalculatePoint(t));
+            }
+
+            return curvePoints.ToArray();
         }
 
         public static void DrawFloatGrid() //Draws the grid of floating-point 'regions', used in the creation of stable angled kramuals
@@ -278,7 +332,9 @@ namespace linerider.Rendering
         public static void DbgDrawGrid()
         {
             bool fastgrid = false;
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
             bool renderext = true;
+#pragma warning restore CS0219 // Variable is assigned but its value is never used
             bool renderridersquare = true;
             bool useshadergrid = true;
             int sqsize = fastgrid ? EditorGrid.CellSize : SimulationGrid.CellSize;

@@ -153,6 +153,7 @@
     <Compile Include="Tools\CurrentTools.cs" />
     <Compile Include="Tools\EraserTool.cs" />
     <Compile Include="Tools\HandTool.cs" />
+    <Compile Include="Tools\BezierTool.cs" />
     <Compile Include="Tools\LineTool.cs" />
     <Compile Include="Tools\MoveTool.cs" />
     <Compile Include="Tools\SelectTool.cs" />

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+
 namespace linerider.Tools
 {
     public static class CurrentTools
@@ -6,7 +9,7 @@ namespace linerider.Tools
         public static PencilTool PencilTool { get; private set; }
         public static EraserTool EraserTool { get; private set; }
         public static LineTool LineTool { get; private set; }
-        public static LineTool BezierTool { get; private set; } //LineTool => BezierTool //TODO
+        public static BezierTool BezierTool { get; private set; } 
         public static MoveTool MoveTool{ get; private set; }
         public static SelectTool SelectTool{ get; private set; }
         public static HandTool HandTool { get; private set; }
@@ -53,7 +56,7 @@ namespace linerider.Tools
             HandTool = new HandTool();
             SelectTool = new SelectTool();
             MoveTool = new MoveTool();
-            BezierTool = new LineTool();
+            BezierTool = new BezierTool();
             _selected = PencilTool;
         }
         public static void SetTool(Tool tool)
@@ -63,6 +66,7 @@ namespace linerider.Tools
                 SelectedTool.Stop();
                 SelectedTool.OnChangingTool();
             }
+
             if (tool == CurrentTools.HandTool)
             {
                 _selected = HandTool;
@@ -72,6 +76,10 @@ namespace linerider.Tools
             else if (tool == CurrentTools.LineTool)
             {
                 _selected = LineTool;
+            }
+            else if (tool == CurrentTools.BezierTool)
+            {
+                _selected = BezierTool;
             }
             else if (tool == CurrentTools.PencilTool)
             {
