@@ -225,6 +225,11 @@ namespace linerider.Tools
                     added = new SceneryLine(start, end)
                     { Width = Swatch.GreenMultiplier };
                     break;
+
+                default: //In case no swatch is chosen select blue and make a blue line
+                    added = new StandardLine(start, end, inv);
+                    Swatch.Selected = LineType.Blue;
+                    break;
             }
             trk.AddLine(added);
             if (Swatch.Selected != LineType.Scenery)

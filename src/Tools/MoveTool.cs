@@ -32,6 +32,13 @@ namespace linerider.Tools
 {
     public class MoveTool : Tool
     {
+        public override bool ShowSwatch
+        {
+            get
+            {
+                return true;
+            }
+        }
         public override string Tooltip
         {
             get

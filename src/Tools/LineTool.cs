@@ -45,9 +45,9 @@ namespace linerider.Tools
         private Vector2d _end;
         private Vector2d _start;
 
-        public LineTool()
-            : base()
+        public LineTool() : base()
         {
+            Swatch.Selected = LineType.Blue;
         }
 
         public override void OnChangingTool()

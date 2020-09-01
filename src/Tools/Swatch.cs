@@ -59,7 +59,9 @@ namespace linerider.Tools
         public LineType Selected { get; set; } = LineType.Blue;
         public void IncrementSelectedMultiplier()
         {
-            if (CurrentTools.SelectedTool != CurrentTools.EraserTool &&
+            if (CurrentTools.SelectedTool != CurrentTools.EraserTool && 
+                CurrentTools.SelectedTool != CurrentTools.SelectTool &&
+                CurrentTools.SelectedTool != CurrentTools.MoveTool &&
             CurrentTools.SelectedTool.ShowSwatch)
             {
                 var sw = CurrentTools.SelectedTool.Swatch;
