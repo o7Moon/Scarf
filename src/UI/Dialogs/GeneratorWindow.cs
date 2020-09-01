@@ -31,6 +31,8 @@ namespace linerider.UI
         private Spinner CircleLineCount;
         private Spinner CircleOffsetX;
         private Spinner CircleOffsetY;
+        private Spinner CircleMultiplier;
+        private Spinner CircleWidth;
         private Checkbox CircleInverse;
         private Checkbox CircleReverse;
 
@@ -201,7 +203,6 @@ namespace linerider.UI
                 gen_Circle.radius = CircleRadius.Value;
                 gen_Circle.ReGenerate_Preview();
             };
-            
 
             CircleLineCount = new Spinner(null)
             {
@@ -238,10 +239,39 @@ namespace linerider.UI
                 gen_Circle.ReGenerate_Preview();
             };
 
+            CircleMultiplier = new Spinner(null)
+            {
+                Min = 0,
+                Max = 255,
+                Value = gen_Circle.multiplier,
+                IsDisabled = true
+            };
+            CircleMultiplier.ValueChanged += (o, e) =>
+            {
+                gen_Circle.multiplier = (int)CircleMultiplier.Value;
+                gen_Circle.ReGenerate_Preview();
+            };
+
+            CircleWidth = new Spinner(null)
+            {
+                Min = 0.1,
+                Max = 25.5,
+                Value = gen_Circle.width,
+                IncrementSize = 0.1,
+                IsDisabled = true
+            };
+            CircleWidth.ValueChanged += (o, e) =>
+            {
+                gen_Circle.width = (float)CircleWidth.Value;
+                gen_Circle.ReGenerate_Preview();
+            };
+
             GwenHelper.CreateLabeledControl(CircleGenOptions, "Radius", CircleRadius);
             GwenHelper.CreateLabeledControl(CircleGenOptions, "Line Count", CircleLineCount);
             GwenHelper.CreateLabeledControl(CircleGenOptions, "Centre X", CircleOffsetX);
             GwenHelper.CreateLabeledControl(CircleGenOptions, "Centre Y", CircleOffsetY);
+            GwenHelper.CreateLabeledControl(CircleGenOptions, "Acceleration Multiplier", CircleMultiplier);
+            GwenHelper.CreateLabeledControl(CircleGenOptions, "Scenery Width Multiplier", CircleWidth);
 
             var lineTypeRadioGroup = new RadioButtonGroup(CircleGenOptions)
             {
@@ -269,6 +299,8 @@ namespace linerider.UI
             {
                 gen_Circle.lineType = LineType.Blue;
                 gen_Circle.ReGenerate_Preview();
+                CircleMultiplier.Disable();
+                CircleWidth.Disable();
                 CircleInverse.Enable();
                 CircleReverse.Disable();
             };
@@ -276,6 +308,8 @@ namespace linerider.UI
             {
                 gen_Circle.lineType = LineType.Red;
                 gen_Circle.ReGenerate_Preview();
+                CircleMultiplier.Enable();
+                CircleWidth.Disable();
                 CircleInverse.Enable();
                 CircleReverse.Enable();
             };
@@ -283,6 +317,8 @@ namespace linerider.UI
             {
                 gen_Circle.lineType = LineType.Scenery;
                 gen_Circle.ReGenerate_Preview();
+                CircleMultiplier.Disable();
+                CircleWidth.Enable();
                 CircleInverse.Disable();
                 CircleReverse.Disable();
             };

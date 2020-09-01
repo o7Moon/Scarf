@@ -121,7 +121,7 @@ namespace linerider.Rendering
         public static Vector2d[] GenerateCircle(double cx, double cy, double r, int num_segments)
         {
             Vector2d[] ret = new Vector2d[num_segments + 1];
-            var theta = 2 * 3.1415926 / num_segments;
+            var theta = 2 * Math.PI / num_segments;
             var tangetialFactor = Math.Tan(theta); //calculate the tangential factor
             var radialFactor = Math.Cos(theta); //calculate the radial factor
             double x = r; //we start at angle = 0
