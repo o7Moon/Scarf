@@ -292,6 +292,16 @@ namespace linerider.Rendering
                     DrawCircle(points[i], nodeSize, color);
                 }
             }
+            GameDrawingMatrix.Enter();
+            GL.Begin(PrimitiveType.LineStrip);
+            for (int i = 0; i < points.Count; i++)
+            {
+                Color col = (i < 1 || i == points.Count - 1) ? color : Color.FromArgb(255, 200, 0);
+                GL.Color3(col);
+                GL.Vertex2(points[i]);
+            }
+            GL.End();
+            GameDrawingMatrix.Exit();
         }
         public static Vector2[] GenerateBezierCurve(Vector2[] points, int resPerHundred)
         {

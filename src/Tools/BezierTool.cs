@@ -66,6 +66,7 @@ namespace linerider.Tools
         public override void OnMouseDown(Vector2d pos)
         {
             Active = true;
+            Debug.WriteLine("click");
             var gamepos = ScreenToGameCoords(pos);
             if (EnableSnap)
             {
