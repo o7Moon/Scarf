@@ -59,7 +59,10 @@ namespace linerider.Tools
         {
             return _selection;
         }
-
+        public List<LineSelection> GetLineSelectionsInBox()
+        {
+            return _boxselection;
+        }
         public void CancelSelection()
         {
             if (Active)

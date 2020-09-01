@@ -29,6 +29,7 @@ namespace linerider.UI
         private Editor _editor;
         private TrackLabel _title;
         private TrackLabel _linecount;
+        private TrackLabel _selectioncount;
         public TrackInfoBar(ControlBase parent, Editor editor) : base(parent)
         {
             Dock = Dock.Left;
@@ -70,6 +71,32 @@ namespace linerider.UI
                 },
                 UserData = 0,
                 Text = "Lines: 0",
+            };
+            _selectioncount = new TrackLabel(this)
+            {
+                Dock = Dock.Top,
+                Margin = new Margin(0, 5, 0, 0),
+                TextRequest = (o, current) =>
+                {
+                    var u = (int)_selectioncount.UserData;
+                    if (CurrentTools.SelectedTool == CurrentTools.SelectTool)
+                    {
+                        var linecount = ((SelectTool)(CurrentTools.SelectedTool)).GetLineSelectionsInBox().Count;
+                        if (linecount == 0) { linecount = ((SelectTool)(CurrentTools.SelectedTool)).GetLineSelections().Count; }
+
+                        if (u != linecount)
+                        {
+                            if (linecount > 0)
+                            {
+                                _selectioncount.UserData = linecount;
+                                return "Selected: " + linecount.ToString();
+                            }
+                            return "";
+                        }
+                    }
+                    return current;
+                },
+                UserData = 0,
             };
         }
         private ImageButton CreateButton(Bitmap image, string tooltip)
