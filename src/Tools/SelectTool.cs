@@ -18,6 +18,17 @@ namespace linerider.Tools
     //ideally, the node/square shuold be rotated
     public class SelectTool : Tool
     {
+        public override bool ShowSwatch
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public SelectTool() : base()
+        {
+            Swatch.Selected = LineType.All;
+        }
         public override MouseCursor Cursor
         {
             get
@@ -198,8 +209,12 @@ namespace linerider.Tools
                 {
                     foreach (var v in _boxselection)
                     {
-                        _selectedlines.Add(v.line.ID);
-                        _selection.Add(v);
+                        var linetypeSelected = v.GetLineType();
+                        if (linetypeSelected == Swatch.Selected || Swatch.Selected == LineType.All)
+                        {
+                            _selectedlines.Add(v.line.ID);
+                            _selection.Add(v);
+                        }
                     }
                     _selectionbox = GetBoxFromSelected(_selection);
                     _boxselection.Clear();
@@ -225,9 +240,12 @@ namespace linerider.Tools
                     if (!_selectedlines.Contains(line.ID))
                     {
                         var selection = new LineSelection(line, true, null);
-                        line.SelectionState = SelectionState.Selected;
-                        _boxselection.Add(selection);
-                        game.Track.RedrawLine(line);
+                        if (line.Type == Swatch.Selected || Swatch.Selected == LineType.All)
+                        {
+                            line.SelectionState = SelectionState.Selected;
+                            _boxselection.Add(selection);
+                            game.Track.RedrawLine(line);
+                        }
                     }
                 }
             }

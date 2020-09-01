@@ -29,7 +29,7 @@ namespace linerider.UI
     {
         private Color _color = Color.Black;
         private Texture m_texture;
-        private LineType _linetype;
+        private readonly LineType _linetype;
         protected override Color CurrentColor
         {
             get
@@ -74,7 +74,9 @@ namespace linerider.UI
             TextRequest = (o, e) =>
              {
                  if (!Selected ||
-                    CurrentTools.SelectedTool == CurrentTools.EraserTool)
+                    CurrentTools.SelectedTool == CurrentTools.EraserTool ||
+                    CurrentTools.SelectedTool == CurrentTools.SelectTool ||
+                    CurrentTools.SelectedTool == CurrentTools.MoveTool)
                      return "";
                  switch (_linetype)
                  {
@@ -110,6 +112,8 @@ namespace linerider.UI
         {
             if (Selected &&
             CurrentTools.SelectedTool != CurrentTools.EraserTool &&
+            CurrentTools.SelectedTool != CurrentTools.EraserTool &&
+            CurrentTools.SelectedTool != CurrentTools.SelectTool &&
             CurrentTools.SelectedTool.ShowSwatch)
             {
                 CurrentTools.SelectedTool.Swatch.IncrementSelectedMultiplier();

@@ -93,10 +93,14 @@ namespace linerider.Tools
             }
             else if (tool == CurrentTools.MoveTool)
             {
+                if (SelectedTool == MoveTool)
+                    MoveTool.Swatch.Selected = LineType.All;
                 _selected = MoveTool;
             }
             else if (tool == CurrentTools.SelectTool)
             {
+                if (SelectedTool == SelectTool)
+                    SelectTool.Swatch.Selected = LineType.All;
                 _selected = SelectTool;
             }
         }

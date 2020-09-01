@@ -65,5 +65,10 @@ namespace linerider.Tools
             joint2 = line.Position2 == snapjoint;
             snapped = new List<LineSelection>();
         }
+
+        public LineType GetLineType()
+        {
+            return line.Type;
+        }
     }
 }
