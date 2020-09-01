@@ -31,6 +31,8 @@ namespace linerider.UI
         private Spinner CircleLineCount;
         private Spinner CircleOffsetX;
         private Spinner CircleOffsetY;
+        private Spinner circleMultiplier;
+        private Spinner circleWidth;
         private Checkbox CircleInverse;
         private Checkbox CircleReverse;
 
@@ -201,7 +203,6 @@ namespace linerider.UI
                 gen_Circle.radius = CircleRadius.Value;
                 gen_Circle.ReGenerate_Preview();
             };
-            
 
             CircleLineCount = new Spinner(null)
             {
@@ -238,10 +239,37 @@ namespace linerider.UI
                 gen_Circle.ReGenerate_Preview();
             };
 
+            circleMultiplier = new Spinner(null)
+            {
+                Min = 0,
+                Max = 255,
+                Value = gen_Circle.multiplier
+            };
+            circleMultiplier.ValueChanged += (o, e) =>
+            {
+                gen_Circle.multiplier = (int)circleMultiplier.Value;
+                gen_Circle.ReGenerate_Preview();
+            };
+
+            circleWidth = new Spinner(null)
+            {
+                Min = 0.1,
+                Max = 25.5,
+                Value = gen_Circle.width,
+                IncrementSize = 0.1
+            };
+            circleWidth.ValueChanged += (o, e) =>
+            {
+                gen_Circle.width = (float)circleWidth.Value;
+                gen_Circle.ReGenerate_Preview();
+            };
+
             GwenHelper.CreateLabeledControl(CircleGenOptions, "Radius", CircleRadius);
             GwenHelper.CreateLabeledControl(CircleGenOptions, "Line Count", CircleLineCount);
             GwenHelper.CreateLabeledControl(CircleGenOptions, "Centre X", CircleOffsetX);
             GwenHelper.CreateLabeledControl(CircleGenOptions, "Centre Y", CircleOffsetY);
+            GwenHelper.CreateLabeledControl(CircleGenOptions, "Acceleration Multiplier", circleMultiplier);
+            GwenHelper.CreateLabeledControl(CircleGenOptions, "Scenery Width Multiplier", circleWidth);
 
             var lineTypeRadioGroup = new RadioButtonGroup(CircleGenOptions)
             {
