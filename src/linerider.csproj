@@ -153,6 +153,7 @@
     <Compile Include="Tools\CurrentTools.cs" />
     <Compile Include="Tools\EraserTool.cs" />
     <Compile Include="Tools\HandTool.cs" />
+    <Compile Include="Tools\BezierTool.cs" />
     <Compile Include="Tools\LineTool.cs" />
     <Compile Include="Tools\MoveTool.cs" />
     <Compile Include="Tools\SelectTool.cs" />
@@ -370,6 +371,9 @@
       <Project>{41650C82-D630-4E5C-845A-F1513C8FDC99}</Project>
       <Name>Gwen.Renderer.OpenTK</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\icons\beziertool.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

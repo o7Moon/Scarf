@@ -627,6 +627,36 @@ namespace linerider.UI
         }
         private void PopulateTools(ControlBase parent)
         {
+            var bezier = GwenHelper.CreateHeaderPanel(parent, "Bezier Tool");
+
+            var resolution = new Spinner(bezier)
+            {
+                Min = 5,
+                Max = 100,
+                Value = Settings.BezierResolution,
+                IncrementSize = 1
+            };
+            resolution.ValueChanged += (o, e) =>
+            {
+                Settings.BezierResolution = (int) ((Spinner)o).Value;
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(bezier, "Resolution (Lines per 100 pixels)", resolution);
+
+            var nodeSize = new Spinner(bezier)
+            {
+                Min = 5,
+                Max = 100,
+                Value = Settings.BezierNodeSize,
+                IncrementSize = 1
+            };
+            nodeSize.ValueChanged += (o, e) =>
+            {
+                Settings.BezierNodeSize = (int)((Spinner)o).Value;
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(bezier, "Size of the bezier curve nodes", nodeSize);
+
             var select = GwenHelper.CreateHeaderPanel(parent, "Select Tool -- Line Info");
             var length = GwenHelper.AddCheckbox(select, "Show Length", Settings.Editor.ShowLineLength, (o, e) =>
             {

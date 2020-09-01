@@ -144,6 +144,13 @@ namespace linerider.Rendering
             ret[ret.Length - 1] = ret[0];
             return ret;
         }
+
+        public static Vector2d[] GenerateBezierCurve(int num_segments)
+        {
+            Vector2d[] ret = new Vector2d[num_segments + 1];
+            ret[ret.Length - 1] = ret[0];
+            return ret;
+        }
         public static int LoadTexture(Bitmap bmp)
         {
             var lock_format = System.Drawing.Imaging.PixelFormat.Undefined;

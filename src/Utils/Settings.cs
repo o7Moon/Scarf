@@ -82,6 +82,8 @@ namespace linerider
             public static Color SceneryLine;
             public static Color StandardLine;
         }
+        public static int BezierResolution;
+        public static int BezierNodeSize;
         public static int PlaybackZoomType;
         public static float PlaybackZoomValue;
         public static float Volume;
@@ -214,6 +216,8 @@ namespace linerider
             Lines.AccelerationLine = Constants.RedLineColor;
             Lines.SceneryLine = Constants.SceneryLineColor;
             Lines.StandardLine = Constants.BlueLineColor;
+            BezierResolution = 30;
+            BezierNodeSize = 15;
             PlaybackZoomType = 0;
             PlaybackZoomValue = 4;
             Volume = 100;
@@ -547,11 +551,13 @@ namespace linerider
             LoadColor(GetSetting(lines, nameof(Lines.AccelerationLine)), ref Lines.AccelerationLine);
             LoadColor(GetSetting(lines, nameof(Lines.SceneryLine)), ref Lines.SceneryLine);
             LoadColor(GetSetting(lines, nameof(Lines.StandardLine)), ref Lines.StandardLine);
+            LoadInt(GetSetting(lines, nameof(BezierResolution)), ref BezierResolution);
+            LoadInt(GetSetting(lines, nameof(BezierNodeSize)), ref BezierNodeSize);
             LoadBool(GetSetting(lines, nameof(InvisibleRider)), ref InvisibleRider);
             if (multiScarfSegments == 0) { multiScarfSegments++; }
             if (ScarfSegments == 0) { ScarfSegments++; }
             LoadAddonSettings(lines);
-            
+
 
             var lasttrack = GetSetting(lines, nameof(LastSelectedTrack));
             if (File.Exists(lasttrack) && lasttrack.StartsWith(Constants.TracksDirectory))
@@ -650,6 +656,8 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(Lines.AccelerationLine), SaveColor(Lines.AccelerationLine));
             config += "\r\n" + MakeSetting(nameof(Lines.SceneryLine), SaveColor(Lines.SceneryLine));
             config += "\r\n" + MakeSetting(nameof(Lines.StandardLine), SaveColor(Lines.StandardLine));
+            config += "\r\n" + MakeSetting(nameof(BezierResolution), BezierResolution.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(BezierNodeSize), BezierNodeSize.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(InvisibleRider), InvisibleRider.ToString(Program.Culture));
             config = SaveAddonSettings(config);
             foreach (var binds in Keybinds)
@@ -794,7 +802,7 @@ namespace linerider
 
         private static string SaveColor(Color color)
         {
-            int[] colorValues = {color.R, color.G, color.B};
+            int[] colorValues = { color.R, color.G, color.B };
             return String.Join(",", colorValues);
         }
     }

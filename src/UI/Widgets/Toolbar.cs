@@ -27,6 +27,7 @@ namespace linerider.UI
     {
         private ImageButton _pencilbtn;
         private ImageButton _linebtn;
+        private ImageButton _bezierbtn;
         private ImageButton _eraserbtn;
         private ImageButton _selectbtn;
         private ImageButton _handbtn;
@@ -66,6 +67,7 @@ namespace linerider.UI
             _swatch.Dock = Dock.Top;
             _pencilbtn = CreateTool(GameResources.pencil_icon, "Pencil Tool (Q)");
             _linebtn = CreateTool(GameResources.line_icon, "Line Tool (W)");
+            _bezierbtn = CreateTool(GameResources.bezier_icon, "Bezier Tool");
             _eraserbtn = CreateTool(GameResources.eraser_icon, "Eraser Tool (E)");
             _selectbtn = CreateTool(GameResources.movetool_icon, "Select Tool (R)");
             _handbtn = CreateTool(GameResources.pantool_icon, "Hand Tool (Shift+Space) (T)");
@@ -82,6 +84,7 @@ namespace linerider.UI
             _eraserbtn.Clicked += (o, e) => CurrentTools.SetTool(CurrentTools.EraserTool);
             _selectbtn.Clicked += (o, e) => CurrentTools.SetTool(CurrentTools.MoveTool);
             _handbtn.Clicked += (o, e) => CurrentTools.SetTool(CurrentTools.HandTool);
+            _bezierbtn.Clicked += (o, e) => CurrentTools.SetTool(CurrentTools.BezierTool);
             _flag.Clicked += (o, e) =>
             {
                 _editor.Flag(_editor.Offset);
