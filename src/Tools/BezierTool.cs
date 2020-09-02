@@ -57,6 +57,7 @@ namespace linerider.Tools
         public BezierTool()
             : base()
         {
+            Swatch.Selected = LineType.Blue;
         }
 
         public override void OnChangingTool()
