@@ -238,16 +238,18 @@ namespace linerider.Tools
                 trk.DisableUndo();
                 PlaceLines(trk, true);
             }
+            BezierCurve curve;
+            GameRenderer.GenerateBezierCurve2d(controlPoints.ToArray(), Settings.BezierResolution, out curve);
             switch (Swatch.Selected)
             {
                 case LineType.Blue:
-                    GameRenderer.RenderPoints(controlPoints, Settings.Lines.StandardLine, nodeSize);
+                    GameRenderer.RenderPoints(controlPoints, curve, Settings.Lines.StandardLine, nodeSize);
                     break;
                 case LineType.Scenery:
-                    GameRenderer.RenderPoints(controlPoints, Settings.Lines.SceneryLine, nodeSize);
+                    GameRenderer.RenderPoints(controlPoints, curve, Settings.Lines.SceneryLine, nodeSize);
                     break;
                 case LineType.Red:
-                    GameRenderer.RenderPoints(controlPoints, Settings.Lines.AccelerationLine, nodeSize);
+                    GameRenderer.RenderPoints(controlPoints, curve, Settings.Lines.AccelerationLine, nodeSize);
                     break;
             }
 
