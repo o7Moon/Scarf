@@ -138,7 +138,6 @@ namespace linerider
             {
                 if (line.ID == GameLine.UninitializedID)
                     line.ID = Lines.Count > 0 ? Lines.Max() + 1 : _idcounter++;
-                    //line.ID = _idcounter++;
                 else if (line.ID >= _idcounter)
                 {
                     _idcounter = line.ID + 1;
@@ -164,7 +163,6 @@ namespace linerider
             // we can make the most recent change at the front so if it gets
             // looked up it's easier and faster to find
             Lines.AddFirst(line.ID);
-            Debug.WriteLine("Max Line ID: " + (Lines.Count > 0 ? Lines.Max() : 0));
 
             if (line is StandardLine stl)
                 AddLineToGrid(stl);
