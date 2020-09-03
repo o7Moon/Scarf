@@ -241,45 +241,45 @@ namespace linerider.Rendering
                 GameDrawingMatrix.Exit();
             }
         }
-        public static void DrawBezierTrack(List<Vector2d> points, int resolution, float nodeSize, Swatch Swatch, bool _addflip)
-        {
-            BezierCurve curve;
-            Vector2d[] newPoints = GenerateBezierCurve2d(points.ToArray(), resolution, out curve);
-            Color c = Color.FromArgb(200, 150, 150, 150);
-            switch (Swatch.Selected)
-            {
-                case LineType.Blue:
-                    RenderPoints(points, Settings.Lines.StandardLine, nodeSize);
-                    for(int i = 1; i < newPoints.Length; i++)
-                    {
-                        StandardLine line = new StandardLine(newPoints[i - 1], newPoints[i], _addflip);
-                        line.CalculateConstants();
-                        GameRenderer.DrawTrackLine(line, c, Settings.Editor.RenderGravityWells, true);
-                    }
-                    break;
+        //public static void DrawBezierTrack(List<Vector2d> points, int resolution, float nodeSize, Swatch Swatch, bool _addflip)
+        //{
+        //    BezierCurve curve;
+        //    Vector2d[] newPoints = GenerateBezierCurve2d(points.ToArray(), resolution, out curve);
+        //    Color c = Color.FromArgb(200, 150, 150, 150);
+        //    switch (Swatch.Selected)
+        //    {
+        //        case LineType.Blue:
+        //            RenderPoints(points, Settings.Lines.StandardLine, nodeSize);
+        //            for (int i = 1; i < newPoints.Length; i++)
+        //            {
+        //                StandardLine line = new StandardLine(newPoints[i - 1], newPoints[i], _addflip);
+        //                line.CalculateConstants();
+        //                GameRenderer.DrawTrackLine(line, c, Settings.Editor.RenderGravityWells, true);
+        //            }
+        //            break;
 
-                case LineType.Red:
-                    RenderPoints(points, Settings.Lines.AccelerationLine, nodeSize);
-                    for (int i = 1; i < newPoints.Length; i++)
-                    {
-                        RedLine line = new RedLine(newPoints[i - 1], newPoints[i], _addflip);
-                        line.Multiplier = Swatch.RedMultiplier;
-                        line.CalculateConstants();
-                        GameRenderer.DrawTrackLine(line, c, Settings.Editor.RenderGravityWells, true);
-                    }
-                    break;
+        //        case LineType.Red:
+        //            RenderPoints(points, Settings.Lines.AccelerationLine, nodeSize);
+        //            for (int i = 1; i < newPoints.Length; i++)
+        //            {
+        //                RedLine line = new RedLine(newPoints[i - 1], newPoints[i], _addflip);
+        //                line.Multiplier = Swatch.RedMultiplier;
+        //                line.CalculateConstants();
+        //                GameRenderer.DrawTrackLine(line, c, Settings.Editor.RenderGravityWells, true);
+        //            }
+        //            break;
 
-                case LineType.Scenery:
-                    RenderPoints(points, Settings.Lines.SceneryLine, nodeSize);
-                    for (int i = 1; i < newPoints.Length; i++)
-                    {
-                        GameRenderer.RenderRoundedLine(newPoints[i - 1], newPoints[i], c, 2 * Swatch.GreenMultiplier);
-                    }
-                    break;
-            }
+        //        case LineType.Scenery:
+        //            RenderPoints(points, Settings.Lines.SceneryLine, nodeSize);
+        //            for (int i = 1; i < newPoints.Length; i++)
+        //            {
+        //                GameRenderer.RenderRoundedLine(newPoints[i - 1], newPoints[i], c, 2 * Swatch.GreenMultiplier);
+        //            }
+        //            break;
+        //    }
 
-        }
-        private static void RenderPoints(List<Vector2d> points, Color color, float nodeSize)
+        //}
+        public static void RenderPoints(List<Vector2d> points, Color color, float nodeSize)
         {
             for (int i = 0; i < points.Count; i++)
             {
@@ -301,7 +301,7 @@ namespace linerider.Rendering
             GL.Begin(PrimitiveType.LineStrip);
             for (int i = 0; i < points.Count; i++)
             {
-                Color col = (i < 1 || i == points.Count - 1) ? color : Color.FromArgb(255, 200, 0);
+               /* Color col = (i < 1 || i == points.Count - 1) ? color : */ Color col = Color.FromArgb(255, 200, 0);
                 GL.Color3(col);
                 GL.Vertex2(points[i]);
             }

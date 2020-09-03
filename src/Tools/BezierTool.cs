@@ -27,6 +27,7 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Diagnostics;
 using linerider.Utils;
+using Discord;
 
 namespace linerider.Tools
 {
@@ -45,9 +46,11 @@ namespace linerider.Tools
             }
         }
         public bool Snapped = false;
+        private bool done = false;
         private const float MINIMUM_LINE = 0.01f;
         private bool _addflip;
-        private List<Vector2d> points = new List<Vector2d> { };
+        private List<Vector2d> controlPoints = new List<Vector2d> {};
+        private List<GameLine> workingLines = new List<GameLine> {};
         private Vector2d _end;
         private Vector2d _start;
         private bool moving = false;
@@ -97,9 +100,9 @@ namespace linerider.Tools
 
             int closestIndex = -1;
             double closestDist = 100000;
-            for (int i = 0; i < points.Count; i++)
+            for (int i = 0; i < controlPoints.Count; i++)
             {
-                var dist = GameRenderer.Distance(ScreenToGameCoords(pos), points[i]);
+                var dist = GameRenderer.Distance(ScreenToGameCoords(pos), controlPoints[i]);
                 if (dist < closestDist)
                 {
                     closestDist = dist;
@@ -116,9 +119,9 @@ namespace linerider.Tools
             {
                 moving = false;
                 pointToMove = -1;
-                if (points.Count < 69)
+                if (controlPoints.Count < 69)
                 {
-                    points.Add(_end);
+                    controlPoints.Add(_end);
                 }
             }
 
@@ -130,9 +133,9 @@ namespace linerider.Tools
         {
             int closestIndex = -1;
             double closestDist = 100000;
-            for (int i = 0; i < points.Count; i++)
+            for (int i = 0; i < controlPoints.Count; i++)
             {
-                var dist = GameRenderer.Distance(ScreenToGameCoords(pos), points[i]);
+                var dist = GameRenderer.Distance(ScreenToGameCoords(pos), controlPoints[i]);
                 if (dist < closestDist)
                 {
                     closestDist = dist;
@@ -142,17 +145,18 @@ namespace linerider.Tools
 
             if (closestIndex >= 0 && closestDist < nodeSize)
             {
-                points.RemoveAt(closestIndex);
+                controlPoints.RemoveAt(closestIndex);
             }
             base.OnMouseRightDown(pos);
         }
 
         public override bool OnKeyDown(Key k)
         {
-            switch(k)
+            switch (k)
             {
                 case OpenTK.Input.Key.KeypadEnter:
                 case OpenTK.Input.Key.Enter:
+                    done = true;
                     FinalizePlacement();
                     break;
             }
@@ -165,10 +169,9 @@ namespace linerider.Tools
             {
                 if (pointToMove >= 0 && moving)
                 {
-                    points[pointToMove] = ScreenToGameCoords(pos);
+                    controlPoints[pointToMove] = ScreenToGameCoords(pos);
                 }
 
-                //_end = ScreenToGameCoords(pos);
                 if (game.ShouldXySnap())
                 {
                     _end = Utility.SnapToDegrees(_start, _end);
@@ -223,51 +226,81 @@ namespace linerider.Tools
             base.Render();
             if (Active)
             {
-                var diff = _end - _start;
-                var x = diff.X;
-                var y = diff.Y;
-                Color c = Color.FromArgb(200, 150, 150, 150);
-
-                List<Vector2> newPoints = new List<Vector2> { };
-                newPoints.Add((Vector2) _end);
-                for (int i = 0; i < points.Count; i++)
-                {
-                    newPoints.Add((Vector2)points[i]);
-                }
-
-                GameRenderer.DrawBezierTrack(points, Settings.BezierResolution, nodeSize, Swatch, _addflip);
+                GeneratePreview();
             }
 
+        }
+        private void GeneratePreview()
+        {
+            DeleteLines();
+            using (var trk = game.Track.CreateTrackWriter())
+            {
+                trk.DisableUndo();
+                PlaceLines(trk, true);
+            }
+            switch (Swatch.Selected)
+            {
+                case LineType.Blue:
+                    GameRenderer.RenderPoints(controlPoints, Settings.Lines.StandardLine, nodeSize);
+                    break;
+                case LineType.Scenery:
+                    GameRenderer.RenderPoints(controlPoints, Settings.Lines.SceneryLine, nodeSize);
+                    break;
+                case LineType.Red:
+                    GameRenderer.RenderPoints(controlPoints, Settings.Lines.AccelerationLine, nodeSize);
+                    break;
+            }
+
+            
         }
         private void FinalizePlacement()
         {
             Active = false;
-            _addflip = UI.InputUtils.Check(UI.Hotkey.LineToolFlipLine);
-            if (points.Count > 1)
+            DeleteLines();
+            using (var trk = game.Track.CreateTrackWriter())
             {
-                using (var trk = game.Track.CreateTrackWriter())
-                {
-
-                    List<Vector2> newPoints = GameRenderer.GenerateBezierCurve(points.ToArray(), Settings.BezierResolution).ToList();
-                    game.Track.UndoManager.BeginAction();
-                    for (int i = 1; i < newPoints.Count; i++)
-                    {
-                        Vector2d _start = (Vector2d)newPoints[i - 1];
-                        Vector2d _end = (Vector2d)newPoints[i];
-                        if ((_end - _start).Length >= MINIMUM_LINE)
-                        {
-                            var added = CreateLine(trk, _start, _end, _addflip, Snapped, EnableSnap);
-                            if (added is StandardLine)
-                            {
-                                game.Track.NotifyTrackChanged();
-                            }
-                        }
-                    }
-                    game.Track.UndoManager.EndAction();
-                }
-                points.Clear();
+                PlaceLines(trk, false);
             }
             game.Invalidate();
+            controlPoints.Clear();
+            workingLines.Clear();
+        }
+        private void PlaceLines(TrackWriter trk, bool preview)
+        {
+            if (controlPoints.Count > 1)
+            {
+                List<Vector2> curvePoints = GameRenderer.GenerateBezierCurve(controlPoints.ToArray(), Settings.BezierResolution).ToList();
+                if(!preview) game.Track.UndoManager.BeginAction();
+                for (int i = 1; i < curvePoints.Count; i++)
+                {
+                    Vector2d _start = (Vector2d)curvePoints[i - 1];
+                    Vector2d _end = (Vector2d)curvePoints[i];
+                    if ((_end - _start).Length >= MINIMUM_LINE)
+                    {
+                        var added = CreateLine(trk, _start, _end, _addflip, Snapped, EnableSnap);
+                        workingLines.Add(added);
+                    }
+                }
+                game.Track.NotifyTrackChanged();
+                if (!preview) game.Track.UndoManager.EndAction();
+            }
+            game.Invalidate();
+        }
+        private void DeleteLines()
+        {
+            using (var trk = game.Track.CreateTrackWriter())
+            {
+                trk.DisableUndo();
+                if (workingLines.Count() == 0)
+                    return;
+                foreach (GameLine line in workingLines)
+                {
+                    trk.RemoveLine(line);
+                }
+                workingLines.Clear();
+                game.Track.Invalidate();
+                game.Track.NotifyTrackChanged();
+            }
         }
         public override void Cancel()
         {
@@ -276,7 +309,11 @@ namespace linerider.Tools
         public override void Stop()
         {
             Active = false;
-            points.Clear();
+            controlPoints.Clear();
+            if (!done)
+            {
+                DeleteLines();
+            }
         }
     }
 }
