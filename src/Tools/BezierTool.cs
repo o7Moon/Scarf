@@ -57,6 +57,7 @@ namespace linerider.Tools
         public BezierTool()
             : base()
         {
+            Swatch.Selected = LineType.Blue;
         }
 
         public override void OnChangingTool()
@@ -98,7 +99,7 @@ namespace linerider.Tools
             double closestDist = 100000;
             for (int i = 0; i < points.Count; i++)
             {
-                var dist = Distance(ScreenToGameCoords(pos), points[i]);
+                var dist = GameRenderer.Distance(ScreenToGameCoords(pos), points[i]);
                 if (dist < closestDist)
                 {
                     closestDist = dist;
@@ -115,7 +116,7 @@ namespace linerider.Tools
             {
                 moving = false;
                 pointToMove = -1;
-                if (points.Count < 20)
+                if (points.Count < 69)
                 {
                     points.Add(_end);
                 }
@@ -131,7 +132,7 @@ namespace linerider.Tools
             double closestDist = 100000;
             for (int i = 0; i < points.Count; i++)
             {
-                var dist = Distance(ScreenToGameCoords(pos), points[i]);
+                var dist = GameRenderer.Distance(ScreenToGameCoords(pos), points[i]);
                 if (dist < closestDist)
                 {
                     closestDist = dist;
@@ -238,8 +239,6 @@ namespace linerider.Tools
             }
 
         }
-        private double Distance(Vector2d a, Vector2d b)
-            => Math.Sqrt(((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y)));
         private void FinalizePlacement()
         {
             Active = false;

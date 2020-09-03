@@ -72,7 +72,10 @@ namespace linerider.Tools
         {
             get { return game.Cursors["pencil"]; }
         }
-        public PencilTool() : base() { }
+        public PencilTool() : base()
+        {
+            Swatch.Selected = LineType.Blue;
+        }
         public override void OnMouseDown(Vector2d pos)
         {
             Stop();

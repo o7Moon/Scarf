@@ -243,7 +243,8 @@ namespace linerider.Rendering
         }
         public static void DrawBezierTrack(List<Vector2d> points, int resolution, float nodeSize, Swatch Swatch, bool _addflip)
         {
-            Vector2d[] newPoints = GenerateBezierCurve2d(points.ToArray(), resolution);
+            BezierCurve curve;
+            Vector2d[] newPoints = GenerateBezierCurve2d(points.ToArray(), resolution, out curve);
             Color c = Color.FromArgb(200, 150, 150, 150);
             switch (Swatch.Selected)
             {
@@ -292,7 +293,60 @@ namespace linerider.Rendering
                     DrawCircle(points[i], nodeSize, color);
                 }
             }
+            RenderPointOutline(points, color);
         }
+        private static void RenderPointOutline(List<Vector2d> points, Color color)
+        {
+            GameDrawingMatrix.Enter();
+            GL.Begin(PrimitiveType.LineStrip);
+            for (int i = 0; i < points.Count; i++)
+            {
+                Color col = (i < 1 || i == points.Count - 1) ? color : Color.FromArgb(255, 200, 0);
+                GL.Color3(col);
+                GL.Vertex2(points[i]);
+            }
+            GL.End();
+            GameDrawingMatrix.Exit();
+        }
+        private static void RenderPoints(List<Vector2d> points, BezierCurve curve, Color color, float nodeSize)
+        {
+            for (int i = 0; i < points.Count; i++)
+            {
+                if (i == 0 || i == points.Count - 1)
+                {
+                    DoubleRect rect = new DoubleRect(points[i].X - nodeSize, points[i].Y - nodeSize, nodeSize * 2, nodeSize * 2);
+                    RenderRoundedRectangle(rect, color, 1);
+                }
+                else
+                {
+                    DrawCircle(points[i], nodeSize, color);
+                }                
+            }
+            renderPointTrace(points, curve, color);
+        }
+        private static void renderPointTrace(List<Vector2d> points, BezierCurve curve, Color color)
+        {
+            double lineLength = 0;
+            List<double> lengthsPerPoint = new List<double> { 0 };
+            for (int i = 1; i < points.Count; i++)
+            {
+                lineLength += Distance(points[i - 1], points[i]);
+                lengthsPerPoint.Add(lineLength);
+            }
+            for (int i = 1; i < points.Count-1; i++)
+            {
+                Vector2 curvePoint = curve.CalculatePoint((float)lengthsPerPoint[i] / (float)lineLength);
+                GameDrawingMatrix.Enter();
+                GL.Begin(PrimitiveType.LineStrip);
+                GL.Color3(color);
+                GL.Vertex2(points[i]);
+                GL.Vertex2(curvePoint);
+                GL.End();
+                GameDrawingMatrix.Exit();
+            }
+        }
+        public static double Distance(Vector2d a, Vector2d b)
+            => Math.Sqrt(((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y)));
         public static Vector2[] GenerateBezierCurve(Vector2[] points, int resPerHundred)
         {
             BezierCurve curve = new BezierCurve(points);
@@ -331,7 +385,7 @@ namespace linerider.Rendering
             return curvePoints.ToArray();
         }
 
-        public static Vector2d[] GenerateBezierCurve2d(Vector2d[] points, int resPerHundred)
+        public static Vector2d[] GenerateBezierCurve2d(Vector2d[] points, int resPerHundred, out BezierCurve curveOut)
         {
             Vector2[] newPoints = new Vector2[points.Length];
             for (int i = 0; i < points.Length; i++)
@@ -340,6 +394,7 @@ namespace linerider.Rendering
             }
 
             BezierCurve curve = new BezierCurve(newPoints);
+            curveOut = curve;
             List<Vector2d> curvePoints = new List<Vector2d> { };
             float curveLength = curve.CalculateLength(0.1f);
             float resolution = (curveLength / 100) * resPerHundred;
