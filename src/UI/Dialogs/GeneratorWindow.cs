@@ -276,7 +276,7 @@ namespace linerider.UI
             var lineTypeRadioGroup = new RadioButtonGroup(CircleGenOptions)
             {
                 Dock = Dock.Top,
-                ShouldDrawBackground = false,
+                ShouldDrawBackground = false
             };
             var blueType = lineTypeRadioGroup.AddOption("Blue");
             var redType = lineTypeRadioGroup.AddOption("Red");

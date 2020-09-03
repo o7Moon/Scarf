@@ -55,7 +55,7 @@ namespace linerider.Tools
         private Vector2d _start;
         private bool moving = false;
         private int pointToMove = -1;
-        private float nodeSize => Settings.BezierNodeSize / game.Track.Zoom;
+        private float nodeSize => Settings.Bezier.NodeSize / game.Track.Zoom;
 
         public BezierTool()
             : base()
@@ -238,8 +238,19 @@ namespace linerider.Tools
                 trk.DisableUndo();
                 PlaceLines(trk, true);
             }
+            if(Settings.Bezier.Mode == (int)Settings.BezierMode.Direct)
+            {
+                RenderDirect();
+            }
+            else if (Settings.Bezier.Mode == (int)Settings.BezierMode.Trace)
+            {
+                RenderTrace();
+            }
+        }
+        private void RenderDirect()
+        {
             BezierCurve curve;
-            GameRenderer.GenerateBezierCurve2d(controlPoints.ToArray(), Settings.BezierResolution, out curve);
+            GameRenderer.GenerateBezierCurve2d(controlPoints.ToArray(), Settings.Bezier.Resolution, out curve);
             switch (Swatch.Selected)
             {
                 case LineType.Blue:
@@ -252,8 +263,21 @@ namespace linerider.Tools
                     GameRenderer.RenderPoints(controlPoints, curve, Settings.Lines.AccelerationLine, nodeSize);
                     break;
             }
-
-            
+        }
+        private void RenderTrace()
+        {
+            switch (Swatch.Selected)
+            {
+                case LineType.Blue:
+                    GameRenderer.RenderPoints(controlPoints, Settings.Lines.StandardLine, nodeSize);
+                    break;
+                case LineType.Scenery:
+                    GameRenderer.RenderPoints(controlPoints, Settings.Lines.SceneryLine, nodeSize);
+                    break;
+                case LineType.Red:
+                    GameRenderer.RenderPoints(controlPoints, Settings.Lines.AccelerationLine, nodeSize);
+                    break;
+            }
         }
         private void FinalizePlacement()
         {
@@ -271,7 +295,7 @@ namespace linerider.Tools
         {
             if (controlPoints.Count > 1)
             {
-                List<Vector2> curvePoints = GameRenderer.GenerateBezierCurve(controlPoints.ToArray(), Settings.BezierResolution).ToList();
+                List<Vector2> curvePoints = GameRenderer.GenerateBezierCurve(controlPoints.ToArray(), Settings.Bezier.Resolution).ToList();
                 if(!preview) game.Track.UndoManager.BeginAction();
                 for (int i = 1; i < curvePoints.Count; i++)
                 {

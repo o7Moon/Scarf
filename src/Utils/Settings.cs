@@ -35,6 +35,11 @@ namespace linerider
 {
     static class Settings
     {
+        public enum BezierMode
+        {
+            Direct = 0,
+            Trace = 1
+        }
         public static class Recording
         {
             public static bool ShowTools = false;
@@ -82,8 +87,12 @@ namespace linerider
             public static Color SceneryLine;
             public static Color StandardLine;
         }
-        public static int BezierResolution;
-        public static int BezierNodeSize;
+        public static class Bezier
+        {
+            public static int Resolution;
+            public static int NodeSize;
+            public static int Mode;
+        }
         public static int PlaybackZoomType;
         public static float PlaybackZoomValue;
         public static float Volume;
@@ -216,8 +225,9 @@ namespace linerider
             Lines.AccelerationLine = Constants.RedLineColor;
             Lines.SceneryLine = Constants.SceneryLineColor;
             Lines.StandardLine = Constants.BlueLineColor;
-            BezierResolution = 30;
-            BezierNodeSize = 15;
+            Bezier.Resolution = 30;
+            Bezier.NodeSize = 15;
+            Bezier.Mode = (int) BezierMode.Direct;
             PlaybackZoomType = 0;
             PlaybackZoomValue = 4;
             Volume = 100;
@@ -551,8 +561,9 @@ namespace linerider
             LoadColor(GetSetting(lines, nameof(Lines.AccelerationLine)), ref Lines.AccelerationLine);
             LoadColor(GetSetting(lines, nameof(Lines.SceneryLine)), ref Lines.SceneryLine);
             LoadColor(GetSetting(lines, nameof(Lines.StandardLine)), ref Lines.StandardLine);
-            LoadInt(GetSetting(lines, nameof(BezierResolution)), ref BezierResolution);
-            LoadInt(GetSetting(lines, nameof(BezierNodeSize)), ref BezierNodeSize);
+            LoadInt(GetSetting(lines, nameof(Bezier.Resolution)), ref Bezier.Resolution);
+            LoadInt(GetSetting(lines, nameof(Bezier.NodeSize)), ref Bezier.NodeSize);
+            LoadInt(GetSetting(lines, nameof(Bezier.Mode)), ref Bezier.Mode);
             LoadBool(GetSetting(lines, nameof(InvisibleRider)), ref InvisibleRider);
             if (multiScarfSegments == 0) { multiScarfSegments++; }
             if (ScarfSegments == 0) { ScarfSegments++; }
@@ -656,8 +667,9 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(Lines.AccelerationLine), SaveColor(Lines.AccelerationLine));
             config += "\r\n" + MakeSetting(nameof(Lines.SceneryLine), SaveColor(Lines.SceneryLine));
             config += "\r\n" + MakeSetting(nameof(Lines.StandardLine), SaveColor(Lines.StandardLine));
-            config += "\r\n" + MakeSetting(nameof(BezierResolution), BezierResolution.ToString(Program.Culture));
-            config += "\r\n" + MakeSetting(nameof(BezierNodeSize), BezierNodeSize.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(Bezier.Resolution), Bezier.Resolution.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(Bezier.NodeSize), Bezier.NodeSize.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(Bezier.Mode), Bezier.Mode.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(InvisibleRider), InvisibleRider.ToString(Program.Culture));
             config = SaveAddonSettings(config);
             foreach (var binds in Keybinds)
