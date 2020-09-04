@@ -236,16 +236,17 @@ namespace linerider.UI
             {
                 RedLine redCpy = null;
                 StandardLine blueCpy = null;
+                LineType origLineType = _ownerline.Type;
 
                 // If adding acceleration to a blue line
-                if (_ownerline.Type == LineType.Blue && mul != 0)
+                if (origLineType == LineType.Blue && mul != 0)
                 {
-                    _editor._renderer.RemoveLine(_ownerline);
                     redCpy = RedLine.CloneFromBlue((StandardLine)_ownerline);
+                    _editor._renderer.RedrawLine(_ownerline);
                     _editor._renderer.AddLine(redCpy);
                 }
                 // If setting acceleration to 0 of a red line
-                else if (_ownerline.Type == LineType.Red && mul == 0)
+                else if (origLineType == LineType.Red && mul == 0)
                 {
                     _editor._renderer.RemoveLine(_ownerline);
                     blueCpy = StandardLine.CloneFromRed((RedLine)_ownerline);
@@ -264,16 +265,25 @@ namespace linerider.UI
                 UpdateOwnerLine(trk, cpy);
                 foreach (var line in lines)
                 {
-                    RedLine copy;
-                    if (_ownerline.Type == LineType.Blue)
+                    StandardLine copy;
+                    // Going from red lines to blue
+                    if (origLineType == LineType.Red && _ownerline.Type == LineType.Blue)
+                    {
+                        copy = StandardLine.CloneFromRed(line);
+                    }
+                    // Going from blue lines to red
+                    else if (origLineType == LineType.Blue && _ownerline.Type == LineType.Red)
                     {
                         copy = RedLine.CloneFromBlue(line);
                     }
                     else
                     {
-                        copy = (RedLine)line.Clone();
+                        copy = (StandardLine)line.Clone();
                     }
-                    copy.Multiplier = mul;
+                    if (copy is RedLine redCopy)
+                    {
+                        redCopy.Multiplier = mul;
+                    }
                     UpdateLine(trk, line, copy);
                 }
             }
