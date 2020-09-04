@@ -85,7 +85,7 @@ namespace linerider.IO
                 var id = lines[i].ID;
                 if (id < 0)
                 {
-                    id = Math.Abs(id) + trk._idcounter + 100;
+                    id = Math.Abs(id) + trk.Lines.Max() + 100;
                 }
                 list.Add(id, lines[i]);
             }

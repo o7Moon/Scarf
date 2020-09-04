@@ -71,8 +71,6 @@ namespace linerider
         public float YGravity = 1; //default gravity
         public float XGravity = 0; //default gravity
         public double GravityWellSize = 10; //Default Gravity Well Size
-
-        internal int _idcounter;
         public Track()
         {
             GenerateBones();
