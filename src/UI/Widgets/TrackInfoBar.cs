@@ -114,7 +114,7 @@ namespace linerider.UI
             if (changes > 0)
             {
                 name += " (*)";
-                name += "\n" + (changes) + " changes";
+                name += changes == 1 ? "\n" + (changes) + " change" : "\n" + (changes) + " changes";
             }
             if (changes > Settings.autosaveChanges) {
                 name += "\nAutosave enabled!";
