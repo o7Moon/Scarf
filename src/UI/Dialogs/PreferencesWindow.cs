@@ -633,12 +633,12 @@ namespace linerider.UI
             {
                 Min = 5,
                 Max = 100,
-                Value = Settings.BezierResolution,
+                Value = Settings.Bezier.Resolution,
                 IncrementSize = 1
             };
             resolution.ValueChanged += (o, e) =>
             {
-                Settings.BezierResolution = (int) ((Spinner)o).Value;
+                Settings.Bezier.Resolution = (int) ((Spinner)o).Value;
                 Settings.Save();
             };
             GwenHelper.CreateLabeledControl(bezier, "Resolution (Lines per 100 pixels)", resolution);
@@ -647,15 +647,42 @@ namespace linerider.UI
             {
                 Min = 5,
                 Max = 100,
-                Value = Settings.BezierNodeSize,
+                Value = Settings.Bezier.NodeSize,
                 IncrementSize = 1
             };
             nodeSize.ValueChanged += (o, e) =>
             {
-                Settings.BezierNodeSize = (int)((Spinner)o).Value;
+                Settings.Bezier.NodeSize = (int)((Spinner)o).Value;
                 Settings.Save();
             };
             GwenHelper.CreateLabeledControl(bezier, "Size of the bezier curve nodes", nodeSize);
+
+            var bezierModeSelector = new RadioButtonGroup(bezier)
+            {
+                Dock = Dock.Top,
+                ShouldDrawBackground = false
+            };
+            var directType = bezierModeSelector.AddOption("Direct Visualization Mode");
+            var traceType = bezierModeSelector.AddOption("Trace Visualization Mode");
+            switch ((Settings.BezierMode) Settings.Bezier.Mode)
+            {
+                case Settings.BezierMode.Direct:
+                    directType.Select();
+                    break;
+                case Settings.BezierMode.Trace:
+                    traceType.Select();
+                    break;
+            }
+            directType.CheckChanged += (o, e) =>
+            {
+                Settings.Bezier.Mode = (int)Settings.BezierMode.Direct;
+                Settings.Save();
+            };
+            traceType.CheckChanged += (o, e) =>
+            {
+                Settings.Bezier.Mode = (int)Settings.BezierMode.Trace;
+                Settings.Save();
+            };
 
             var select = GwenHelper.CreateHeaderPanel(parent, "Select Tool -- Line Info");
             var length = GwenHelper.AddCheckbox(select, "Show Length", Settings.Editor.ShowLineLength, (o, e) =>
