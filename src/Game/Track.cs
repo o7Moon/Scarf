@@ -27,7 +27,6 @@ using linerider.Game;
 using linerider.Utils;
 using System.Diagnostics;
 using linerider.Audio;
-using System.Linq;
 
 namespace linerider
 {
@@ -71,6 +70,10 @@ namespace linerider
         public float YGravity = 1; //default gravity
         public float XGravity = 0; //default gravity
         public double GravityWellSize = 10; //Default Gravity Well Size
+
+        internal int _idcounter;
+
+        private int _sceneryidcounter = -1;
         public Track()
         {
             GenerateBones();
@@ -123,11 +126,21 @@ namespace linerider
         {
             if (line.Type == LineType.Scenery)
             {
-                line.ID = Lines.Count > 0 ? Lines.Min() - 1 : -1;
+                if (line.ID == GameLine.UninitializedID || line.ID >= 0)
+                    line.ID = _sceneryidcounter--;
+                else if (line.ID <= _sceneryidcounter)
+                {
+                    _sceneryidcounter = line.ID - 1;
+                }
             }
             else
             {
-                line.ID = Lines.Count > 0 ? Lines.Max() + 1 : 1;
+                if (line.ID == GameLine.UninitializedID)
+                    line.ID = _idcounter++;
+                else if (line.ID >= _idcounter)
+                {
+                    _idcounter = line.ID + 1;
+                }
             }
             switch (line.Type)
             {
