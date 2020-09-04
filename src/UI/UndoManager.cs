@@ -47,6 +47,12 @@ namespace linerider
                 {
                     track.AddLine(afteract.Clone());
                 }
+                // Replace line
+                else if (beforeact.Type != afteract.Type)
+                {
+                    track.RemoveLine(beforeact);
+                    track.AddLine(afteract);
+                }
                 //move action
                 else
                 {

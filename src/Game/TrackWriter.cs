@@ -212,7 +212,15 @@ namespace linerider
             _editorcells.AddLine(newline);
 
             Track.LineLookup[newline.ID] = newline;
-            _renderer.RedrawLine(newline);
+            if (oldline.Type != newline.Type)
+            {
+                _renderer.RemoveLine(oldline);
+                _renderer.AddLine(newline);
+            }
+            else
+            {
+                _renderer.RedrawLine(newline);
+            }
         }
 
         /// <summary>

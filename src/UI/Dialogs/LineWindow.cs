@@ -21,6 +21,11 @@ namespace linerider.UI
         private bool _linechangemade = false;
         private const string DefaultTitle = "Line Properties";
         private bool closing = false;
+
+        private NumberProperty multiplier;
+        private NumberProperty multilines;
+        private CheckProperty accelinverse;
+
         public LineWindow(GameCanvas parent, Editor editor, GameLine line) : base(parent, editor)
         {
             _ownerline = line;
@@ -91,7 +96,7 @@ namespace linerider.UI
         }
         private void Setup()
         {
-            SetupRedOptions(_proptree);
+            SetupLineRightClickOptions(_proptree);
             Panel bottom = new Panel(this)
             {
                 Dock = Dock.Bottom,
@@ -122,16 +127,24 @@ namespace linerider.UI
                 Close();
             };
         }
-        private void SetupRedOptions(PropertyTree tree)
+        private void SetupLineRightClickOptions(PropertyTree tree)
         {
-            if (_ownerline is RedLine red)
+            if (_ownerline is StandardLine)
             {
-                var table = tree.Add("Acceleration", 120);
-                var multiplier = new NumberProperty(table)
+                int currentMultiplier = 0;
+                bool inv = false;
+                if (_ownerline is RedLine red)
                 {
-                    Min = 1,
+                    currentMultiplier = red.Multiplier;
+                    inv = red.inv;
+                }
+
+                var table = tree.Add("Acceleration", 120);
+                multiplier = new NumberProperty(table)
+                {
+                    Min = 0,
                     Max = 255,
-                    NumberValue = red.Multiplier,
+                    NumberValue = currentMultiplier,
                     OnlyWholeNumbers = true,
                 };
                 multiplier.ValueChanged += (o, e) =>
@@ -139,7 +152,7 @@ namespace linerider.UI
                     ChangeMultiplier((int)multiplier.NumberValue);
                 };
                 table.Add("Multiplier", multiplier);
-                var multilines = new NumberProperty(table)
+                multilines = new NumberProperty(table)
                 {
                     Min = 1,
                     Max = 9999,
@@ -152,10 +165,10 @@ namespace linerider.UI
                 };
                 table.Add("Multilines", multilines);
 
-                var accelinverse = GwenHelper.AddPropertyCheckbox(
+                accelinverse = GwenHelper.AddPropertyCheckbox(
                     table,
                     "Inverse",
-                    red.inv
+                    inv
                     );
                 accelinverse.ValueChanged += (o, e) =>
                 {
@@ -178,6 +191,24 @@ namespace linerider.UI
                         UpdateOwnerLine(trk, owner);
                     }
                 };
+
+                multiplier.ValueChanged += (o, e) =>
+                {
+                    int val = (int)multiplier.NumberValue;
+                    if (val == 0)
+                    {
+                        accelinverse.Disable();
+                    }
+                    else
+                    {
+                        accelinverse.Enable();
+                    }
+                };
+
+                if ((int)multiplier.NumberValue == 0)
+                {
+                    accelinverse.Disable();
+                }
             }
         }
 
@@ -203,13 +234,56 @@ namespace linerider.UI
             var lines = GetMultiLines(false);
             using (var trk = _editor.CreateTrackWriter())
             {
-                var cpy = (RedLine)_ownerline.Clone();
-                cpy.Multiplier = mul;
+                RedLine redCpy = null;
+                StandardLine blueCpy = null;
+                LineType origLineType = _ownerline.Type;
+
+                // If adding acceleration to a blue line
+                if (origLineType == LineType.Blue && mul != 0)
+                {
+                    redCpy = RedLine.CloneFromBlue((StandardLine)_ownerline);
+                    _editor._renderer.RedrawLine(_ownerline);
+                    _editor._renderer.AddLine(redCpy);
+                }
+                // If setting acceleration to 0 of a red line
+                else if (origLineType == LineType.Red && mul == 0)
+                {
+                    _editor._renderer.RemoveLine(_ownerline);
+                    blueCpy = StandardLine.CloneFromRed((RedLine)_ownerline);
+                    _editor._renderer.AddLine(blueCpy);
+                }
+                else
+                {
+                    redCpy = (RedLine)_ownerline.Clone();
+                }
+
+                if (redCpy != null)
+                {
+                    redCpy.Multiplier = mul;
+                }
+                StandardLine cpy = redCpy != null ? redCpy : blueCpy;
                 UpdateOwnerLine(trk, cpy);
                 foreach (var line in lines)
                 {
-                    var copy = (RedLine)line.Clone();
-                    copy.Multiplier = mul;
+                    StandardLine copy;
+                    // Going from red lines to blue
+                    if (origLineType == LineType.Red && _ownerline.Type == LineType.Blue)
+                    {
+                        copy = StandardLine.CloneFromRed(line);
+                    }
+                    // Going from blue lines to red
+                    else if (origLineType == LineType.Blue && _ownerline.Type == LineType.Red)
+                    {
+                        copy = RedLine.CloneFromBlue(line);
+                    }
+                    else
+                    {
+                        copy = (StandardLine)line.Clone();
+                    }
+                    if (copy is RedLine redCopy)
+                    {
+                        redCopy.Multiplier = mul;
+                    }
                     UpdateLine(trk, line, copy);
                 }
             }
@@ -224,7 +298,7 @@ namespace linerider.UI
                 foreach (var red in lines)
                 {
                     if (
-                        red is RedLine stl &&
+                        red is StandardLine stl &&
                         red.Position == owner.Position &&
                         red.Position2 == owner.Position2 &&
                         (includeowner || red.ID != owner.ID))
@@ -256,9 +330,13 @@ namespace linerider.UI
                 {
                     for (int i = 0; i < diff; i++)
                     {
-                        var red = new RedLine(owner.Position, owner.Position2, owner.inv) { Multiplier = ((RedLine)owner).Multiplier };
-                        red.CalculateConstants();
-                        trk.AddLine(red);
+                        StandardLine newLine;
+                        if (owner is RedLine)
+                            newLine = new RedLine(owner.Position, owner.Position2, owner.inv) { Multiplier = ((RedLine)owner).Multiplier };
+                        else
+                            newLine = new StandardLine(owner.Position, owner.Position2, owner.inv);
+                        newLine.CalculateConstants();
+                        trk.AddLine(newLine);
                     }
                 }
             }
