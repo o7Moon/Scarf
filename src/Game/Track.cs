@@ -27,6 +27,7 @@ using linerider.Game;
 using linerider.Utils;
 using System.Diagnostics;
 using linerider.Audio;
+using System.Linq;
 
 namespace linerider
 {
@@ -123,12 +124,7 @@ namespace linerider
         {
             if (line.Type == LineType.Scenery)
             {
-                if (line.ID == GameLine.UninitializedID || line.ID >= 0)
-                    line.ID = _sceneryidcounter--;
-                else if (line.ID <= _sceneryidcounter)
-                {
-                    _sceneryidcounter = line.ID - 1;
-                }
+                line.ID = Lines.Count > 0 ? Lines.Min() - 1 : -1;
             }
             else
             {
