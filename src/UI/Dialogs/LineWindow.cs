@@ -142,14 +142,22 @@ namespace linerider.UI
                 var table = tree.Add("Acceleration", 120);
                 multiplier = new NumberProperty(table)
                 {
-                    Min = 0,
+                    Min = -255,
                     Max = 255,
-                    NumberValue = currentMultiplier,
+                    NumberValue = (inv ? -currentMultiplier : currentMultiplier),
                     OnlyWholeNumbers = true,
                 };
                 multiplier.ValueChanged += (o, e) =>
                 {
-                    ChangeMultiplier((int)multiplier.NumberValue);
+                    if (multiplier.NumberValue < 0)
+                    {
+                        accelinverse.IsChecked = true;
+                    }
+                    else
+                    {
+                        accelinverse.IsChecked = false;
+                    }
+                    ChangeMultiplier((int)Math.Abs(multiplier.NumberValue));
                 };
                 table.Add("Multiplier", multiplier);
                 multilines = new NumberProperty(table)
@@ -172,6 +180,15 @@ namespace linerider.UI
                     );
                 accelinverse.ValueChanged += (o, e) =>
                 {
+                    if (accelinverse.IsChecked)
+                    {
+                        if (multiplier.NumberValue > 0) { multiplier.NumberValue = -multiplier.NumberValue; }
+                    }
+                    else
+                    {
+                        multiplier.NumberValue = Math.Abs(multiplier.NumberValue);
+                    }
+
                     using (var trk = _editor.CreateTrackWriter())
                     {
                         var multi = GetMultiLines(false);
@@ -209,6 +226,30 @@ namespace linerider.UI
                 {
                     accelinverse.Disable();
                 }
+            }
+            else
+            {
+                var table = tree.Add("Scenery Options", 120);
+                var width = new NumberProperty(table)
+                {
+                    Min = 0.1,
+                    Max = 25.5,
+                    NumberValue = _ownerline.Width,
+                };
+                width.ValueChanged += (o, e) =>
+                {
+                    ChangeWidth(width.NumberValue);
+                };
+            }
+        }
+
+        private void ChangeWidth(double width)
+        {
+            using (var trk = _editor.CreateTrackWriter())
+            {
+                var cpy = _ownerline.Clone(); 
+                cpy.Width = (float)width;
+                UpdateOwnerLine(trk, cpy);
             }
         }
 
