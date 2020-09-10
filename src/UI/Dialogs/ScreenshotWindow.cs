@@ -11,33 +11,24 @@ using linerider.Drawing;
 
 namespace linerider.UI
 {
-    public class ExportWindow : DialogBase
+    public class ScreenshotWindow : DialogBase
     {
         private RichLabel _descriptionlabel;
         private Label _error;
         private MainWindow _game;
-        private const string howto = "You are about to export your track as a video file. Make sure the end of the track is marked by a flag. " +
+        private const string howto = "You are about to export a capture of this current track." +
             "It will be located in your line rider user directory (Documents/LRA).\r\n" +
-            "Please allow some minutes depending on your computer speed. " +
+            "This may take a few seconds for very high-resolution captures." +
             "The window will become unresponsive during this time.\n\n" +
-            "After recording, a console window may open to encode the video. " +
-            "Closing it will cancel the process and all progress will be lost.";
+            "If the image fails to record properly, try a smaller resolution.";
 
-        private readonly Dictionary<string, Size> resolutions = new Dictionary<string, Size>
-        {
-            { "360p", new Size(640, 360)},
-            { "480p", new Size(854, 480)},
-            { "720p", new Size(1280, 720)},
-            { "1080p", new Size(1920, 1080)},
-            { "1440p", new Size(2560, 1440)},
-            { "2160p (4k)", new Size(3840, 2160)},
-            { "4320p (8k)", new Size(7680, 4320)}
-        };
+        private bool lockRatio = false;
+        private int lockW, lockH; //The width & height when fixed aspect ratio was enabled
 
-        public ExportWindow(GameCanvas parent, Editor editor, MainWindow window) : base(parent, editor)
+        public ScreenshotWindow(GameCanvas parent, Editor editor, MainWindow window) : base(parent, editor)
         {
             _game = window;
-            Title = "Export Video";
+            Title = "Export Screenshot";
             _descriptionlabel = new RichLabel(this)
             {
                 AutoSizeToContents = true
@@ -45,7 +36,7 @@ namespace linerider.UI
             if (!SafeFrameBuffer.CanRecord)
             {
                 _descriptionlabel.AddText(
-                    "Video export is not supported on this machine.\n\nSorry.",
+                    "Screenshot export is not supported on this machine.\n\nSorry.",
                     Skin.Colors.Text.Foreground);
             }
             else
@@ -75,6 +66,7 @@ namespace linerider.UI
             var check = new CheckProperty(null);
             prop.Add(label, check);
             check.IsChecked = value;
+            
             return check;
         }
         private void Setup()
@@ -90,7 +82,6 @@ namespace linerider.UI
                 Dock = Dock.Bottom,
                 AutoSizeToContents = true,
                 ShouldDrawBackground = false,
-
             };
             PropertyTree proptree = new PropertyTree(content)
             {
@@ -100,27 +91,61 @@ namespace linerider.UI
                 Margin = new Margin(0, 0, 0, 10)
             };
             var table = proptree.Add("Output Settings", 150);
-            var qualitycb = new ComboBoxProperty(table);
 
-            foreach (var item in resolutions)
-            {
-                qualitycb.AddItem(item.Key);
-            }
-            
-            table.Add("Quality", qualitycb);
+            var lockratiocheck = AddPropertyCheckbox(
+               table,
+               "Lock Aspect Ratio",
+               lockRatio);
 
-            var smoothcheck = AddPropertyCheckbox(
-                table,
-                "Smooth Playback",
-                Settings.RecordSmooth);
-            var music = AddPropertyCheckbox(
-                table,
-                "Save Music",
-                !Settings.MuteAudio && Settings.RecordMusic);
-            if (Settings.MuteAudio)
+            lockratiocheck.ValueChanged += (o, e) =>
             {
-                music.Disable();
-            }
+                lockRatio = lockratiocheck.IsChecked;
+                if (lockRatio)
+                {
+                    lockW = Settings.ScreenshotWidth;
+                    lockH = Settings.ScreenshotHeight;
+                }
+            };
+
+            var width = new NumberProperty(null)
+            {
+                Min = 1,
+                Max = 50000,
+                NumberValue = Settings.ScreenshotWidth,
+                OnlyWholeNumbers = true
+            };
+            var height = new NumberProperty(null)
+            {
+                Min = 1,
+                Max = 50000,
+                NumberValue = Settings.ScreenshotHeight,
+                OnlyWholeNumbers = true
+            };
+
+            table.Add("Width", width);
+            table.Add("Height", height);
+
+            width.ValueChanged += (o, e) =>
+            {
+                Settings.ScreenshotWidth = (int)width.NumberValue;
+                if (lockRatio)
+                {
+                    lockRatio = false; //Setting this to false prevents the height value trying to update the width value again
+                    height.NumberValue = Settings.ScreenshotWidth * lockH / lockW;
+                    lockRatio = true;
+                }
+            };
+            height.ValueChanged += (o, e) =>
+            {
+                Settings.ScreenshotHeight = (int)height.NumberValue;
+                if (lockRatio)
+                {
+                    lockRatio = false;
+                    width.NumberValue = Settings.ScreenshotHeight * lockW / lockH;
+                    lockRatio = true;
+                }
+            };
+
             table = proptree.Add("Overlay settings", 150);
             var ppf = AddPropertyCheckbox(
                 table,
@@ -138,10 +163,6 @@ namespace linerider.UI
                table,
                "Show Hit Test",
                Settings.Editor.HitTest);
-            var colorTriggers = AddPropertyCheckbox(
-                table,
-                "Enable Color Triggers",
-                Settings.Recording.EnableColorTriggers);
             var resIndZoom = AddPropertyCheckbox(
                 table,
                 "Resolution-Independent Zoom",
@@ -162,36 +183,25 @@ namespace linerider.UI
                 Dock = Dock.Right,
                 Text = "Export"
             };
-            if (!SafeFrameBuffer.CanRecord || !CheckRecord())
-            {
-                ok.Disable();
-            }
             ok.Clicked += (o, e) =>
                 {
                     Close();
                     Settings.Recording.ShowPpf = ppf.IsChecked;
                     Settings.Recording.ShowFps = fps.IsChecked;
                     Settings.Recording.ShowTools = tools.IsChecked;
-                    Settings.Recording.EnableColorTriggers = colorTriggers.IsChecked;
                     Settings.Recording.ResIndZoom = resIndZoom.IsChecked;
                     Settings.Recording.ShowHitTest = hitTest.IsChecked;
 
-                    Settings.RecordSmooth = smoothcheck.IsChecked;
-                    if (!music.IsDisabled)
-                    {
-                        Settings.RecordMusic = music.IsChecked;
-                    }
-
-                    try
+                    /*try
                     {
                         var size = resolutions[qualitycb.SelectedItem.Text];
-                        Settings.RecordingWidth = size.Width;
-                        Settings.RecordingHeight = size.Height;
+                        Settings.ScreenshotWidth = size.Width;
+                        Settings.ScreenshotHeight = size.Height;
                     }
                     catch (KeyNotFoundException)
                     {
                         throw new Exception("Invalid resolution: " + qualitycb.SelectedItem.Text);
-                    }
+                    }*/
 
                     Settings.Save();
                     Record();
@@ -213,10 +223,12 @@ namespace linerider.UI
         }
         private void Record()
         {
-            IO.TrackRecorder.RecordTrack(
+            /*IO.TrackRecorder.RecordTrack(
                 _game,
                 Settings.RecordSmooth,
-                Settings.RecordMusic && !Settings.MuteAudio);
+                Settings.RecordMusic && !Settings.MuteAudio);*/
+
+            IO.TrackRecorder.RecordScreenshot(_game);
         }
     }
 }

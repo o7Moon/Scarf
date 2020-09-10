@@ -45,6 +45,7 @@ namespace linerider
             public static bool ShowTools = false;
             public static bool ShowFps = true;
             public static bool ShowPpf = true;
+            public static bool ShowHitTest = false;
             public static bool EnableColorTriggers = true;
             public static bool ResIndZoom = true; //Use resolution-independent zoom based on window size when recording
         }
@@ -109,6 +110,8 @@ namespace linerider
         public static bool RecordMusic;
         public static int RecordingWidth;
         public static int RecordingHeight;
+        public static int ScreenshotWidth;
+        public static int ScreenshotHeight;
         public static float ScrollSensitivity;
         public static int SettingsPane;
         public static bool MuteAudio;
@@ -244,6 +247,8 @@ namespace linerider
             RecordMusic = true;
             RecordingWidth = 1280;
             RecordingHeight = 720;
+            ScreenshotWidth = 1280;
+            ScreenshotHeight = 720;
             ScrollSensitivity = 1;
             SettingsPane = 0;
             MuteAudio = false;
@@ -508,6 +513,8 @@ namespace linerider
             LoadBool(GetSetting(lines, nameof(RecordMusic)), ref RecordMusic);
             LoadInt(GetSetting(lines, nameof(RecordingWidth)), ref RecordingWidth);
             LoadInt(GetSetting(lines, nameof(RecordingHeight)), ref RecordingHeight);
+            LoadInt(GetSetting(lines, nameof(ScreenshotWidth)), ref ScreenshotWidth);
+            LoadInt(GetSetting(lines, nameof(ScreenshotHeight)), ref ScreenshotHeight);
             LoadBool(GetSetting(lines, nameof(Editor.LifeLockNoFakie)), ref Editor.LifeLockNoFakie);
             LoadBool(GetSetting(lines, nameof(Editor.LifeLockNoOrange)), ref Editor.LifeLockNoOrange);
             LoadInt(GetSetting(lines, nameof(SettingsPane)), ref SettingsPane);
@@ -613,6 +620,8 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(RecordMusic), RecordMusic.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(RecordingWidth), RecordingWidth.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(RecordingHeight), RecordingHeight.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(ScreenshotWidth), ScreenshotWidth.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(ScreenshotHeight), ScreenshotHeight.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(ScrollSensitivity), ScrollSensitivity.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.LifeLockNoFakie), Editor.LifeLockNoFakie.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.LifeLockNoOrange), Editor.LifeLockNoOrange.ToString(Program.Culture));

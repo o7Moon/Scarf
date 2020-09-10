@@ -40,16 +40,25 @@ namespace linerider.IO
     internal static class TrackRecorder
     {
         private static byte[] _screenshotbuffer;
-        public static byte[] GrabScreenshot(MainWindow game, int frontbuffer)
+        public static byte[] GrabScreenshot(MainWindow game, int frontbuffer, bool yflip=false)
         {
             if (GraphicsContext.CurrentContext == null)
                 throw new GraphicsContextMissingException();
             var backbuffer = game.MSAABuffer.Framebuffer;
             SafeFrameBuffer.BindFramebuffer(FramebufferTarget.ReadFramebuffer, backbuffer);
             SafeFrameBuffer.BindFramebuffer(FramebufferTarget.DrawFramebuffer, frontbuffer);
-            SafeFrameBuffer.BlitFramebuffer(0, 0, game.RenderSize.Width, game.RenderSize.Height,
+            if (yflip) //Screenshots are captured upside-down for some reason but this is corrected during video encoding, so flip here for a correctly oriented screenshot
+            {
+                SafeFrameBuffer.BlitFramebuffer(0, 0, game.RenderSize.Width, game.RenderSize.Height, 
+                0, game.RenderSize.Height, game.RenderSize.Width, 0, 
+                ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
+            }
+            else
+             {
+                SafeFrameBuffer.BlitFramebuffer(0, 0, game.RenderSize.Width, game.RenderSize.Height,
                 0, 0, game.RenderSize.Width, game.RenderSize.Height,
                 ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
+             }
             SafeFrameBuffer.BindFramebuffer(FramebufferTarget.ReadFramebuffer, frontbuffer);
 
             GL.ReadPixels(0, 0, game.RenderSize.Width, game.RenderSize.Height,
@@ -72,7 +81,62 @@ namespace linerider.IO
         }
 
         public static bool Recording;
-        public static bool Recording1080p;
+        public static bool RecordingScreenshot;
+
+        public static void RecordScreenshot(MainWindow game)
+        {
+            var resolution = new Size(Settings.ScreenshotWidth, Settings.ScreenshotHeight);
+            var oldsize = game.RenderSize;
+            var oldZoomMultiplier = Settings.ZoomMultiplier;
+            var oldHitTest = Settings.Editor.HitTest;
+
+            Settings.ZoomMultiplier *= game.ClientSize.Width > game.ClientSize.Height * 16 / 9 ? (float)Settings.ScreenshotWidth / (float)game.ClientSize.Width : (float)Settings.ScreenshotHeight / (float)game.ClientSize.Height;
+            Settings.Editor.HitTest = Settings.Recording.ShowHitTest;
+
+            using (var trk = game.Track.CreateTrackReader())
+            {
+                RecordingScreenshot = true;
+
+                game.Canvas.SetCanvasSize(game.RenderSize.Width, game.RenderSize.Height);
+                game.Canvas.Layout();
+
+                var frontbuffer = SafeFrameBuffer.GenFramebuffer();
+                SafeFrameBuffer.BindFramebuffer(FramebufferTarget.Framebuffer, frontbuffer);
+
+                var rbo2 = SafeFrameBuffer.GenRenderbuffer();
+                SafeFrameBuffer.BindRenderbuffer(RenderbufferTarget.Renderbuffer, rbo2);
+                SafeFrameBuffer.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Rgb8, resolution.Width, resolution.Height);
+                SafeFrameBuffer.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, RenderbufferTarget.Renderbuffer, rbo2);
+
+                SafeFrameBuffer.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
+
+                _screenshotbuffer = new byte[game.RenderSize.Width * game.RenderSize.Height * 3];// 3 bytes per pixel
+                game.Title = Program.WindowTitle + " [Capturing Screenshot]";
+                game.ProcessEvents();
+                var filename = Program.UserDirectory + game.Track.Name + ".png";
+                var recmodesave = Settings.Local.RecordingMode;
+                Settings.Local.RecordingMode = true;
+                //game.Track.StartIgnoreFlag(); TODO remove this line?
+                game.Render();
+                var screenshotframe = GrabScreenshot(game, frontbuffer, true);
+                SaveScreenshot(game.RenderSize.Width, game.RenderSize.Height, screenshotframe, filename);
+
+                SafeFrameBuffer.BindFramebuffer(FramebufferTarget.Framebuffer, 0); //Delete the FBOs
+                SafeFrameBuffer.DeleteFramebuffer(frontbuffer);
+                SafeFrameBuffer.DeleteRenderbuffers(1, new[] { rbo2 });
+
+                RecordingScreenshot = false;
+
+                game.RenderSize = oldsize;
+                Settings.ZoomMultiplier = oldZoomMultiplier;
+                game.Title = Program.WindowTitle;
+                Settings.Local.RecordingMode = recmodesave;
+                Settings.Editor.HitTest = oldHitTest;
+
+                game.Canvas.SetSize(game.RenderSize.Width, game.RenderSize.Height);
+                _screenshotbuffer = null;
+            }
+        }
 
         public static void RecordTrack(MainWindow game, bool smooth, bool music)
         {
@@ -81,9 +145,11 @@ namespace linerider.IO
             var resolution = new Size(Settings.RecordingWidth, Settings.RecordingHeight);
             var oldsize = game.RenderSize;
             var oldZoomMultiplier = Settings.ZoomMultiplier;
+            var oldHitTest = Settings.Editor.HitTest;
             var invalid = false;
 
             Settings.ZoomMultiplier *= game.ClientSize.Width > game.ClientSize.Height * 16 / 9 ? (float)Settings.RecordingWidth / (float)game.ClientSize.Width : (float)Settings.RecordingHeight / (float)game.ClientSize.Height;
+            Settings.Editor.HitTest = Settings.Recording.ShowHitTest;
 
             using (var trk = game.Track.CreateTrackReader())
             {
@@ -341,6 +407,7 @@ namespace linerider.IO
                 game.RenderSize = oldsize;
                 Recording = false;
                 Settings.ZoomMultiplier = oldZoomMultiplier;
+                Settings.Editor.HitTest = oldHitTest;
 
                 game.Canvas.SetSize(game.RenderSize.Width, game.RenderSize.Height);
                 _screenshotbuffer = null;

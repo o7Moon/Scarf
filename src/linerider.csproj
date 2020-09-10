@@ -192,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UI\Dialogs\ChangelogWindow.cs" />
+    <Compile Include="UI\Dialogs\ScreenshotWindow.cs" />
     <Compile Include="UI\Dialogs\GeneratorWindow.cs" />
     <Compile Include="UI\Dialogs\TriggerWindow.cs" />
     <Compile Include="UI\PlatformImpl.cs" />
