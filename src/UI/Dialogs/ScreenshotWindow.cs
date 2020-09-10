@@ -192,17 +192,6 @@ namespace linerider.UI
                     Settings.Recording.ResIndZoom = resIndZoom.IsChecked;
                     Settings.Recording.ShowHitTest = hitTest.IsChecked;
 
-                    /*try
-                    {
-                        var size = resolutions[qualitycb.SelectedItem.Text];
-                        Settings.ScreenshotWidth = size.Width;
-                        Settings.ScreenshotHeight = size.Height;
-                    }
-                    catch (KeyNotFoundException)
-                    {
-                        throw new Exception("Invalid resolution: " + qualitycb.SelectedItem.Text);
-                    }*/
-
                     Settings.Save();
                     Record();
                 };
@@ -223,11 +212,6 @@ namespace linerider.UI
         }
         private void Record()
         {
-            /*IO.TrackRecorder.RecordTrack(
-                _game,
-                Settings.RecordSmooth,
-                Settings.RecordMusic && !Settings.MuteAudio);*/
-
             IO.TrackRecorder.RecordScreenshot(_game);
         }
     }

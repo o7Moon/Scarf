@@ -125,7 +125,6 @@ namespace linerider.IO
 
                 var recmodesave = Settings.Local.RecordingMode;
                 Settings.Local.RecordingMode = true;
-                //game.Track.StartIgnoreFlag(); TODO remove this line?
                 game.Render();
                 var screenshotframe = GrabScreenshot(game, frontbuffer, true);
                 SaveScreenshot(game.RenderSize.Width, game.RenderSize.Height, screenshotframe, filename);
