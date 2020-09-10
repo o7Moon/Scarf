@@ -35,6 +35,8 @@ using linerider.IO.ffmpeg;
 using Key = OpenTK.Input.Key;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 using System.Runtime.InteropServices;
+using linerider.Utils;
+
 namespace linerider.IO
 {
     internal static class TrackRecorder
@@ -113,7 +115,14 @@ namespace linerider.IO
                 _screenshotbuffer = new byte[game.RenderSize.Width * game.RenderSize.Height * 3];// 3 bytes per pixel
                 game.Title = Program.WindowTitle + " [Capturing Screenshot]";
                 game.ProcessEvents();
-                var filename = Program.UserDirectory + game.Track.Name + ".png";
+                
+                string filename;
+
+                if(game.Track.Name == Constants.DefaultTrackName)
+                    filename = Program.UserDirectory + "Untitled Track" + ".png";
+                else
+                    filename = Program.UserDirectory + game.Track.Name + ".png";
+
                 var recmodesave = Settings.Local.RecordingMode;
                 Settings.Local.RecordingMode = true;
                 //game.Track.StartIgnoreFlag(); TODO remove this line?
