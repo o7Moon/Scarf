@@ -35,6 +35,8 @@ namespace linerider
     {
         public SimulationGrid Grid = new SimulationGrid();
         public LinkedList<int> Lines = new LinkedList<int>();
+        private int LinesMin = 0;
+        private int LinesMax = 0;
         public Dictionary<int, GameLine> LineLookup = new Dictionary<int, GameLine>();
         public List<GameTrigger> Triggers = new List<GameTrigger>();
 
@@ -124,12 +126,22 @@ namespace linerider
         {
             if (line.Type == LineType.Scenery)
             {
-                line.ID = Lines.Count > 0 ? Lines.Min() - 1 : -1;
+                line.ID = Lines.Count > 0 ? LinesMin - 1 : -1;
+                if (line.ID < LinesMin)
+                {
+                    LinesMin = line.ID;
+                }
             }
             else
             {
                 if (line.ID == GameLine.UninitializedID)
-                    line.ID = Lines.Count > 0 ? Lines.Max() + 1 : 0;
+                {
+                    line.ID = Lines.Count > 0 ? LinesMax + 1 : 0;
+                }
+                if (line.ID > LinesMax)
+                {
+                    LinesMax = line.ID;
+                }
             }
             switch (line.Type)
             {
@@ -171,6 +183,14 @@ namespace linerider
             }
             LineLookup.Remove(line.ID);
             Lines.Remove(line.ID);
+            if (line.ID == LinesMax)
+            {
+                LinesMax = line.ID - 1;
+            }
+            if (line.ID == LinesMin)
+            {
+                LinesMin = line.ID + 1;
+            }
 
             if (line is StandardLine stl)
                 RemoveLineFromGrid(stl);
