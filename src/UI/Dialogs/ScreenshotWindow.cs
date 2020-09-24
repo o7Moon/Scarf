@@ -165,7 +165,7 @@ namespace linerider.UI
                Settings.Editor.HitTest);
             var resIndZoom = AddPropertyCheckbox(
                 table,
-                "Resolution-Independent Zoom",
+                "Res-Independent Zoom",
                 Settings.Recording.ResIndZoom);
             proptree.ExpandAll();
             Button Cancel = new Button(bottomrow)
