@@ -154,6 +154,7 @@ namespace linerider.Tools
         {
             switch (k)
             {
+                case OpenTK.Input.Key.Space:
                 case OpenTK.Input.Key.KeypadEnter:
                 case OpenTK.Input.Key.Enter:
                     done = true;
