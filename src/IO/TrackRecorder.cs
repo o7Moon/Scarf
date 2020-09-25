@@ -92,8 +92,10 @@ namespace linerider.IO
             var oldZoomMultiplier = Settings.ZoomMultiplier;
             var oldHitTest = Settings.Editor.HitTest;
 
-            Settings.ZoomMultiplier *= game.ClientSize.Width > game.ClientSize.Height * 16 / 9 ? (float)Settings.ScreenshotWidth / (float)game.ClientSize.Width : (float)Settings.ScreenshotHeight / (float)game.ClientSize.Height;
+            if(Settings.Recording.ResIndZoom)
+                Settings.ZoomMultiplier *= game.ClientSize.Width > game.ClientSize.Height * 16 / 9 ? (float)Settings.ScreenshotWidth / (float)game.ClientSize.Width : (float)Settings.ScreenshotHeight / (float)game.ClientSize.Height;
             Settings.Editor.HitTest = Settings.Recording.ShowHitTest;
+            game.Canvas.Scale = Settings.ZoomMultiplier / oldZoomMultiplier; //Divide just in case anyone modifies the zoom multiplier to not be 1
 
             using (var trk = game.Track.CreateTrackReader())
             {
@@ -142,6 +144,7 @@ namespace linerider.IO
                 Settings.Editor.HitTest = oldHitTest;
 
                 game.Canvas.SetSize(game.RenderSize.Width, game.RenderSize.Height);
+                game.Canvas.Scale = 1.0f;
                 _screenshotbuffer = null;
             }
         }
@@ -156,8 +159,10 @@ namespace linerider.IO
             var oldHitTest = Settings.Editor.HitTest;
             var invalid = false;
 
-            Settings.ZoomMultiplier *= game.ClientSize.Width > game.ClientSize.Height * 16 / 9 ? (float)Settings.RecordingWidth / (float)game.ClientSize.Width : (float)Settings.RecordingHeight / (float)game.ClientSize.Height;
+            if(Settings.Recording.ResIndZoom)
+                Settings.ZoomMultiplier *= game.ClientSize.Width > game.ClientSize.Height * 16 / 9 ? (float)Settings.RecordingWidth / (float)game.ClientSize.Width : (float)Settings.RecordingHeight / (float)game.ClientSize.Height;
             Settings.Editor.HitTest = Settings.Recording.ShowHitTest;
+            game.Canvas.Scale = Settings.ZoomMultiplier /oldZoomMultiplier; //Divide just in case anyone modifies the zoom multiplier to not be 1
 
             using (var trk = game.Track.CreateTrackReader())
             {
@@ -418,6 +423,7 @@ namespace linerider.IO
                 Settings.Editor.HitTest = oldHitTest;
 
                 game.Canvas.SetSize(game.RenderSize.Width, game.RenderSize.Height);
+                game.Canvas.Scale = 1.0f;
                 _screenshotbuffer = null;
             }
         }
