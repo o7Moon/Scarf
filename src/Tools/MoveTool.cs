@@ -32,6 +32,13 @@ namespace linerider.Tools
 {
     public class MoveTool : Tool
     {
+        public override Swatch Swatch
+        {
+            get
+            {
+                return SharedSwatches.EraserAndSelectToolSwatch;
+            }
+        }
         public override bool ShowSwatch
         {
             get
