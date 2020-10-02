@@ -34,6 +34,13 @@ namespace linerider.Tools
                 return DrawingScenery;
             }
         }
+        public override Swatch Swatch
+        {
+            get
+            {
+                return SharedSwatches.DrawingToolsSwatch;
+            }
+        }
         public override bool ShowSwatch
         {
             get

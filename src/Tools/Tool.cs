@@ -81,6 +81,7 @@ namespace linerider.Tools
         /// Leaving this false can be very good for performance.
         /// </summary>
         public virtual bool RequestsMousePrecision { get { return false; } }
+
         public Tool()
         {
         }

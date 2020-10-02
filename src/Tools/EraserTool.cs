@@ -24,12 +24,11 @@ namespace linerider.Tools
 {
     public class EraserTool : Tool
     {
-        private Swatch _swatch = new Swatch();
         public override Swatch Swatch
         {
             get
             {
-                return _swatch;
+                return SharedSwatches.EraserAndSelectToolSwatch;
             }
         }
         public override bool RequestsMousePrecision
@@ -57,7 +56,7 @@ namespace linerider.Tools
 
         public EraserTool() : base()
         {
-            _swatch.Selected = LineType.All;
+            Swatch.Selected = LineType.All;
         }
 
         public override void OnMouseDown(Vector2d pos)

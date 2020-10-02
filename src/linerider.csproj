@@ -159,6 +159,7 @@
     <Compile Include="Tools\SelectTool.cs" />
     <Compile Include="Tools\LineSelection.cs" />
     <Compile Include="Tools\PencilTool.cs" />
+    <Compile Include="Tools\SharedSwatches.cs" />
     <Compile Include="Tools\Tool.cs" />
     <Compile Include="Tools\Swatch.cs" />
   </ItemGroup>
