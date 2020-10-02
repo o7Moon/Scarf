@@ -232,6 +232,11 @@ namespace linerider.UI
                     owner.inv = accelinverse.IsChecked;
                     UpdateOwnerLine(trk, owner);
                 }
+
+                var vec = _ownerline.GetVector();
+                var angle = Angle.FromVector(vec);
+                angle.Degrees += 90;
+                angleProp.NumberValue = angle.Degrees;
             };
 
             multiplier.ValueChanged += (o, e) =>
@@ -252,13 +257,13 @@ namespace linerider.UI
                 accelinverse.Disable();
             }
 
-            table = tree.Add("Anti-Gravity Wells", 120);
-            leftAGW = GwenHelper.AddPropertyCheckbox(table, "Left AGW", leftEXT);
+            table = tree.Add("Line Extensions (AGWs)", 120);
+            leftAGW = GwenHelper.AddPropertyCheckbox(table, "Starting Extension", leftEXT);
             leftAGW.ValueChanged += (o, e) =>
             {
                 UpdateAGWs(leftAGW.IsChecked, rightAGW.IsChecked);
             };
-            rightAGW = GwenHelper.AddPropertyCheckbox(table, "Right AGW", rightEXT);
+            rightAGW = GwenHelper.AddPropertyCheckbox(table, "Ending Extension", rightEXT);
             rightAGW.ValueChanged += (o, e) =>
             {
                 UpdateAGWs(leftAGW.IsChecked, rightAGW.IsChecked);
@@ -304,8 +309,8 @@ namespace linerider.UI
 
             angleProp = new NumberProperty(lineProp)
             {
-                Min = 0,
-                Max = 360,
+                Min = double.MinValue,
+                Max = double.MaxValue,
                 NumberValue = angle.Degrees,
             };
             angleProp.ValueChanged += (o, e) =>
@@ -350,17 +355,27 @@ namespace linerider.UI
             using (var trk = _editor.CreateTrackWriter())
             {
                 var cpy = _ownerline.Clone();
-                var correctLength = cpy.GetVector().Length;
-                
-                var newPos = Utility.Rotate(cpy.Position2, cpy.Position, (Angle.FromDegrees(numberValue - 90) - Angle.FromVector(cpy.GetVector())));
-                cpy.Position2 = newPos;
+                bool lineIsInverted = cpy.Start == cpy.Position2;
+                var angle = Angle.FromDegrees(numberValue - 90);
+
+                var posEstimate = Utility.Rotate(cpy.End, cpy.Start, angle - Angle.FromVector(cpy.GetVector()));
+                var newPos = Utility.AngleLock(cpy.Start, posEstimate, angle);
+                if (lineIsInverted) //Inverted line
+                {
+                    cpy.Position = newPos;
+                }
+                else
+                {
+                    cpy.Position2 = newPos;
+                }
 
                 UpdateOwnerLine(trk, cpy);
                 
                 foreach (var line in multilines)
                 {
                     var copy = line.Clone();
-                    copy.Position2 = newPos;
+                    copy.Position = cpy.Position;
+                    copy.Position2 = cpy.Position2;
                     UpdateLine(trk, line, copy);
                 }
             }
