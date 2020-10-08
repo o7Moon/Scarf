@@ -18,6 +18,13 @@ namespace linerider.Tools
     //ideally, the node/square shuold be rotated
     public class SelectTool : Tool
     {
+        public override Swatch Swatch
+        {
+            get
+            {
+                return SharedSwatches.EraserAndSelectToolSwatch;
+            }
+        }
         public override bool ShowSwatch
         {
             get

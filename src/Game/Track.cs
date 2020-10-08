@@ -27,6 +27,7 @@ using linerider.Game;
 using linerider.Utils;
 using System.Diagnostics;
 using linerider.Audio;
+using System.Linq;
 
 namespace linerider
 {
@@ -34,6 +35,8 @@ namespace linerider
     {
         public SimulationGrid Grid = new SimulationGrid();
         public LinkedList<int> Lines = new LinkedList<int>();
+        private int LinesMin = 0;
+        private int LinesMax = 0;
         public Dictionary<int, GameLine> LineLookup = new Dictionary<int, GameLine>();
         public List<GameTrigger> Triggers = new List<GameTrigger>();
 
@@ -71,9 +74,6 @@ namespace linerider
         public float XGravity = 0; //default gravity
         public double GravityWellSize = 10; //Default Gravity Well Size
 
-        internal int _idcounter;
-
-        private int _sceneryidcounter = -1;
         public Track()
         {
             GenerateBones();
@@ -126,20 +126,21 @@ namespace linerider
         {
             if (line.Type == LineType.Scenery)
             {
-                if (line.ID == GameLine.UninitializedID || line.ID >= 0)
-                    line.ID = _sceneryidcounter--;
-                else if (line.ID <= _sceneryidcounter)
+                line.ID = Lines.Count > 0 ? LinesMin - 1 : -1;
+                if (line.ID < LinesMin)
                 {
-                    _sceneryidcounter = line.ID - 1;
+                    LinesMin = line.ID;
                 }
             }
             else
             {
                 if (line.ID == GameLine.UninitializedID)
-                    line.ID = _idcounter++;
-                else if (line.ID >= _idcounter)
                 {
-                    _idcounter = line.ID + 1;
+                    line.ID = Lines.Count > 0 ? LinesMax + 1 : 0;
+                }
+                if (line.ID > LinesMax)
+                {
+                    LinesMax = line.ID;
                 }
             }
             switch (line.Type)
@@ -182,6 +183,14 @@ namespace linerider
             }
             LineLookup.Remove(line.ID);
             Lines.Remove(line.ID);
+            if (line.ID == LinesMax)
+            {
+                LinesMax = line.ID - 1;
+            }
+            if (line.ID == LinesMin)
+            {
+                LinesMin = line.ID + 1;
+            }
 
             if (line is StandardLine stl)
                 RemoveLineFromGrid(stl);

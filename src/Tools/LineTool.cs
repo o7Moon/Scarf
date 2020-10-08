@@ -31,7 +31,13 @@ namespace linerider.Tools
         {
             get { return game.Cursors["line"]; }
         }
-        
+        public override Swatch Swatch
+        {
+            get
+            {
+                return SharedSwatches.DrawingToolsSwatch;
+            }
+        }
         public override bool ShowSwatch
         {
             get

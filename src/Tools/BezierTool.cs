@@ -37,7 +37,13 @@ namespace linerider.Tools
         {
             get { return game.Cursors["line"]; }
         }
-
+        public override Swatch Swatch
+        {
+            get
+            {
+                return SharedSwatches.DrawingToolsSwatch;
+            }
+        }
         public override bool ShowSwatch
         {
             get
@@ -119,7 +125,7 @@ namespace linerider.Tools
             {
                 moving = false;
                 pointToMove = -1;
-                if (controlPoints.Count < 69)
+                if (controlPoints.Count < 20)
                 {
                     controlPoints.Add(_end);
                 }
@@ -154,6 +160,7 @@ namespace linerider.Tools
         {
             switch (k)
             {
+                case OpenTK.Input.Key.Space:
                 case OpenTK.Input.Key.KeypadEnter:
                 case OpenTK.Input.Key.Enter:
                     done = true;

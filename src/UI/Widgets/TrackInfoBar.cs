@@ -20,6 +20,7 @@ using System.Diagnostics;
 using System.Drawing;
 using Gwen;
 using Gwen.Controls;
+using linerider.IO;
 using linerider.Tools;
 
 namespace linerider.UI
@@ -78,6 +79,10 @@ namespace linerider.UI
                 Margin = new Margin(0, 5, 0, 0),
                 TextRequest = (o, current) =>
                 {
+                    if (!_editor.Paused || TrackRecorder.Recording)
+                    {
+                        return "";
+                    }
                     var u = (int)_selectioncount.UserData;
                     if (CurrentTools.SelectedTool == CurrentTools.SelectTool)
                     {

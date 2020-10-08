@@ -93,5 +93,30 @@ namespace linerider.Game
                 _multiplier = _multiplier
             };
         }
+        public static RedLine CloneFromBlue(StandardLine standardLine)
+        {
+            LineTrigger trigger = null;
+            if (standardLine.Trigger != null)
+            {
+                trigger = new LineTrigger()
+                {
+                    ZoomTrigger = standardLine.Trigger.ZoomTrigger,
+                    ZoomFrames = standardLine.Trigger.ZoomFrames,
+                    ZoomTarget = standardLine.Trigger.ZoomTarget
+                };
+            }
+            RedLine newLine = new RedLine()
+            {
+                ID = standardLine.ID,
+                Extension = standardLine.Extension,
+                inv = standardLine.inv,
+                Position = standardLine.Position,
+                Position2 = standardLine.Position2,
+                Trigger = trigger,
+                _multiplier = 1
+            };
+            newLine.CalculateConstants();
+            return newLine;
+        }
     }
 }
