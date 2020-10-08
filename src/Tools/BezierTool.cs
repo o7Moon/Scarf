@@ -125,7 +125,7 @@ namespace linerider.Tools
             {
                 moving = false;
                 pointToMove = -1;
-                if (controlPoints.Count < 69)
+                if (controlPoints.Count < 20)
                 {
                     controlPoints.Add(_end);
                 }
