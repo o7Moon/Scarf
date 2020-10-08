@@ -72,7 +72,6 @@ namespace linerider.IO
         }
 
         public static bool Recording;
-        public static bool Recording1080p;
 
         public static void RecordTrack(MainWindow game, bool smooth, bool music)
         {
