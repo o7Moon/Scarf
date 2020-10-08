@@ -77,6 +77,10 @@ namespace linerider
                 {
                     return new Size(Settings.RecordingWidth, Settings.RecordingHeight);
                 }
+                else if (TrackRecorder.RecordingScreenshot)
+                {
+                    return new Size(Settings.ScreenshotWidth, Settings.ScreenshotHeight);
+                }
                 return ClientSize;
             }
             set

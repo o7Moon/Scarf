@@ -74,6 +74,13 @@ namespace linerider
                 Invalidate();
             }
         }
+        public float BaseZoom //Zoom without the multiplier
+        {
+            get
+            {
+                return _zoom;
+            }
+        }
         public Song Song
         {
             get
