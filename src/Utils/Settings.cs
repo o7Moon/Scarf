@@ -71,6 +71,7 @@ namespace linerider
             public static bool SnapMoveLine;
             public static bool SnapToGrid;
             public static bool ForceXySnap;
+            public static float XySnapDegrees;
             public static bool MomentumVectors;
             public static bool RenderGravityWells;
             public static bool DrawContactPoints;
@@ -215,6 +216,7 @@ namespace linerider
             Editor.SnapMoveLine = true;
             Editor.SnapToGrid = false;
             Editor.ForceXySnap = false;
+            Editor.XySnapDegrees = 15;
             Editor.MomentumVectors = false;
             Editor.RenderGravityWells = false;
             Editor.DrawContactPoints = false;
@@ -524,6 +526,7 @@ namespace linerider
             LoadBool(GetSetting(lines, nameof(Editor.SnapMoveLine)), ref Editor.SnapMoveLine);
             LoadBool(GetSetting(lines, nameof(Editor.SnapToGrid)), ref Editor.SnapToGrid);
             LoadBool(GetSetting(lines, nameof(Editor.ForceXySnap)), ref Editor.ForceXySnap);
+            LoadFloat(GetSetting(lines, nameof(Editor.XySnapDegrees)), ref Editor.XySnapDegrees);
             LoadBool(GetSetting(lines, nameof(Editor.MomentumVectors)), ref Editor.MomentumVectors);
             LoadBool(GetSetting(lines, nameof(Editor.RenderGravityWells)), ref Editor.RenderGravityWells);
             LoadBool(GetSetting(lines, nameof(Editor.DrawContactPoints)), ref Editor.DrawContactPoints);
@@ -632,6 +635,7 @@ namespace linerider
             config += "\r\n" + MakeSetting(nameof(Editor.SnapMoveLine), Editor.SnapMoveLine.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.SnapToGrid), Editor.SnapToGrid.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.ForceXySnap), Editor.ForceXySnap.ToString(Program.Culture));
+            config += "\r\n" + MakeSetting(nameof(Editor.XySnapDegrees), Editor.XySnapDegrees.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.MomentumVectors), Editor.MomentumVectors.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.RenderGravityWells), Editor.RenderGravityWells.ToString(Program.Culture));
             config += "\r\n" + MakeSetting(nameof(Editor.DrawContactPoints), Editor.DrawContactPoints.ToString(Program.Culture));

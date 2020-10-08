@@ -749,7 +749,7 @@ namespace linerider.Tools
                     var newangle = Angle.FromVector(pos - center);
                     var anglediff = newangle - angle;
                     if (game.ShouldXySnap())
-                        anglediff = new Angle(Math.Round(anglediff.Degrees / 15) * 15);
+                        anglediff = new Angle(Math.Round(anglediff.Degrees / Settings.Editor.XySnapDegrees) * Settings.Editor.XySnapDegrees);
                     foreach (var selected in _selection)
                     {
                         Vector2d p1 = Utility.Rotate(selected.clone.Position, center, anglediff);

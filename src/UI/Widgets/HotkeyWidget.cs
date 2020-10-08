@@ -86,7 +86,7 @@ namespace linerider.UI
 
 
             var tool = _kbtree.Add("Tool", 150);
-            AddBinding(tool, "15° Line Snap", Hotkey.ToolXYSnap);
+            AddBinding(tool, "Line Angle Snap", Hotkey.ToolXYSnap);
             AddBinding(tool, "Toggle Line Snap", Hotkey.ToolToggleSnap);
             AddBinding(tool, "Flip Line", Hotkey.LineToolFlipLine,
                 "Hold before drawing a new line");

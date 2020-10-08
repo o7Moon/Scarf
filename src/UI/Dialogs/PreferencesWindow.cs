@@ -721,7 +721,21 @@ namespace linerider.UI
                 Settings.Editor.ForceXySnap = ((Checkbox)o).IsChecked;
                 Settings.Save();
             });
-            forcesnap.Tooltip = "Forces all lines drawn to\nsnap to a 45 degree angle";
+            var snapAngle = new Spinner(panelSnap)
+            {
+                Min = 0,
+                Max = 180,
+                Value = Settings.Editor.XySnapDegrees,
+                IncrementSize = 1
+            };
+            snapAngle.ValueChanged += (o, e) =>
+            {
+                Settings.Editor.XySnapDegrees = (float)Math.Round((float)((Spinner)o).Value, 2, MidpointRounding.AwayFromZero);
+                ((Spinner)o).Value = Settings.Editor.XySnapDegrees;  // Re-display the rounded value
+                Settings.Save();
+            };
+            GwenHelper.CreateLabeledControl(panelSnap, "X/Y snap degrees", snapAngle);
+            forcesnap.Tooltip = "Forces all lines drawn to\nsnap to multiples of a chosen angle";
             movelinesnap.Tooltip = "Snap to lines when using the\nselect tool to move a single line";
         }
         private void PopulateOther(ControlBase parent)

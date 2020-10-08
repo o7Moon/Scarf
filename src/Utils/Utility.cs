@@ -32,10 +32,10 @@ namespace linerider
 
         public static Vector2d SnapToDegrees(Vector2d start, Vector2d end)
         {
-            var degrees = (start - end).Length > 1 ? 15 : 45;
+            var degrees = (start - end).Length > 1 ? Settings.Editor.XySnapDegrees : 45;
             return SnapToDegrees(start, end, degrees);
         }
-        public static Vector2d SnapToDegrees(Vector2d start, Vector2d end, double degrees = 15)
+        public static Vector2d SnapToDegrees(Vector2d start, Vector2d end, double degrees)
         {
             var angle = Math.Round(Angle.FromLine(start, end).Degrees / degrees) * degrees;
             return AngleLock(start, end, Angle.FromDegrees(angle));
