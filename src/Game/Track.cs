@@ -35,7 +35,7 @@ namespace linerider
     {
         public SimulationGrid Grid = new SimulationGrid();
         public LinkedList<int> Lines = new LinkedList<int>();
-        private int LinesMin = 0;
+        private int LinesMin = -1;
         private int LinesMax = 0;
         public Dictionary<int, GameLine> LineLookup = new Dictionary<int, GameLine>();
         public List<GameTrigger> Triggers = new List<GameTrigger>();
