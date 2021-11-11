@@ -206,6 +206,11 @@ namespace linerider
             ShowDialog(new ChangelogWindow(this, game.Track));
         }
 
+        public void ShowPluginsDialog()
+        {
+            ShowDialog(new PluginsDialog(this, game.Track));
+        }
+
         public static bool ShowLoadCrashBackup(Canvas canvas, string name)
         {
             bool ret = false;
@@ -229,6 +234,7 @@ namespace linerider
 
         public void ShowOutOfDate()
         {
+            return;
             if (Program.NewVersion == null)
                 return;
             var window = MessageBox.Show(this, "Would you like to download the latest version?", "Update Available! v" + Program.NewVersion, MessageBox.ButtonType.OkCancel);

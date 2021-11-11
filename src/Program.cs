@@ -16,6 +16,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using linerider.Plugins;
 using OpenTK;
 using System;
 using System.Diagnostics;
@@ -36,10 +37,10 @@ namespace linerider
 #endif
         public static string BinariesFolder = "bin";
         public readonly static CultureInfo Culture = new CultureInfo("en-US");
-        public static string Version = "8/24/20 - Build 1";
+        public static string Version = "11/10/21 - Build 1";
         public static string TestVersion = "";
         public static string NewVersion = null;
-        public static readonly string WindowTitle = "Line Rider Advanced: Community Edition " + Version + TestVersion;
+        public static readonly string WindowTitle = "Scarf " + Version + TestVersion;
         public static Random Random;
         private static bool _crashed;
         private static MainWindow glGame;
@@ -157,9 +158,13 @@ namespace linerider
                 Directory.CreateDirectory(UserDirectory + "Riders");
             if (!Directory.Exists(UserDirectory + "Scarves"))
                 Directory.CreateDirectory(UserDirectory + "Scarves");
+            if (!Directory.Exists(UserDirectory + "Plugins"))
+                Directory.CreateDirectory(UserDirectory + "Plugins");
 
             Random = new Random();
             GameResources.Init();
+
+            PluginManager.Init();
 
             using (Toolkit.Init(new ToolkitOptions { EnableHighResolution = true, Backend = PlatformBackend.Default }))
             {

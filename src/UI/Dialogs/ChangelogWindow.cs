@@ -19,6 +19,10 @@ namespace linerider.UI
             SetSize(1100, 380);
 
             var changelogText = "" +
+                    "11/10/21\n"+
+                    "Scarf - Initial Build\n"+
+                    "- fixed a crash on linux when opening the preferences window\n"+
+                    "================================================================================================================================\n" +
                     "6/15/20 - Build 1\n" +
                     "* Crashes due to invalid settings files are now resolved (again because I did it wrong last update).\n" +
                     "* Default save format settings are now available for crash backups `Settings -> Other`.\n" +

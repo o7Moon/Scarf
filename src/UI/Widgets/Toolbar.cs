@@ -170,6 +170,7 @@ namespace linerider.UI
                           };
                     }
                 };
+                menu.AddItem("Plugins").Clicked += (o2, e2) => _canvas.ShowPluginsDialog();
                 menu.AddItem("Preferences").Clicked += (o2, e2) => _canvas.ShowPreferencesDialog();
                 menu.AddItem("Track Properties").Clicked += (o2, e2) => _canvas.ShowTrackPropertiesDialog();
                 menu.AddItem("Triggers").Clicked += (o2, e2) => _canvas.ShowTriggerWindow();

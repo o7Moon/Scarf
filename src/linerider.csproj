@@ -67,6 +67,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Plugins\Plugin.cs" />
+    <Compile Include="Plugins\PluginManager.cs" />
+    <Compile Include="UI\Dialogs\PluginsDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Audio\AudioDevice.cs" />
@@ -275,6 +278,30 @@
     <Reference Include="Utf8Json">
       <HintPath>Utf8Json.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb">
+      <HintPath>packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb">
+      <HintPath>packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks">
+      <HintPath>packages\Mono.Cecil.0.11.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod.Utils">
+      <HintPath>packages\MonoMod.Utils.21.11.1.1\lib\net452\MonoMod.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod">
+      <HintPath>packages\MonoMod.21.11.1.1\lib\net452\MonoMod.exe</HintPath>
+    </Reference>
+    <Reference Include="MonoMod.RuntimeDetour">
+      <HintPath>packages\MonoMod.RuntimeDetour.21.11.1.1\lib\net452\MonoMod.RuntimeDetour.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod.RuntimeDetour.HookGen">
+      <HintPath>packages\MonoMod.RuntimeDetour.HookGen.21.11.1.1\lib\net452\MonoMod.RuntimeDetour.HookGen.exe</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\beep.wav" />
@@ -376,6 +403,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\icons\beziertool.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Plugins\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
