@@ -1,3 +1,19 @@
+# Scarf
+Once ran, Scarf will create a plugins folder that you can place .dll plugins in.
+
+# How to develop plugins
+1. Create a class library in a C# IDE or with `dotnet-cli` targetting .net 4.6 or `net46`.
+2. Reference `linerider.exe` and `MMHOOK_linerider.dll`.
+3. Create a class extending `Plugin` and add `using linerider.Plugins;`.
+4. Override the `Load()` and `Unload()` methods, you are probably going to want to add or remove hooks in these, [here](https://github.com/MonoMod/MonoMod/blob/master/README-RuntimeDetour.md#using-hookgen) is an example of how to use hooks.
+
+# Build instructions
+1. Follow the LRA:CE build instructions below.
+2. Run HookGen, most plugins will need this. On windows this is `.\MonoMod.RuntimeDetour.HookGen.exe linerider.exe`, on mac and linux its `mono MonoMod.RuntimeDetour.HookGen.exe linerider.exe`. 
+
+# Plans for Scarf
+After this initial build, my plans are to rewrite some of LRA:CE's systems to make them easier to add onto with plugins.
+
 # About Line Rider Advanced: Community Edition
 Line Rider Advanced: Community Edition, abbreviated as LRA:CE, is a fork of https://github.com/jealouscloud/linerider-advanced; "An open source spiritual successor to the flash game Line Rider 6.2 with lots of new features."
 
